@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('附件列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>文件名称：</p>
+                                <input type="text" name="fileName"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="cms:attachment:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="cms:attachment:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        //图片
+        var imageReg = /.+\.(gif|jpg|jpeg|png|webp|bmp)/i;
+        var fileTypeDatas = [[${@dict.getType('material_type')}]];
+        var editFlag = [[${@permission.hasPermi('cms:attachment:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('cms:attachment:remove')}]];
+        var prefix = ctx + "cms/attachment";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "附件",
+                columns: [{
+                    checkbox: true
+                },
+                {field : 'attachId',title : 'ID',visible: false},
+                {field : 'zid',title : '组ID'},
+                {field : 'userId',title : '用户ID'},
+                {field : 'fileType',title : '类型',formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(fileTypeDatas, value);
+                    }
+                },
+                {field : '图片',title : '图片',formatter: function(value, row, index) {
+                            if(imageReg.test(row.fileName)){
+                                var url="";
+                                if(ctx=='/'){
+                                    url=row.filePath;
+                                }else{
+                                    url=ctx+row.filePath;
+                                }
+                                return $.table.imageView(url);
+                            }else{
+                                return "-";
+                            }
+                        }
+                },
+                {field : 'fileName',title : '名称'},
+
+                {field : 'filePath',title : '路径'},
+                {field : 'size',title : '大小',formatter: function(value, row, index) {
+                        return renderFileSize(value);
+                    }
+                },
+                {field : 'sort',title : '排序'},
+                {title: '操作', align: 'center', formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.attachId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

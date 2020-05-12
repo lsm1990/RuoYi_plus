@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('爬虫配置列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>爬虫编码：</p>
+                                <input type="text" name="spiderCode"/>
+                            </li>
+                            <li>
+                                <p>爬虫名称：</p>
+                                <input type="text" name="spiderName"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+
+                <input type="hidden" name="spiderConfigIdTemp" id="spiderConfigIdTemp"/>
+                <input type="hidden" name="spiderConfigNameTemp" id="spiderConfigNameTemp"/>
+
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('spider:spiderConfig:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('spider:spiderConfig:remove')}]];
+        var prefix = ctx + "spider/spiderConfig";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                clickToSelect: true,
+                rememberSelected: true,
+                modalName: "爬虫配置",
+                columns: [{
+                    checkbox: true
+                },
+                {field : 'id',title : '爬虫配置ID',visible: false},
+                {field : 'spiderCode',title : '爬虫编码'},
+                {field : 'spiderName',title : '爬虫名称'},
+                {field : 'tableName',title : '存储的表名',visible: false},
+                {field : 'domain',title : '网站根域名',visible: false},
+                {field : 'charset',title : '字符集'},
+                {field : 'sleepTime',title : '睡眠时间(ms)'},
+                {field : 'retryTimes',title : '重试次数',visible: false},
+                {field : 'threadCount',title : '线程数量'},
+                {field : 'useProxy',title : '使用代理',formatter: function(value, row, index) {
+                        if(value==1||value=='1'){
+                            return "<font color='red'>使用代理</font>";
+                        }else{
+                            return "<font color='green'>不使用</font>";
+                        }
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        function submitHandler() {
+            var rows = $.table.selectFirstColumns();
+            if (rows.length !=1) {
+                $.modal.alertWarning("请选择一条记录");
+                return;
+            }
+            var datas=$("#bootstrap-table").bootstrapTable('getSelections');
+            var id=datas[0].id;
+            var name=datas[0].spiderName;
+
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.$("#spiderConfigId").val(id);
+            parent.$("#spiderConfigName").val(name);
+            parent.layer.close(index);
+        }
+
+    </script>
+</body>
+</html>

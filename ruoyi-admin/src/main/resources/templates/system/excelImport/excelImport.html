@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header('导入excel')"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+	<div class="container-div ui-layout-center">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form class="form-horizontal m" id="excelImport-form">
+					<div class="select-list">
+						<ul>
+							<li style="width:40%;">
+								<label class="col-sm-3 control-label">导入类型：</label>
+								<div class="col-sm-8">
+									<div class="radio-box">
+										<input type="file" style="display: none;width: auto;" id="excelFile" name="excelFile" accept=".xls,.xlsx">
+										<input type="radio" id="importType1" name="importType" value="1" checked>
+										<label th:for="importType1">用户导入</label>
+									</div>
+									<div class="radio-box">
+										<input type="radio" id="importType2" name="importType" value="2">
+										<label th:for="importType2">部门导入</label>
+									</div>
+								</div>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" id="downloadExcelModel"><i class="fa fa-download"></i>&nbsp;模板下载</a>
+								<a class="btn btn-warning btn-sm" id="importSave">
+									<i class="fa fa-download"></i> 导入
+								</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+	<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+	<script th:inline="javascript">
+		var submitUrl = ctx +"system/excelImport/save";
+        var datas = [[${@dict.getType('sys_common_status')}]];
+		$(function () {
+			$("#downloadExcelModel").click(downloadExcelModel);
+            $("#importSave").click(importSave);
+            $("#excelFile").change(selectFile);
+            $.table.initHead({
+                columns:[
+                    {field: 'rowNum', title: '行号', formatter: function(value, row, index) {
+                            return "第"+value+"行";
+                        }
+                    },
+                    {field: 'name', title: '主要信息'},
+                    {field: 'code', title: '状态', formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(datas, value);
+                        }
+                    },
+                    {field: 'msg', title: '信息'}
+                    ]
+			});
+            $.form.init({
+                url:submitUrl,
+                beforeSubmit:function(){
+                    if($("#excelFile").val()){
+                        return true;
+					}
+                    $.modal.msgError("请选择excel！");
+					return false;
+				},
+				success:function (data) {
+                    $.modal.alertSuccess("数据共解析"+data.data.details.length+"条，其中导入成功"+data.data.successNum+"条，详情请看以下列表！");
+                    $.table.loadData(data.data.details);
+                }
+			})
+
+        });
+		function downloadExcelModel() {
+            $.table.exportExcel("excelImport-form",ctx+"system/excelImport/downloadExcelModel")
+        }
+        function importSave() {
+            $("#excelFile").val("").click();
+        }
+		function selectFile() {
+			if($("#excelFile").val()!=""){
+                $("#excelImport-form").submit();
+			}
+        }
+	</script>
+</body>
+</html>

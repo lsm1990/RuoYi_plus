@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.ArticleTemplateMapper">
+    
+    <resultMap type="ArticleTemplate" id="ArticleTemplateResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="tags"    column="tags"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="content"    column="content"    />
+        <result property="shareType"    column="share_type"    />
+        <result property="weight"    column="weight"    />
+        <result property="hotFalg"    column="hot_falg"    />
+        <result property="newFlag"    column="new_flag"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="audit"    column="audit"    />
+        <result property="auditTime"    column="audit_time"    />
+        <result property="auditBy"    column="audit_by"    />
+        <result property="auditName"    column="audit_name"    />
+        <result property="auditReason"    column="audit_reason"    />
+    </resultMap>
+
+    <sql id="selectArticleTemplateVo">
+        select id, name, tags, user_id, user_name, content, share_type, weight, hot_falg, new_flag, create_time, audit, audit_time, audit_by, audit_name, audit_reason from cms_article_template
+    </sql>
+
+    <select id="selectArticleTemplateList" parameterType="ArticleTemplate" resultMap="ArticleTemplateResult">
+        <include refid="selectArticleTemplateVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="shareType != null  and shareType != ''"> and share_type = #{shareType}</if>
+            <if test="audit != null "> and audit = #{audit}</if>
+        </where>
+    </select>
+    
+    <select id="selectArticleTemplateById" parameterType="Long" resultMap="ArticleTemplateResult">
+        <include refid="selectArticleTemplateVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertArticleTemplate" parameterType="ArticleTemplate" useGeneratedKeys="true" keyProperty="id">
+        insert into cms_article_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">name,</if>
+            <if test="tags != null  and tags != ''">tags,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="userName != null  and userName != ''">user_name,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="shareType != null  and shareType != ''">share_type,</if>
+            <if test="weight != null ">weight,</if>
+            <if test="hotFalg != null ">hot_falg,</if>
+            <if test="newFlag != null ">new_flag,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="audit != null ">audit,</if>
+            <if test="auditTime != null ">audit_time,</if>
+            <if test="auditBy != null  and auditBy != ''">audit_by,</if>
+            <if test="auditName != null  and auditName != ''">audit_name,</if>
+            <if test="auditReason != null  and auditReason != ''">audit_reason,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="tags != null  and tags != ''">#{tags},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="userName != null  and userName != ''">#{userName},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="shareType != null  and shareType != ''">#{shareType},</if>
+            <if test="weight != null ">#{weight},</if>
+            <if test="hotFalg != null ">#{hotFalg},</if>
+            <if test="newFlag != null ">#{newFlag},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="audit != null ">#{audit},</if>
+            <if test="auditTime != null ">#{auditTime},</if>
+            <if test="auditBy != null  and auditBy != ''">#{auditBy},</if>
+            <if test="auditName != null  and auditName != ''">#{auditName},</if>
+            <if test="auditReason != null  and auditReason != ''">#{auditReason},</if>
+         </trim>
+    </insert>
+
+    <update id="updateArticleTemplate" parameterType="ArticleTemplate">
+        update cms_article_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="tags != null  and tags != ''">tags = #{tags},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="userName != null  and userName != ''">user_name = #{userName},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="shareType != null  and shareType != ''">share_type = #{shareType},</if>
+            <if test="weight != null ">weight = #{weight},</if>
+            <if test="hotFalg != null ">hot_falg = #{hotFalg},</if>
+            <if test="newFlag != null ">new_flag = #{newFlag},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="audit != null ">audit = #{audit},</if>
+            <if test="auditTime != null ">audit_time = #{auditTime},</if>
+            <if test="auditBy != null  and auditBy != ''">audit_by = #{auditBy},</if>
+            <if test="auditName != null  and auditName != ''">audit_name = #{auditName},</if>
+            <if test="auditReason != null  and auditReason != ''">audit_reason = #{auditReason},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteArticleTemplateById" parameterType="Long">
+        delete from cms_article_template where id = #{id}
+    </delete>
+
+    <delete id="deleteArticleTemplateByIds" parameterType="String">
+        delete from cms_article_template where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <resultMap type="Tags" id="TagsResult">
+        <result property="tagId"    column="tag_id"    />
+        <result property="tagType"    column="tag_type"    />
+        <result property="userId"    column="user_id"    />
+        <result property="tagName"    column="tag_name"    />
+        <result property="sort"    column="sort"    />
+        <result property="status"    column="status"    />
+        <result property="url"    column="url"    />
+    </resultMap>
+
+    <sql id="selectTagsVo">
+        select tag_id, tag_type, user_id, tag_name, sort, status, url from cms_tags
+    </sql>
+    <select id="selectArticleTemplateTags"  resultMap="TagsResult">
+        <include refid="selectTagsVo"/>
+        where tag_type='articleTemplate' and status=0
+        order by sort asc
+    </select>
+
+</mapper>

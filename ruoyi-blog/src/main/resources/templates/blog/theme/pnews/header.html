@@ -1,0 +1,26 @@
+<div class="headGroup fixed" id="headGroup">
+    <div class="headWrap">
+        <div class="logoWrap">
+            <a class="logo" th:title="${@config.getKey('site.name')}" th:href="${@config.getKey('site.url')}"></a>
+        </div>
+        <div class="menuWrap">
+            <ul>
+                <li><a th:class="${categoryId=='index' ? 'current' : ''}"  th:href="@{/}"><span>首页</span></a></li>
+
+                <li th:each="category:${@cms.selectNavCategories()}" >
+                    <a th:class="${category.categoryId +'' ==categoryId ? 'current':''}"  th:href="@{${not #lists.isEmpty(category.nodes)? '#': ('/blog/category/' + category.categoryId+'?pageSize=6')}}" ><span th:text="${category.categoryName}"></span></a>
+                </li>
+            </ul>
+        </div>
+        <div class="userWrap">
+            <div class="searchWrap" id="searchWrap">
+                <form method="get" th:action="@{/blog/search}" target="_blank">
+                <input type="text" class="searchInput" name="content"/>
+                <button id="searchbtn" type="submit" class="searchBtn doBtn"><i class="iconfont icon-search"></i></button>
+                <div class="searchBtn coverBtn"><i class="iconfont icon-search"></i></div>
+                </form>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

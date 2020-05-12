@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.CategoryMapper">
+    
+    <resultMap type="Category" id="CategoryResult">
+        <result property="categoryId"    column="category_id"    />
+        <result property="categoryName"    column="category_name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="ancestors"    column="ancestors"    />
+        <result property="sort"    column="sort"    />
+        <result property="description"    column="description"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="parentName" column="parent_name" />
+    </resultMap>
+
+    <resultMap id="rm" type="Category">
+        <result property="categoryId"    column="category_id"    />
+        <result property="categoryName"    column="category_name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="ancestors"    column="ancestors"    />
+        <result property="sort"    column="sort"    />
+        <result property="description"    column="description"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+
+        <association property="parent" javaType="Category">
+            <result property="categoryId"  column="p_id"/>
+            <result property="parentId"  column="p_pid"/>
+            <result property="categoryName" column="p_name"/>
+            <result property="description" column="p_description"/>
+            <result property="status" column="p_status"/>
+        </association>
+        <collection property="nodes" column="n_id" javaType="ArrayList" ofType="Category">
+            <result property="categoryId"  column="n_id"/>
+            <result property="parentId"  column="n_pid"/>
+            <result property="categoryName" column="n_name"/>
+            <result property="description" column="n_description"/>
+            <result property="status" column="n_status"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectNavCategories" parameterType="Category" resultMap="rm" >
+        select t.*,
+        p.category_id p_id,
+                p.parent_id p_pid,
+                p.`category_name` p_name,
+                p.description p_description,
+                p.`status` p_status,
+
+                n.`category_id` n_id,
+                n.`parent_id` n_pid,
+                n.`category_name` n_name,
+                n.description n_description,
+                n.`status` n_status
+        from cms_category t
+        LEFT JOIN cms_category p ON t.parent_id = p.category_id
+        LEFT JOIN cms_category n ON n.parent_id = t.category_id
+        WHERE 1=1
+        <if test="categoryName !=null and categoryName != ''">
+            AND t.`category_name` like concat('%', #{categoryName}, '%')
+        </if>
+        <if test="description !=null and description != ''">
+            AND t.description like concat('%', #{description}, '%')
+        </if>
+        <if test="parentId !=null">
+            AND t.parent_id = #{parentId}
+        </if>
+        AND t.`status` = 0
+        ORDER BY t.sort ASC
+    </select>
+    <sql id="selectCategoryVo">
+        select category_id, category_name, parent_id, ancestors, sort, description, create_time, update_time, create_by, update_by, status, del_flag from cms_category
+    </sql>
+
+    <select id="selectCategoryList" parameterType="Category" resultMap="CategoryResult">
+        <include refid="selectCategoryVo"/>
+        <where>  
+            <if test="categoryName != null  and categoryName != ''"> and category_name like concat('%', #{categoryName}, '%')</if>
+            <if test="parentId != null  and parentId != ''"> and parent_id = #{parentId}</if>
+            <if test="ancestors != null  and ancestors != ''"> and ancestors = #{ancestors}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        order by parent_id
+    </select>
+    
+    <select id="selectCategoryById" resultMap="CategoryResult">
+        select t.category_id, t.category_name, t.parent_id, t.ancestors, t.sort, t.description, t.create_time, t.update_time, t.create_by, t.update_by, t.status, t.del_flag, p.category_name as parent_name
+        from cms_category t
+        left join cms_category p on p.category_id = t.parent_id
+        where t.category_id = #{categoryId}
+    </select>
+        
+    <insert id="insertCategory" parameterType="Category" useGeneratedKeys="true" keyProperty="categoryId">
+        insert into cms_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="categoryId != null  and categoryId != ''">category_id,</if>
+            <if test="categoryName != null  and categoryName != ''">category_name,</if>
+            <if test="parentId != null  and parentId != ''">parent_id,</if>
+            <if test="ancestors != null  and ancestors != ''">ancestors,</if>
+            <if test="sort != null ">sort,</if>
+            <if test="description != null  and description != ''">description,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="status != null ">status,</if>
+            <if test="delFlag != null ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="categoryId != null  and categoryId != ''">#{categoryId},</if>
+            <if test="categoryName != null  and categoryName != ''">#{categoryName},</if>
+            <if test="parentId != null  and parentId != ''">#{parentId},</if>
+            <if test="ancestors != null  and ancestors != ''">#{ancestors},</if>
+            <if test="sort != null ">#{sort},</if>
+            <if test="description != null  and description != ''">#{description},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="delFlag != null ">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCategory" parameterType="Category">
+        update cms_category
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="categoryName != null  and categoryName != ''">category_name = #{categoryName},</if>
+            <if test="parentId != null  and parentId != ''">parent_id = #{parentId},</if>
+            <if test="ancestors != null  and ancestors != ''">ancestors = #{ancestors},</if>
+            <if test="sort != null ">sort = #{sort},</if>
+            <if test="description != null  and description != ''">description = #{description},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="delFlag != null ">del_flag = #{delFlag},</if>
+        </trim>
+        where category_id = #{categoryId}
+    </update>
+
+    <delete id="deleteCategoryById" >
+        delete from cms_category where category_id = #{categoryId}
+    </delete>
+
+    <delete id="deleteCategoryByIds" >
+        delete from cms_category where category_id in 
+        <foreach item="categoryId" collection="array" open="(" separator="," close=")">
+            #{categoryId}
+        </foreach>
+    </delete>
+    
+</mapper>

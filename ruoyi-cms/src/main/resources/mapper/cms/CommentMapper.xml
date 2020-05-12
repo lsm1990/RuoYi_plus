@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.CommentMapper">
+    
+    <resultMap type="Comment" id="CommentResult">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="pid"    />
+        <result property="tid"    column="tid"    />
+        <result property="numPei"    column="num_pei"    />
+        <result property="numPenzi"    column="num_penzi"    />
+        <result property="numDou"    column="num_dou"    />
+        <result property="numGeili"    column="num_geili"    />
+        <result property="type"    column="type"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="content"    column="content"    />
+        <result property="upVote"    column="up_vote"    />
+        <result property="downVote"    column="down_vote"    />
+        <result property="qq"    column="qq"    />
+        <result property="email"    column="email"    />
+        <result property="ip"    column="ip"    />
+        <result property="address"    column="address"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <resultMap type="Comment" id="rm">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="pid"    />
+        <result property="tid"    column="tid"    />
+        <result property="numPei"    column="num_pei"    />
+        <result property="numPenzi"    column="num_penzi"    />
+        <result property="numDou"    column="num_dou"    />
+        <result property="numGeili"    column="num_geili"    />
+        <result property="type"    column="type"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="content"    column="content"    />
+        <result property="upVote"    column="up_vote"    />
+        <result property="downVote"    column="down_vote"    />
+        <result property="qq"    column="qq"    />
+        <result property="email"    column="email"    />
+        <result property="ip"    column="ip"    />
+        <result property="address"    column="address"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+
+        <association property="parent" javaType="Comment">
+            <result property="id"  column="parent_id"/>
+            <result property="userName" column="parent_nickname"/>
+            <result property="content"  column="parent_content"/>
+        </association>
+    </resultMap>
+
+
+    <sql id="selectCommentVo">
+        select id, pid, tid, num_pei, num_penzi, num_dou, num_geili, `type`, user_id, user_name, avatar, content, up_vote, down_vote, qq, email, ip, address, create_time, status from cms_comment
+    </sql>
+
+    <select id="selectCommentList" parameterType="Comment" resultMap="CommentResult">
+        <include refid="selectCommentVo"/>
+        <where>  
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="qq != null  and qq != ''"> and qq = #{qq}</if>
+            <if test="ip != null  and ip != ''"> and ip = #{ip}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectComments" parameterType="Comment" resultMap="rm">
+        SELECT
+        t.*,
+        f.id AS parent_id,
+        f.user_name AS parent_nickname,
+        f.content AS parent_content
+        FROM
+        cms_comment t
+        LEFT JOIN cms_comment f ON t.pid = f.id
+        WHERE
+        1 = 1
+        <if test="type != null  and type != ''"> and t.type = #{type}</if>
+        <if test="userId != null">
+            AND t.user_id = #{userId}
+        </if>
+        <if test="tid != null and tid != '' ">
+            AND t.tid = #{tid}
+        </if>
+        <if test="pid != null">
+            AND t.pid = #{pid}
+        </if>
+        <if test="qq != null and qq != '' ">
+            AND t.qq = #{qq}
+        </if>
+        <if test="status != null">
+            AND t.status = #{status}
+        </if>
+        ORDER BY
+        t.create_time DESC
+    </select>
+    
+    
+    <select id="selectCommentById" parameterType="Long" resultMap="CommentResult">
+        <include refid="selectCommentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
+        insert into cms_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null ">pid,</if>
+            <if test="tid != null  and tid != ''">tid,</if>
+            <if test="numPei != null ">num_pei,</if>
+            <if test="numPenzi != null ">num_penzi,</if>
+            <if test="numDou != null ">num_dou,</if>
+            <if test="numGeili != null ">num_geili,</if>
+            <if test="type != null  and type != ''">type,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="userName != null  and userName != ''">user_name,</if>
+            <if test="avatar != null  and avatar != ''">avatar,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="upVote != null ">up_vote,</if>
+            <if test="downVote != null ">down_vote,</if>
+            <if test="qq != null  and qq != ''">qq,</if>
+            <if test="email != null  and email != ''">email,</if>
+            <if test="ip != null  and ip != ''">ip,</if>
+            <if test="address != null  and address != ''">address,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="status != null ">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null ">#{pid},</if>
+            <if test="tid != null  and tid != ''">#{tid},</if>
+            <if test="numPei != null ">#{numPei},</if>
+            <if test="numPenzi != null ">#{numPenzi},</if>
+            <if test="numDou != null ">#{numDou},</if>
+            <if test="numGeili != null ">#{numGeili},</if>
+            <if test="type != null  and type != ''">#{type},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="userName != null  and userName != ''">#{userName},</if>
+            <if test="avatar != null  and avatar != ''">#{avatar},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="upVote != null ">#{upVote},</if>
+            <if test="downVote != null ">#{downVote},</if>
+            <if test="qq != null  and qq != ''">#{qq},</if>
+            <if test="email != null  and email != ''">#{email},</if>
+            <if test="ip != null  and ip != ''">#{ip},</if>
+            <if test="address != null  and address != ''">#{address},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="status != null ">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateComment" parameterType="Comment">
+        update cms_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pid != null ">pid = #{pid},</if>
+            <if test="tid != null  and tid != ''">tid = #{tid},</if>
+            <if test="numPei != null ">num_pei = #{numPei},</if>
+            <if test="numPenzi != null ">num_penzi = #{numPenzi},</if>
+            <if test="numDou != null ">num_dou = #{numDou},</if>
+            <if test="numGeili != null ">num_geili = #{numGeili},</if>
+            <if test="type != null  and type != ''">type = #{type},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="userName != null  and userName != ''">user_name = #{userName},</if>
+            <if test="avatar != null  and avatar != ''">avatar = #{avatar},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="upVote != null ">up_vote = #{upVote},</if>
+            <if test="downVote != null ">down_vote = #{downVote},</if>
+            <if test="qq != null  and qq != ''">qq = #{qq},</if>
+            <if test="email != null  and email != ''">email = #{email},</if>
+            <if test="ip != null  and ip != ''">ip = #{ip},</if>
+            <if test="address != null  and address != ''">address = #{address},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="status != null ">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCommentById" parameterType="Long">
+        delete from cms_comment where id = #{id}
+    </delete>
+
+    <delete id="deleteCommentByIds" parameterType="String">
+        delete from cms_comment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <update id="upVote" parameterType="String">
+        update cms_comment set up_vote=up_vote+1 where id=#{#id}
+    </update>
+</mapper>

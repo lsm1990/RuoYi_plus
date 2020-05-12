@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增站内消息')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-siteMsg-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">发送者ID：</label>
+                <div class="col-sm-8">
+                    <input name="fromId" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">发送者名称：</label>
+                <div class="col-sm-8">
+                    <input name="fromName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">接受者ID：</label>
+                <div class="col-sm-8">
+                    <input name="toId" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">接受者名称：</label>
+                <div class="col-sm-8">
+                    <input name="toName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">消息类别：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('site_msg_type')}">
+                        <input type="radio" th:id="${'msgType_' + dict.dictCode}" name="msgType" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${'msgType_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">消息内容：</label>
+                <div class="col-sm-8">
+                    <textarea name="content" rows="5"  class="form-control" required></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "cms/siteMsg"
+        $("#form-siteMsg-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-siteMsg-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

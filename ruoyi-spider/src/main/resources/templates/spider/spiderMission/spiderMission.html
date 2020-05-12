@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('爬虫任务列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>任务名称：</p>
+                                <input type="text" name="missionName"/>
+                            </li>
+                            <li>
+                                <p>任务状态：</p>
+                               <select name="status" th:with="type=${@dict.getType('spider_mission_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="spider:spiderMission:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="spider:spiderMission:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="spider:spiderMission:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="spider:spiderMission:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('spider:spiderMission:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('spider:spiderMission:remove')}]];
+        var statusDatas = [[${@dict.getType('spider_mission_status')}]];
+        var exitWayDatas = [[${@dict.getType('spider_exit_way')}]];
+
+
+
+        var prefix = ctx + "spider/spiderMission";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "爬虫任务",
+                columns: [{
+                    checkbox: true
+                },
+                {field : 'missionId',title : '爬虫任务ID',visible: false},
+                {field : 'missionName',title : '任务名称'},
+                {field : 'spiderConfigId',title : '爬虫配置ID',visible: false},
+                {field : 'status',title : '任务状态',formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+                {field : 'startTime',title : '开始时间'},
+                {field : 'endTime',title : '结束时间'},
+                {field : 'timeCost',title : '爬取时间(秒)'},
+                {field : 'exitWay',title : '退出方式',formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(exitWayDatas, value);
+                    }
+                },
+                {field : 'successNum',title : '爬取数量',visible: false},
+                {title: '操作', align: 'center', formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.missionId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="runMission(\'' + row.missionId + '\')"><i class="fa fa-bug"></i>运行爬虫</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.missionId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        function runMission(id){
+            $.modal.confirm("确认要运行爬虫吗？", function() {
+                $.operate.post(prefix+"/runSpiderMission/"+id,null);
+            });
+        }
+    </script>
+</body>
+</html>

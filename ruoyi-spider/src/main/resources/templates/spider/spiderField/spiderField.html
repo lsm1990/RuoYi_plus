@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('爬虫字段列表')" />
+    <style>
+        .table-striped {
+            min-height: 97%;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse" style="display: none;">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>爬虫配置ID：</p>
+                            <input type="text" id="configId" name="configId" th:value="${configId}"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="toAdd()" shiro:hasPermission="spider:spiderField:add">
+                <i class="fa fa-plus"></i> 添加字段
+            </a>
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="spider:spiderField:remove">
+                <i class="fa fa-remove"></i> 删除字段
+            </a>
+            <a class="btn btn-warning" onclick="closeItem()">
+                <i class="fa fa-reply-all"></i> 关闭
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('spider:spiderField:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('spider:spiderField:remove')}]];
+    var extractTypeDatas = [[${@dict.getType('spider_extract_type')}]];
+    var prefix = ctx + "spider/spiderField";
+
+    $(function() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add/{id}",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "爬虫字段",
+            pagination:false,
+            columns: [{
+                checkbox: true
+            },
+                {field : 'fieldId',title : '字段ID',visible: false},
+                {field : 'field',title : '字段'},
+                {field : 'fieldName',title : '名称'},
+                {field : 'extractType',title : '提取类型',formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(extractTypeDatas, value);
+                    }
+                },
+                {field : 'extractBy',title : '提取规则',formatter: function(value, row, index) {
+                        if(row.extractType=='constant'){
+                            return row.constantValue;
+                        }
+                        return value;
+                    }
+                },
+                {field : 'constantValue',title : '常量值',visible: false},
+                {field : 'extractIndex',title : '元素索引',visible: false},
+                {field : 'processRuleId',title : '处理规则',visible: false},
+                {field : 'extractAttrFlag',title : '根据元素取值',visible: false},
+                {field : 'extractAttr',title : '取值元素',visible: false},
+                {title: '操作', align: 'center', formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.fieldId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" onclick="addFieldRule(\'' + row.fieldId + '\')"><i class="fa fa-note"></i>配置规则</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.fieldId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+    function toAdd(){
+        var id=$("#configId").val();
+        $.operate.add(id);
+    }
+    function addFieldRule(id) {
+        var url = ctx+"spider/fieldRule/" + id;
+        $.modal.openTab("配置字段", url);
+    }
+</script>
+</body>
+</html>

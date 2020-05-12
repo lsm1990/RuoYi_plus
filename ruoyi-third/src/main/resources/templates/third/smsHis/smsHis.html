@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('短信发送历史列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>手机号：</p>
+                                <input type="text" name="phone"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+
+        var prefix = ctx + "third/smsHis";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                detailUrl: prefix + "/detail/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "短信发送历史",
+                columns: [{
+                    checkbox: true
+                },
+                {field : 'id',title : 'ID',visible: false},
+                {field : 'yhid',title : '用户ID'},
+                {field : 'yhmc',title : '用户名称'},
+                {field : 'carrieroperator',title : '运营商'},
+                {field : 'phone',title : '手机号'},
+                {field : 'content',title : '内容'},
+                {field : 'returncode',title : '返回码',
+                    formatter: function(value, row, index) {
+                        if (value == 1) {
+                            return '<span class="badge badge-primary">成功</span>';
+                        } else if (value == 0) {
+                            return '<span class="badge badge-danger">失败</span>';
+                        }
+                    }
+                },
+                {field : 'createTime',title : '发送时间'},
+                {title: '操作', align: 'center', formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.id + '\')"><i class="fa fa-edit"></i>详情</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

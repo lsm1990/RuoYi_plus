@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.SiteMsgMapper">
+    
+    <resultMap type="SiteMsg" id="SiteMsgResult">
+        <result property="id"    column="id"    />
+        <result property="fromId"    column="from_id"    />
+        <result property="fromName"    column="from_name"    />
+        <result property="toId"    column="to_id"    />
+        <result property="toName"    column="to_name"    />
+        <result property="msgType"    column="msg_type"    />
+        <result property="content"    column="content"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectSiteMsgVo">
+        select id, from_id, from_name, to_id, to_name, msg_type, content, create_time from cms_site_msg
+    </sql>
+
+    <select id="selectSiteMsgList" parameterType="SiteMsg" resultMap="SiteMsgResult">
+        <include refid="selectSiteMsgVo"/>
+        <where>  
+            <if test="fromName != null  and fromName != ''"> and from_name like concat('%', #{fromName}, '%')</if>
+            <if test="toName != null  and toName != ''"> and to_name like concat('%', #{toName}, '%')</if>
+            <if test="msgType != null  and msgType != ''"> and msg_type = #{msgType}</if>
+        </where>
+    </select>
+    
+    <select id="selectSiteMsgById" parameterType="Long" resultMap="SiteMsgResult">
+        <include refid="selectSiteMsgVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSiteMsg" parameterType="SiteMsg" useGeneratedKeys="true" keyProperty="id">
+        insert into cms_site_msg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fromId != null  and fromId != ''">from_id,</if>
+            <if test="fromName != null  and fromName != ''">from_name,</if>
+            <if test="toId != null  and toId != ''">to_id,</if>
+            <if test="toName != null  and toName != ''">to_name,</if>
+            <if test="msgType != null  and msgType != ''">msg_type,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fromId != null  and fromId != ''">#{fromId},</if>
+            <if test="fromName != null  and fromName != ''">#{fromName},</if>
+            <if test="toId != null  and toId != ''">#{toId},</if>
+            <if test="toName != null  and toName != ''">#{toName},</if>
+            <if test="msgType != null  and msgType != ''">#{msgType},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSiteMsg" parameterType="SiteMsg">
+        update cms_site_msg
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fromId != null  and fromId != ''">from_id = #{fromId},</if>
+            <if test="fromName != null  and fromName != ''">from_name = #{fromName},</if>
+            <if test="toId != null  and toId != ''">to_id = #{toId},</if>
+            <if test="toName != null  and toName != ''">to_name = #{toName},</if>
+            <if test="msgType != null  and msgType != ''">msg_type = #{msgType},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSiteMsgById" parameterType="Long">
+        delete from cms_site_msg where id = #{id}
+    </delete>
+
+    <delete id="deleteSiteMsgByIds" parameterType="String">
+        delete from cms_site_msg where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.MaterialMapper">
+    
+    <resultMap type="Material" id="MaterialResult">
+        <result property="materialId"    column="material_id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialType"    column="material_type"    />
+        <result property="description"    column="description"    />
+        <result property="materialSize"    column="material_size"    />
+        <result property="savePath"    column="save_path"    />
+        <result property="thumbnail"    column="thumbnail"    />
+        <result property="auditState"    column="audit_state"    />
+        <result property="auditReason"    column="audit_reason"    />
+        <result property="useState"    column="use_state"    />
+        <result property="width"    column="width"    />
+        <result property="height"    column="height"    />
+        <result property="uploaderId"    column="uploader_id"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMaterialVo">
+        select a.material_id, a.group_id,b.group_name, a.material_name, a.material_type, a.description, a.material_size, a.save_path, a.thumbnail, a.audit_state, a.audit_reason, a.use_state, a.width, a.height, a.uploader_id, a.upload_time, a.remark
+        from cms_material a
+        inner join cms_material_group b on a.group_id=b.group_id
+    </sql>
+
+    <select id="selectMaterialList" parameterType="Material" resultMap="MaterialResult">
+        <include refid="selectMaterialVo"/>
+        <where>
+            <if test="groupId != null  and groupId != ''"> and a.group_id = #{groupId}</if>
+            <if test="materialName != null  and materialName != ''"> and a.material_name like concat('%', #{materialName}, '%')</if>
+            <if test="materialType != null  and materialType != ''"> and a.material_type = #{materialType}</if>
+            <if test="auditState != null  and auditState != ''"> and a.audit_state = #{auditState}</if>
+            <if test="useState != null  and useState != ''"> and a.use_state = #{useState}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+    
+    <select id="selectMaterialById" parameterType="String" resultMap="MaterialResult">
+        <include refid="selectMaterialVo"/>
+        where a.material_id = #{materialId}
+    </select>
+        
+    <insert id="insertMaterial" parameterType="Material">
+        insert into cms_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialId != null  and materialId != ''">material_id,</if>
+            <if test="groupId != null  and groupId != ''">group_id,</if>
+            <if test="materialName != null  and materialName != ''">material_name,</if>
+            <if test="materialType != null  and materialType != ''">material_type,</if>
+            <if test="description != null  and description != ''">description,</if>
+            <if test="materialSize != null  and materialSize != ''">material_size,</if>
+            <if test="savePath != null  and savePath != ''">save_path,</if>
+            <if test="thumbnail != null  and thumbnail != ''">thumbnail,</if>
+            <if test="auditState != null  and auditState != ''">audit_state,</if>
+            <if test="auditReason != null  and auditReason != ''">audit_reason,</if>
+            <if test="useState != null  and useState != ''">use_state,</if>
+            <if test="width != null  and width != ''">width,</if>
+            <if test="height != null  and height != ''">height,</if>
+            <if test="uploaderId != null  and uploaderId != ''">uploader_id,</if>
+            <if test="uploadTime != null ">upload_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialId != null  and materialId != ''">#{materialId},</if>
+            <if test="groupId != null  and groupId != ''">#{groupId},</if>
+            <if test="materialName != null  and materialName != ''">#{materialName},</if>
+            <if test="materialType != null  and materialType != ''">#{materialType},</if>
+            <if test="description != null  and description != ''">#{description},</if>
+            <if test="materialSize != null  and materialSize != ''">#{materialSize},</if>
+            <if test="savePath != null  and savePath != ''">#{savePath},</if>
+            <if test="thumbnail != null  and thumbnail != ''">#{thumbnail},</if>
+            <if test="auditState != null  and auditState != ''">#{auditState},</if>
+            <if test="auditReason != null  and auditReason != ''">#{auditReason},</if>
+            <if test="useState != null  and useState != ''">#{useState},</if>
+            <if test="width != null  and width != ''">#{width},</if>
+            <if test="height != null  and height != ''">#{height},</if>
+            <if test="uploaderId != null  and uploaderId != ''">#{uploaderId},</if>
+            <if test="uploadTime != null ">#{uploadTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterial" parameterType="Material">
+        update cms_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null  and groupId != ''">group_id = #{groupId},</if>
+            <if test="materialName != null  and materialName != ''">material_name = #{materialName},</if>
+            <if test="materialType != null  and materialType != ''">material_type = #{materialType},</if>
+            <if test="description != null  and description != ''">description = #{description},</if>
+            <if test="materialSize != null  and materialSize != ''">material_size = #{materialSize},</if>
+            <if test="savePath != null  and savePath != ''">save_path = #{savePath},</if>
+            <if test="thumbnail != null  and thumbnail != ''">thumbnail = #{thumbnail},</if>
+            <if test="auditState != null  and auditState != ''">audit_state = #{auditState},</if>
+            <if test="auditReason != null  and auditReason != ''">audit_reason = #{auditReason},</if>
+            <if test="useState != null  and useState != ''">use_state = #{useState},</if>
+            <if test="width != null  and width != ''">width = #{width},</if>
+            <if test="height != null  and height != ''">height = #{height},</if>
+            <if test="uploaderId != null  and uploaderId != ''">uploader_id = #{uploaderId},</if>
+            <if test="uploadTime != null ">upload_time = #{uploadTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where material_id = #{materialId}
+    </update>
+
+    <delete id="deleteMaterialById" parameterType="String">
+        delete from cms_material where material_id = #{materialId}
+    </delete>
+
+    <delete id="deleteMaterialByIds" parameterType="String">
+        delete from cms_material where material_id in 
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </delete>
+
+    <update id="auditMaterialByIds" parameterType="String">
+        update cms_material set audit_state=1,audit_reason='同意'
+        where material_id in
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </update>
+    <select id="selectMaterialByIds" parameterType="String" resultMap="MaterialResult">
+        <include refid="selectMaterialVo"/>
+        where a.material_id in
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </select>
+
+
+
+    <resultMap type="AlbumMaterial" id="AlbumMaterialResult">
+        <result property="id" column="id"    />
+        <result property="link" column="link"    />
+        <result property="sort" column="sort"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialType"    column="material_type"    />
+        <result property="description"    column="description"    />
+        <result property="materialSize"    column="material_size"    />
+        <result property="savePath"    column="save_path"    />
+        <result property="thumbnail"    column="thumbnail"    />
+        <result property="auditState"    column="audit_state"    />
+        <result property="auditReason"    column="audit_reason"    />
+        <result property="useState"    column="use_state"    />
+        <result property="width"    column="width"    />
+        <result property="height"    column="height"    />
+        <result property="uploaderId"    column="uploader_id"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+
+    <select id="selectAlbumMaterialList" parameterType="Material" resultMap="AlbumMaterialResult">
+        select b.id,a.material_id, a.group_id, a.material_name, a.material_type, a.description, a.material_size, a.save_path, a.thumbnail, a.audit_state, a.audit_reason, a.use_state, a.width, a.height, a.uploader_id, a.upload_time, a.remark
+
+        from cms_material a , cms_album_material b
+
+        where a.material_id=b.material_id
+        and b.album_id=#{albumId} and
+        a.material_id  in
+        (select material_id from cms_album_material where album_id=#{albumId})
+        <if test="materialName != null and materialName != ''">
+            AND a.material_name like concat('%', #{materialName}, '%')
+        </if>
+        and a.audit_state=1
+        order by b.sort asc
+    </select>
+
+    <select id="selectAlbumUnMaterialList" parameterType="Material" resultMap="MaterialResult">
+        <include refid="selectMaterialVo"/>
+        where a.material_id not in
+        (select material_id from cms_album_material where album_id=#{albumId})
+        <if test="materialName != null and materialName != ''">
+            AND a.material_name like concat('%', #{materialName}, '%')
+        </if>
+            and a.audit_state=1
+    </select>
+
+    <resultMap type="MaterialUse" id="MaterialUseResult">
+        <result property="id" column="id"    />
+        <result property="useId" column="use_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="useTable" column="use_table"/>
+        <result property="useColumn" column="use_column"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+
+        <result property="materialId"    column="material_id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialType"    column="material_type"    />
+        <result property="description"    column="description"    />
+        <result property="materialSize"    column="material_size"    />
+        <result property="savePath"    column="save_path"    />
+        <result property="thumbnail"    column="thumbnail"    />
+        <result property="auditState"    column="audit_state"    />
+        <result property="auditReason"    column="audit_reason"    />
+        <result property="useState"    column="use_state"    />
+        <result property="width"    column="width"    />
+        <result property="height"    column="height"    />
+        <result property="uploaderId"    column="uploader_id"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <insert id="insertMaterialUse"  useGeneratedKeys="true" keyProperty="id" parameterType="MaterialUse">
+        insert into cms_material_use
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,</if>
+            <if test="materialId != null  and materialId != ''">material_id,</if>
+            <if test="useTable != null  and useTable != ''">use_table,</if>
+            <if test="useId != null  and useId != ''">use_id,</if>
+            <if test="useColumn != null  and useColumn != ''">use_column,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="materialId != null  and materialId != ''">#{materialId},</if>
+            <if test="useTable != null  and useTable != ''">#{useTable},</if>
+            <if test="useId != null  and useId != ''">#{useId},</if>
+            <if test="useColumn != null  and useColumn != ''">#{useColumn},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertMaterialUseBatch"  useGeneratedKeys="true" keyProperty="id" parameterType="MaterialUse">
+        insert into cms_material_use (id,material_id,use_table,use_id,use_column,create_by,create_time)
+        values
+        <foreach collection="list" item="item" separator="," >
+            (null,#{item.materialId},#{item.useTable},#{item.useId},#{item.useColumn},#{item.createBy},#{item.createTime})
+        </foreach>
+    </insert>
+
+    <select id="selectMaterialUseList" parameterType="MaterialUse" resultMap="MaterialUseResult">
+        select  b.id,b.use_id,b.use_table,b.use_column,b.create_by,b.create_time,a.material_id, a.group_id, a.material_name, a.material_type, a.description, a.material_size, a.save_path, a.audit_state, a.audit_reason, a.use_state, a.width, a.height, a.upload_time
+        from cms_material a,cms_material_use b
+        where a.material_id=b.material_id
+
+        <if test="materialId != null and materialId != ''">
+            AND b.material_id =#{materialId}
+        </if>
+
+    </select>
+
+
+    <select id="selectMaterialUseByIds" parameterType="MaterialUse" resultMap="MaterialUseResult">
+        select  * from cms_material_use
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <!--删除记录表记录-->
+    <delete id="deleteMaterialUseBatch" parameterType="String">
+        delete from cms_material_use where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteMaterialUseByMx" parameterType="String">
+        delete from cms_material_use where material_id=#{materialId} and use_table=#{table} and use_id=#{useId} and use_column=#{column}
+    </delete>
+    <!--删除素材使用表记录-->
+    <delete id="deleteMaterialUse" parameterType="MaterialUse">
+        delete from ${useTable} where material_id=#{materialId} and ${useColumn} =#{useId}
+    </delete>
+
+
+    <select id="selectCountMaterialUse" parameterType="String" resultType="int">
+        select count(1) from cms_material_use where material_id=#{materialId}
+    </select>
+
+
+    <update id="updateMaterialUseState" parameterType="String">
+        update cms_material set use_state=#{useState} where material_id=#{materialId}
+    </update>
+
+
+    <select id="selectCountUse" parameterType="String" resultType="int">
+        select  count(1) from cms_material
+        where material_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and use_state=1
+    </select>
+</mapper>

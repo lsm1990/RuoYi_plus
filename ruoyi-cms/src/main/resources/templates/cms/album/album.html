@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('素材专辑列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>相册名称：</p>
+                                <input type="text" name="albumName"/>
+                            </li>
+                            <li>
+                                <p>相册类型：</p>
+                                <select name="albumType" th:with="type=${@dict.getType('album_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <p>审核状态：</p>
+                                <select name="auditState" th:with="type=${@dict.getType('audit_state')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="cms:album:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="cms:album:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="cms:album:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('cms:album:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('cms:album:remove')}]];
+        var addMaterialFlag = [[${@permission.hasPermi('cms:album:addMaterial')}]];
+
+        var albumTypeDatas = [[${@dict.getType('album_type')}]];
+        var auditStateDatas = [[${@dict.getType('audit_state')}]];
+        var prefix = ctx + "cms/album";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "素材专辑",
+                columns: [{
+                    checkbox: true
+                },
+                {field : 'albumId',title : '相册ID',visible: false},
+                {field : 'albumName',title : '相册名称'},
+                {field : 'code',title : '编码'},
+                {field : 'albumType',title : '相册类型',formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(albumTypeDatas, value);
+                    }
+                },
+                {field : 'width',title : '宽度'},
+                {field : 'height',title : '高度'},
+                {field : 'description',title : '描述',visible: false},
+                {field : 'auditState',title : '审核状态',formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(auditStateDatas, value);
+                    }
+                },
+                {title: '操作', align: 'center', formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.albumId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-info btn-xs  ' + addMaterialFlag + '" href="javascript:void(0)" onclick="toAddMaterial(\'' + row.albumId + '\')"><i class="fa fa-user"></i>添加图片</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.albumId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        /* 分配素材-跳转页面 */
+        function toAddMaterial(id) {
+            var url = prefix + '/toAddMaterial/' + id;
+            $.modal.openTab("分配素材", url);
+        }
+
+    </script>
+</body>
+</html>

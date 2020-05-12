@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+    <meta name="description" th:content="${@config.getKey('blog.index.description')}">
+    <title th:text="${@config.getKey('blog.index.title')}"></title>
+    <meta name="baidu-site-verification" content="" />
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.base.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.head.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.group.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.layout.css}"/>
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+    <script th:src="@{/blog/avatar/js/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/layer/layer.js}"></script>
+    <script th:src="@{/blog/avatar/js/baseMotheds.js}"></script>
+</head>
+<body class="bgf6">
+<!-- header -->
+<div id="headGroup">
+    <div th:replace="blog/theme/avatar/header"></div>
+</div>
+
+<div class="userHeadGrid layoutHide" id="headTitleGroup">
+    <div class="planetGroup w1200">
+        <h1 class="title" th:text="${linkType.linkTypeName}"></h1>
+        <p class="detail" th:text="${linkType.description}"></p>
+        <i class="planet a1 animateBalloon2"></i><i class="planet a2 animateBalloon4"></i><i class="planet a3 animateBalloon"></i><i class="planet a4 animateBalloon3"></i>
+    </div>
+</div>
+
+<!-- fullTabs -->
+
+<div class="fullTabs layoutHide" id="headFullTabs">
+    <div class="menuBox">
+            <span class="item">
+                <a th:href="@{/blog/nav}">全部</a>
+            </span>
+        <span class="item" th:each="item:${linkTypeList}" >
+                 <a th:href="@{'/blog/nav/'+${item.linkType}+'?pageSize=9'}" th:classappend="${item.linkType==linkType.linkType}? 'current'" th:text="${item.linkTypeName}"></a>
+             </span>
+    </div>
+
+</div>
+
+
+<!-- article -->
+<div class="baseGroup w1200 layoutAuto" id="channelGroup">
+
+    <div class="mt20">
+        <div class="newArticleGrid link web list">
+
+            <div class="itemLi" th:each="item:${linkList}">
+                <a href="{$v[url]}" target="_blank" class="content">
+                    <div class="img" th:attr="style='background:url('+@{${item.logo}}+')  no-repeat; background-size:cover;'"></div>
+                    <h2 th:text="${item.linkName}"></h2>
+                    <p th:text="${item.keywords}"></p>
+                    <div class="btmBox" th:text="${#strings.abbreviate(item.description,95)}">
+                    </div>
+                </a>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+
+        <div id="pageGroup"  th:if="${totalPages>1}">
+            <span class="pageinfo">共<strong>[[${totalPages}]]</strong>页<strong>[[${total}]]</strong>条记录</span>
+            <a th:href="@{'/blog/nav/'+${linkType.linkType}}" class="homepage">首页</a>
+            <a th:if="${not hasPrevious}" href="javascript:;" class="prepage nopage">上页</a>
+            <a th:if="${hasPrevious}" th:href="@{'/blog/nav/'+${linkType.linkType}+'?pageSize=9&pageNum='+${prePage}}"  class="prepage">上页</a>
+            <a  th:each="item:${navNums}" th:href="@{'/blog/nav/'+${linkType.linkType}+'?pageSize=9&pageNum='+${item}}" class="listpage" th:text="${item}" th:classappend="${item+'' ==currentPage+'' ? 'curpage':''}"></a>
+            <a th:if="${hasNext}" th:href="@{'/blog/nav/'+${linkType.linkType}+'?pageSize=9&pageNum='+${nextPage}}"  class="nextpage">下页</a>
+            <a th:if="${not hasNext}"href="javascript:;" class="nextpage nopage">下页</a>
+            <a th:href="@{'/blog/nav/'+${linkType.linkType}+'?pageSize=9&pageNum='+${totalPages}}"  class="endpage">尾页</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- footer -->
+<footer class="bgfa">
+    <div th:replace="blog/theme/avatar/footer"></div>
+</footer>
+<script>
+    /*加载底部前执行。ps：防止闪现
+     控制当页面内容过少时，底部仍在屏幕最下方
+     主体内容最小高度
+     */
+    var topHeight=100;//头部高度
+    topHeight+=95;
+    topHeight+=50;
+    topHeight+=20;
+    var footerHeight=139;//底部高度
+    footerHeight+=50;
+    var contentMinHeight = $(window).height()-topHeight-footerHeight;
+    $("#channelGroup").css("min-height",contentMinHeight)
+    $(window).resize(function(){
+        var contentMinHeight = $(window).height()-topHeight-footerHeight;
+        $("#channelGroup").css("min-height",contentMinHeight)
+    })
+</script>
+</body>
+</html>

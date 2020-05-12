@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('素材分配')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+	<div class="row">
+		<div class="col-sm-12 search-collapse">
+			<form id="role-form">
+				<input type="hidden" id="albumId" name="albumId" th:value="${albumId}">
+				<div class="select-list">
+					<ul>
+						<li>
+							素材名称：<input type="text" name="materialName"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table"></table>
+		</div>
+	</div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+	var imageReg = /.+\.(gif|jpg|jpeg|png|webp|bmp)/i;
+	var auditStateDatas = [[${@dict.getType('audit_state')}]];
+	var useStateDatas = [[${@dict.getType('use_state')}]];
+	var materialTypeDatas = [[${@dict.getType('material_type')}]];
+
+	var prefix = ctx + "cms/album/";
+
+	$(function() {
+		var options = {
+			url: prefix + "/unMaterialList",
+			showSearch: false,
+			showRefresh: false,
+			showToggle: false,
+			showColumns: false,
+			clickToSelect: true,
+			rememberSelected: true,
+			queryParams: queryParams,
+			modalName: "素材",
+			columns: [{
+				checkbox: true
+			},
+				{field : 'materialId',title : 'ID',visible: false},
+				{field : 'groupName',title : '素材分组',visible: false},
+				{field : 'materialName',title : '素材名称'},
+				{field : 'materialType',title : '素材类型',formatter: function(value, row, index) {
+						return $.table.selectDictLabel(materialTypeDatas, value);
+					}
+				},
+				{field : '图片',title : '图片',formatter: function(value, row, index) {
+						if(imageReg.test(row.materialName)){
+							var url="";
+							if(ctx=='/'){
+								url=row.savePath;
+							}else{
+								url=ctx+row.savePath;
+							}
+							return $.table.imageView(url);
+						}else{
+							return "-";
+						}
+					}
+				},
+				{field : 'materialSize',title : '素材大小',formatter: function(value, row, index) {
+						return renderFileSize(value);
+					}},
+				{field : 'auditState',title : '审核状态',formatter: function(value, row, index) {
+						return $.table.selectDictLabel(auditStateDatas, value);
+					}
+				},
+				{field : 'auditReason',title : '审核意见',visible: false},
+				{field : 'useState',title : '启用状态',formatter: function(value, row, index) {
+						return $.table.selectDictLabel(useStateDatas, value);
+					}
+				},
+				{field : 'width',title : '宽'},
+				{field : 'height',title : '高'},
+				{field : 'uploadTime',title : '上传日期'},
+				{field : 'remark',title : '备注',visible: false}
+			]
+		};
+		$.table.init(options);
+	});
+
+	function queryParams(params) {
+		var search = $.table.queryParams(params);
+		search.albumId = $("#albumId").val();
+		return search;
+	}
+
+	/* 提交 */
+	function submitHandler() {
+		var rows = $.table.selectFirstColumns();
+		if (rows.length == 0) {
+			$.modal.alertWarning("请至少选择一条记录");
+			return;
+		}
+		var data = { "albumId": $("#albumId").val(), "materialIds": rows.join() };
+		$.operate.save(prefix + "/saveMaterial", data);
+	}
+</script>
+</body>
+</html>

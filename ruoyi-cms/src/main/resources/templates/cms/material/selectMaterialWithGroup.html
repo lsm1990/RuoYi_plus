@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('审核素材')" />
+    <th:block th:include="include :: layout-latest-css" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+
+<div class="ui-layout-west">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa icon-grid"></i> 素材分组
+            </div>
+            <div class="box-tools pull-right">
+                <a type="button" class="btn btn-box-tool" href="#" onclick="openGroup()" title="管理素材分组"><i class="fa fa-edit"></i></a>
+                <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+                <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新"><i class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div class="ui-layout-content">
+            <div id="tree" class="ztree"></div>
+        </div>
+    </div>
+</div>
+
+<div class="ui-layout-center">
+
+    <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li style="display: none;">
+                                <p>素材分组：</p>
+                                <input id="groupId" name="groupId" type="hidden" />
+                                <input id="materialType" name="materialType" type="hidden" value="1" />
+                                <input id="auditState" name="auditState" type="hidden" value="1" />
+                                <input class="form-control" style="width: 125px;" type="text" onclick="selectMaterialGroupTree()" id="groupName" readonly="true" >
+                            </li>
+                            <li>
+                                <p>素材名称：</p>
+                                <input type="text" name="materialName" style="width: 125px;"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+
+<script th:inline="javascript">
+
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function() {
+        queryMaterialGroupTree();
+    });
+    function queryMaterialGroupTree()
+    {
+        var url = ctx + "cms/materialGroup/treeData";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#groupId").val(treeNode.id);
+            $.table.search();
+        }
+    }
+    /* 打开分组管理 */
+    function openGroup() {
+        var url = ctx + "cms/materialGroup";
+        $.modal.openTab("素材分组管理", url);
+    }
+    var imageReg = /.+\.(gif|jpg|jpeg|png|webp|bmp)/i;
+
+    var editFlag = [[${@permission.hasPermi('cms:material:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('cms:material:remove')}]];
+    var materialUseFlag = [[${@permission.hasPermi('cms:material:materialUse')}]];
+
+    var auditStateDatas = [[${@dict.getType('audit_state')}]];
+    var useStateDatas = [[${@dict.getType('use_state')}]];
+    var materialTypeDatas = [[${@dict.getType('material_type')}]];
+    var prefix = ctx + "cms/material";
+
+    $(function() {
+        var panehHidden = false;
+        if ($(this).width() < 769) {
+            panehHidden = true;
+        }
+        $('body').layout({ initClosed: panehHidden, west__size: 185 });
+        queryList();
+        queryMaterialGroupTree();
+
+    });
+    function queryList(){
+        var options = {
+            url: prefix + "/list",
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            clickToSelect: true,
+            rememberSelected: true,
+            modalName: "素材",
+            columns: [{
+                checkbox: true
+            },
+                {field : 'materialId',title : 'ID',visible: false},
+                {field : 'groupName',title : '素材分组',visible: false},
+                {field : 'materialName',title : '素材名称'},
+                {field : 'materialType',title : '素材类型',formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(materialTypeDatas, value);
+                    }
+                },
+                {field : '图片',title : '图片',formatter: function(value, row, index) {
+                        if(imageReg.test(row.materialName)){
+                            var url="";
+                            if(ctx=='/'){
+                                url=row.savePath;
+                            }else{
+                                url=ctx+row.savePath;
+                            }
+                            return $.table.imageView(url);
+                        }else{
+                            return "-";
+                        }
+                    }
+                },
+                {field : 'materialSize',title : '素材大小',formatter: function(value, row, index) {
+                        return renderFileSize(value);
+                    }},
+                {field : 'width',title : '宽'},
+                {field : 'height',title : '高'},
+                {field : 'uploadTime',title : '上传日期'}
+               ]
+        };
+        $.table.init(options);
+    }
+
+    function reset(){
+        $("#groupId").val("");
+        $.form.reset();
+    }
+    var prefixGroup = ctx + "cms/materialGroup";
+    /*素材分组-新增-选择父部门树*/
+    function selectMaterialGroupTree() {
+        var options = {
+            title: '素材分组选择',
+            width: "380",
+            url: prefixGroup + "/selectMaterialGroupTree/" + $("#groupId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero){
+        var body = layer.getChildFrame('body', index);
+        $("#groupId").val(body.find('#treeId').val());
+        $("#groupName").val(body.find('#treeName').val());
+        layer.close(index);
+    }
+
+    var materialId=[[${materialId}]];
+    var materialName=[[${materialName}]];
+    var materialPath=[[${materialPath}]];
+    function submitHandler() {
+        var rows = $.table.selectFirstColumns();
+        if (rows.length !=1) {
+            $.modal.alertWarning("请选择一条记录");
+            return;
+        }
+        var datas=$("#bootstrap-table").bootstrapTable('getSelections');
+        var id=datas[0].materialId;
+        var name=datas[0].materialName;
+        var savePath=datas[0].savePath;
+        var index = parent.layer.getFrameIndex(window.name);
+
+        if($.common.isNotEmpty(materialId)){
+            parent.$("#"+materialId).val(id);
+        }else{
+            parent.$("#materialId").val(id);
+        }
+        if($.common.isNotEmpty(materialName)){
+            parent.$("#"+materialName).val(name);
+        }else{
+            parent.$("#materialName").val(name);
+        }
+        if($.common.isNotEmpty(materialPath)){
+            parent.$("#"+materialPath).val(savePath);
+        }else{
+            parent.$("#materialPath").val(savePath);
+        }
+
+        parent.layer.close(index);
+    }
+</script>
+</body>
+</html>

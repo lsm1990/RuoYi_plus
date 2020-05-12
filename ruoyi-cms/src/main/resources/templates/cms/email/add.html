@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增邮件')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-email-add">
+            <!--<div class="form-group">
+                <label class="col-sm-3 control-label">邮件类型：</label>
+                <div class="col-sm-8">
+                    <input type="hidden" name="emailType" value="0">
+                </div>
+            </div>-->
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">接收者邮箱：</label>
+                <div class="col-sm-8">
+                    <input name="toEmail" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">主题：</label>
+                <div class="col-sm-8">
+                    <input name="subject" class="form-control" type="text" required>
+                </div>
+            </div>
+
+            <!--<div class="form-group">
+                <label class="col-sm-3 control-label">是否发送：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('send_flag')}">
+                        <input type="radio" th:id="${'sendFlag_' + dict.dictCode}" name="sendFlag" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${'sendFlag_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>-->
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">定时发送：</label>
+                <div class="col-sm-8">
+                    <label class="toggle-switch switch-solid">
+                        <input type="checkbox" id="sendType" name="sendType" >
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" id="div_sendType_extend" style="display: none;">
+                <label class="col-sm-3 control-label">定时时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="planTime" class="form-control" placeholder="yyyy-MM-dd HH:mm:ss" type="text">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">内容：</label>
+                <div class="col-sm-8">
+                   <script id="editor" name="content"  type="text/plain" style="width:100%;height:350px;"></script>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-offset-3 col-sm-8">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+                    <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: ueditor" />
+    <th:block th:include="include :: datetimepicker-js" />
+
+
+    <script type="text/javascript">
+        //实例化编辑器
+        //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+        var ue = UE.getEditor('editor');
+        function getContent() {
+            return UE.getEditor('editor').getContent();
+        }
+
+        function getContentTxt() {
+            return UE.getEditor('editor').getContentTxt();
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        var prefix = ctx + "cms/email"
+        $("#form-email-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+
+                var c = getContentTxt();
+                if (c == '' || c.length == 0) {
+                    Fast.msg_error("请输入内容！");
+                    return;
+                }
+                var content=getContent();
+                var datas=$('#form-email-add').serialize();
+                //var sendType = $("input[id='sendType']").is(':checked') == true ? 1 : 0;
+                $.operate.saveTab(prefix + "/add", datas);
+            }
+        }
+
+        $("input[name='planTime']").datetimepicker();
+
+        $(function(){
+
+            $("#sendType").on("change",function(){
+                var v=$(this).prop("checked");
+                if(v){
+                    $("#div_sendType_extend").show();
+                }else{
+                    $("#div_sendType_extend").hide();
+                }
+            });
+
+
+        })
+    </script>
+</body>
+</html>

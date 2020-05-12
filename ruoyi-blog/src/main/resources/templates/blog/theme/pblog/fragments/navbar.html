@@ -1,0 +1,83 @@
+<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+<div th:fragment="top"  class="top-box">
+    <div class="pb-container">
+        <span class="">
+            欢迎访问智博客，这是一个记录世界的平台！
+        </span>
+    </div>
+</div>
+<nav id ="navbar" th:fragment="navbar" class="navbar navbar-default ">
+    <div class="pb-container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="sr-only">
+								导航
+							</span>
+                <span class="icon-bar">
+							</span>
+                <span class="icon-bar">
+							</span>
+                <span class="icon-bar">
+							</span>
+            </button>
+            <a class="logo-a" href="/">
+                <img th:src="@{/blog/pblog/img/pt_blog_logo.png}" alt="logo" />
+            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right" aria-expanded="false">
+            <ul class="nav navbar-nav">
+                <li th:class="${categoryId=='index' ? 'active' : ''} ">
+                    <a th:href="@{/}">
+                        首页
+                    </a>
+                </li>
+                <li th:each="category:${@cms.selectNavCategories()}" th:class="${category.categoryId +'' ==categoryId ? 'active':(#lists.isEmpty(category.nodes)?'':'dropdown')}">
+                    <a th:if="${category.parentId==null||category.parentId==0}" th:href="@{${not #lists.isEmpty(category.nodes)? '#': ('/blog/category/' + category.categoryId)}}" th:class="${#lists.isEmpty(category.nodes)?'':'dropdown-toggle'}" th:data-toggle="${#lists.isEmpty(category.nodes)?'':'dropdown'}">
+                        <span th:text="${category.categoryName}"></span>
+                        <b th:if="${not #lists.isEmpty(category.nodes)}" class="caret"></b>
+                    </a>
+                    <ul th:if="${not #lists.isEmpty(category.nodes)}" class="dropdown-menu">
+                        <li th:each="node:${category.nodes}"><a th:href="@{${'/blog/category/' + node.categoryId}}" th:text="${node.categoryName}"></a></li>
+                    </ul>
+
+                </li>
+                <li class="">
+                    <a th:href="@{/blog/siteMsg}" th:class="${categoryId=='siteMsg' ? 'active' : ''} ">
+                        留言板
+                    </a>
+                </li>
+                <li class="">
+                    <a th:href="@{/admin}" target="_blank" >
+                        登陆后台
+                    </a>
+                </li>
+                <li class="">
+                    <a  onclick="switchBlogTheme()" style="cursor: pointer;" target="_blank"  >
+                        切换模板
+                    </a>
+                </li>
+                <!--<li>
+                    <a href="#">
+                        <i  class="fa fa-search search-btn"></i>
+                    </a>
+                </li>-->
+            </ul>
+
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        /* 切换主题 */
+        function switchBlogTheme() {
+            $.modal.alertWarning("该功能移到了后台管理中!请到后台切换!");
+            return;
+            layer.open({
+                type : 2,
+                shadeClose : true,
+                title : "切换主题",
+                area : ["1428px", "470px"],
+                content : [ctx + "blog/blogTheme?pageSize=3", 'no']
+            })
+        }
+    </script>
+</nav>

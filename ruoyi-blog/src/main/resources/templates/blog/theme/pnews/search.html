@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+	<meta name="description" th:content="${@config.getKey('blog.index.description')}">
+	<title th:text="${@config.getKey('blog.index.title')}"></title>
+	<meta name="baidu-site-verification" content="dAEtGwEyN9" />
+
+	<link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.base.min.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.head.min.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.web.3.0.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pnews/plugin/iconfont/iconfont.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pnews/plugin/swiper4/swiper-4.1.0.min.css}"/>
+
+	<script th:src="@{/blog/pnews/js/jquery-2.1.4.min.js}"></script>
+	<script th:src="@{/blog/pnews/js/jquery.lazyload.min.js}"></script>
+	<script th:src="@{/blog/pnews/js/baseMotheds.js}"></script>
+	<script th:src="@{/blog/pnews/plugin/swiper4/swiper-4.1.0.min.js}"></script>
+</head>
+<body>
+<div th:replace="blog/theme/pnews/header"></div>
+<!-- 热门标签 -->
+<div class="fullTabs index" id="headFullTabs">
+	<div class="menuBox">
+		<span  th:each="item,temp:${@cms.selectFullTabs()}" >
+			<a th:class="${item.tagId +'' ==tagId ? 'current':''}"  th:href="@{${'/blog/tag/'+item.tagId}+'?pageSize=6'}" th:text="${item.tagName}" ></a>
+		</span>
+	</div>
+</div>
+
+<!-- itemGrid for hot -->
+<div class="baseGroup w1240 mb20 mt70">
+	<div class="itemGroup">
+		<!--广告-->
+		<!--<div class="itemBox mb20" style="padding:0">
+            <div class="adGrid homeMid" style="margin:0; height:100px"><a href="http://www.pt-cms.com?form=duoguyu.com" target="_blank" title="©源自优秀的轻量级开源管理系统pt-cms"><img src="http://www.duoguyu.com/uploads/201803/21/180321100556732.jpg"></a></div>
+        </div>-->
+
+		<div class="itemGroup">
+			<!-- leftGrid -->
+			<div class="leftGrid w920">
+				<!-- itemBox 列表内容 -->
+				<div class="itemBox mb20" style="padding:0;">
+					<div class="headGrid" style="padding:10px 22px 0;">
+						<h3 style="border-bottom:0;">“<b th:text="${content}"></b>”<span class="ml5">找到[[${total}]]个结果</span></h3>
+					</div>
+					<!-- listMoreGroup -->
+					<div class="listMoreGroup">
+						<div class="itemGrid">
+							<ul>
+								<li th:each="item,temp:${articleList}" >
+									<div class="article_box">
+										<a th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"  target="_blank">
+											<div class="tophead h125 hoverImg">
+												<img class="lazy" width="294" height="160" th:src="@{${item.coverImage}}">
+											</div>
+											<article class="h150">
+												<h3 th:text="${item.title}" ></h3>
+												<p class="description cf999" th:text="${item.description}" ></p>
+												<p class="mt15"><span class="cf_green f12">阅读全文 ></span></p>
+											</article>
+										</a>
+									</div>
+								</li>
+
+								<div class="clearfix"></div>
+							</ul>
+							<div class="line"></div>
+						</div>
+
+						<div th:if="${#lists.isEmpty(articleList)}"  class="cy-my-page" style="height: 100%;width: 100%;">
+							<ul class="cy-my-comment-list">
+								<div class="empty-hold-place">
+									<div class="pet-pic"></div>
+									<div class="empty-txt comment-empty-txt">没有查询到结果!</div>
+									<div class="power-by-cy-txt">&nbsp;&nbsp;Powdered By pt-cms&nbsp;&nbsp;</div>
+								</div>
+							</ul>
+						</div>
+
+						<div class="itemBox mb20" style="padding:0;margin: 0 -20px;">
+							<div class="adGrid homeMid" style="margin:0;"><a th:href="${@config.getKey('site.url')}" target="_blank" title="©源自优秀的轻量级开源管理系统pt-cms"><img th:src="@{/blog/pnews/images/ad-pt-cms.jpg}"></a></div>
+						</div>
+					</div>
+					<!-- / listMoreGroup -->
+				</div>
+
+
+				<div id="pageGroup">
+					<span class="pageinfo">共<strong>[[${totalPages}]]</strong>页<strong>[[${total}]]</strong>条记录</span>
+					<a th:href="@{'/blog/search?content='+${content}+'&pageSize=6'}" class="homepage">首页</a>
+					<a th:if="${hasPrevious}" th:href="@{'/blog/search?content='+${content}+'&pageNum='+${prePage}+'&pageSize=6'}"  class="prepage">上页</a>
+					<a  th:each="item:${navNums}" class="listpage"  th:href="@{'/blog/search?content='+${content}+'&pageNum='+${item}+'&pageSize=6'}"  th:text="${item}" th:classappend="${item+'' ==currentPage+'' ? 'curpage':''}"></a>
+					<a th:if="${hasNext}" th:href="@{'/blog/search?content='+${content}+'?pageNum='+${nextPage}+'&pageSize=6'}"  class="nextpage">下页</a>
+					<a th:href="@{'/blog/search?content='+${content}+'&pageNum='+${totalPages}+'&pageSize=6'}"  class="endpage">尾页</a>
+				</div>
+				<!-- / itemBox 列表内容 -->
+			</div>
+
+
+			<!-- rightGrid -->
+			<div class="rightGrid">
+				<!-- 相关推荐 -->
+				<div class="itemBox mb20">
+					<div class="headGrid">
+						<h3><b>热门</b></h3>
+					</div>
+					<div class="tabInfoBox detail">
+
+						<div class="aside"  th:each="item,temp:${@cms.hotList(6)}" >
+							<a  th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"  target="_blank">
+								<h3 th:text="${item.title}" ></h3>
+								<div class="desc mb15" th:text="${item.description}" ></div>
+							</a>
+						</div>
+
+					</div>
+					<!-- adGrid 广告位 -->
+					<div class="adGrid">
+						<a href="#" target="_blank" title="葡萄内容管理系统"><img th:src="@{/blog/pnews/images/ad_pt_right.png}"></a>
+					</div>
+					<!-- / adGrid 广告位 -->
+				</div>
+				<!-- / 相关推荐 -->
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+<div th:replace="blog/theme/pnews/footer"></div>
+
+<script>
+    /*加载底部前执行。ps：防止闪现
+     控制当页面内容过少时，底部仍在屏幕最下方
+     主体内容最小高度
+     */
+    var topHeight=126;//头部高度
+    var footerHeight=221;//底部高度
+    var contentMinHeight = $(window).height()-topHeight-footerHeight;
+    $(".rightGrid").css("min-height",contentMinHeight)
+    $(window).resize(function(){
+        var contentMinHeight = $(window).height()-topHeight-footerHeight;
+        $(".rightGrid").css("min-height",contentMinHeight)
+    })
+</script>
+</body>
+</html>

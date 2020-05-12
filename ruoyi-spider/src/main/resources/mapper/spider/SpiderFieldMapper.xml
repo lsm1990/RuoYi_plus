@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.spider.mapper.SpiderFieldMapper">
+    
+    <resultMap type="SpiderField" id="SpiderFieldResult">
+        <result property="fieldId"    column="field_id"    />
+        <result property="configId"    column="config_id"    />
+        <result property="field"    column="field"    />
+        <result property="fieldName"    column="field_name"    />
+        <result property="extractType"    column="extract_type"    />
+        <result property="extractBy"    column="extract_by"    />
+        <result property="constantValue"    column="constant_value"    />
+        <result property="extractIndex"    column="extract_index"    />
+        <result property="processRuleId"    column="process_rule_id"    />
+        <result property="extractAttrFlag"    column="extract_attr_flag"    />
+        <result property="extractAttr"    column="extract_attr"    />
+    </resultMap>
+
+    <sql id="selectSpiderFieldVo">
+        select field_id, config_id, field, field_name, extract_type, extract_by, constant_value, extract_index, process_rule_id, extract_attr_flag, extract_attr from spider_field
+    </sql>
+
+    <select id="selectSpiderFieldList" parameterType="SpiderField" resultMap="SpiderFieldResult">
+        <include refid="selectSpiderFieldVo"/>
+        <where>  
+            <if test="configId != null "> and config_id = #{configId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSpiderFieldById" parameterType="Long" resultMap="SpiderFieldResult">
+        <include refid="selectSpiderFieldVo"/>
+        where field_id = #{fieldId}
+    </select>
+        
+    <insert id="insertSpiderField" parameterType="SpiderField" useGeneratedKeys="true" keyProperty="fieldId">
+        insert into spider_field
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configId != null ">config_id,</if>
+            <if test="field != null  and field != ''">field,</if>
+            <if test="fieldName != null  and fieldName != ''">field_name,</if>
+            <if test="extractType != null  and extractType != ''">extract_type,</if>
+            <if test="extractBy != null  and extractBy != ''">extract_by,</if>
+            <if test="constantValue != null  and constantValue != ''">constant_value,</if>
+            <if test="extractIndex != null  and extractIndex != ''">extract_index,</if>
+            <if test="processRuleId != null  and processRuleId != ''">process_rule_id,</if>
+            <if test="extractAttrFlag != null  and extractAttrFlag != ''">extract_attr_flag,</if>
+            <if test="extractAttr != null  and extractAttr != ''">extract_attr,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="configId != null ">#{configId},</if>
+            <if test="field != null  and field != ''">#{field},</if>
+            <if test="fieldName != null  and fieldName != ''">#{fieldName},</if>
+            <if test="extractType != null  and extractType != ''">#{extractType},</if>
+            <if test="extractBy != null  and extractBy != ''">#{extractBy},</if>
+            <if test="constantValue != null  and constantValue != ''">#{constantValue},</if>
+            <if test="extractIndex != null  and extractIndex != ''">#{extractIndex},</if>
+            <if test="processRuleId != null  and processRuleId != ''">#{processRuleId},</if>
+            <if test="extractAttrFlag != null  and extractAttrFlag != ''">#{extractAttrFlag},</if>
+            <if test="extractAttr != null  and extractAttr != ''">#{extractAttr},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSpiderField" parameterType="SpiderField">
+        update spider_field
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configId != null ">config_id = #{configId},</if>
+            <if test="field != null  and field != ''">field = #{field},</if>
+            <if test="fieldName != null  and fieldName != ''">field_name = #{fieldName},</if>
+            <if test="extractType != null  and extractType != ''">extract_type = #{extractType},</if>
+            <if test="extractBy != null  and extractBy != ''">extract_by = #{extractBy},</if>
+            <if test="constantValue != null  and constantValue != ''">constant_value = #{constantValue},</if>
+            <if test="extractIndex != null  and extractIndex != ''">extract_index = #{extractIndex},</if>
+            <if test="processRuleId != null  and processRuleId != ''">process_rule_id = #{processRuleId},</if>
+            <if test="extractAttrFlag != null  and extractAttrFlag != ''">extract_attr_flag = #{extractAttrFlag},</if>
+            <if test="extractAttr != null  and extractAttr != ''">extract_attr = #{extractAttr},</if>
+        </trim>
+        where field_id = #{fieldId}
+    </update>
+
+    <delete id="deleteSpiderFieldById" parameterType="Long">
+        delete from spider_field where field_id = #{fieldId}
+    </delete>
+
+    <delete id="deleteSpiderFieldByIds" parameterType="String">
+        delete from spider_field where field_id in 
+        <foreach item="fieldId" collection="array" open="(" separator="," close=")">
+            #{fieldId}
+        </foreach>
+    </delete>
+    
+</mapper>

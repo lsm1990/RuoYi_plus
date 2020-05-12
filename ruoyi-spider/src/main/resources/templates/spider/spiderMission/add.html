@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增爬虫任务')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-spiderMission-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">任务名称：</label>
+                <div class="col-sm-8">
+                    <input name="missionName" class="form-control" required type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">爬虫配置：</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input id="spiderConfigId" name="spiderConfigId" class="form-control" required type="hidden">
+                        <input id="spiderConfigName" class="form-control valid" type="text" onclick="selectSpiderConfig()"   readonly="true"  aria-invalid="false">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">入口地址：</label>
+                <div class="col-sm-8">
+                    <textarea name="entryUrls"  rows="8" class="form-control" ></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Cookie：</label>
+                <div class="col-sm-8">
+                    <textarea name="cookieStr"  rows="8" class="form-control" ></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Header：</label>
+                <div class="col-sm-8">
+                    <textarea name="headerStr"  rows="8" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">退出方式:</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('spider_exit_way')}">
+                        <input type="radio" th:id="${'exitWay_' + dict.dictCode}" name="exitWay" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${'exitWay_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="div_value" style="display: none;">
+                <label class="col-sm-3 control-label">退出值：</label>
+                <div class="col-sm-8">
+                    <input id="exitWayCount" name="exitWayCount" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "spider/spiderMission"
+        $("#form-spiderMission-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-spiderMission-add').serialize());
+            }
+        }
+        $(function(){
+            $('[name=exitWay]').on('ifChecked', function(event){
+                showHideValue();
+            });
+        })
+
+        function showHideValue(){
+            var v=$("[name=exitWay]:checked").val();
+            if(v=="DEFAULT"){
+                $("#div_value").hide();
+                $("#exitWayCount").removeAttr("required");
+            }else{
+                $("#div_value").show();
+                $("#exitWayCount").attr("required","required");
+            }
+        }
+        function selectSpiderConfig() {
+            var url=ctx+"spider/spiderMission/openSelectSpiderConfig";
+            $.modal.open("爬虫配置选择",url);
+        }
+    </script>
+</body>
+</html>

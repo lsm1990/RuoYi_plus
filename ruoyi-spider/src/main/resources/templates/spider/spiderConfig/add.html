@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增爬虫配置')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-spiderConfig-add">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">爬虫编码&nbsp;<font color="red">*</font>：</label>
+                <div class="col-sm-8">
+                    <input name="spiderCode" class="form-control" type="text" required>
+                </div>
+            </div>
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">爬虫名称&nbsp;<font color="red">*</font>：</label>
+                <div class="col-sm-8">
+                    <input name="spiderName" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">入口地址：</label>
+                <div class="col-sm-8">
+                    <textarea name="entryUrls" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">目标URL正则&nbsp;<font color="red">*</font>：</label>
+                <div class="col-sm-8">
+                    <input name="targetRegex" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">级联发现URL：</label>
+                <div class="col-sm-8">
+                    <input id="cascade" name="cascade" class="form-control" value="0" type="hidden">
+                    <label class="toggle-switch switch-solid">
+                        <input type="checkbox" id="checkbox_cascade">
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+
+           <!-- <div class="form-group">
+                <label class="col-sm-3 control-label">存储的表名：</label>
+                <div class="col-sm-8">
+                    <input name="tableName" class="form-control" type="text">
+                </div>
+            </div>-->
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">网站根域名&nbsp;<font color="red">*</font>：</label>
+                <div class="col-sm-8">
+                    <input name="domain" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">字符集：</label>
+                <div class="col-sm-8">
+                    <input name="charset" class="form-control" type="text" value="utf8">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">睡眠时间(ms)：</label>
+                <div class="col-sm-8">
+                    <input name="sleepTime" class="form-control" type="text" value="1000">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">重试次数：</label>
+                <div class="col-sm-8">
+                    <input name="retryTimes" class="form-control" type="text" value="2">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">线程数量：</label>
+                <div class="col-sm-8">
+                    <input name="threadCount" class="form-control" type="text" value="1">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">使用代理：</label>
+                <div class="col-sm-8">
+                    <input id="useProxy" name="useProxy" class="form-control" type="hidden">
+                    <label class="toggle-switch switch-solid">
+                        <input type="checkbox" id="checkbox_useProxy" name="checkbox_useProxy" >
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">打印日志：</label>
+                <div class="col-sm-8">
+                    <input id="showLog" name="showLog" class="form-control" type="hidden" value="1">
+                    <label class="toggle-switch switch-solid">
+                        <input type="checkbox" id="checkbox_showLog" name="checkbox_showLog" checked >
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "spider/spiderConfig"
+        $("#form-spiderConfig-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-spiderConfig-add').serialize());
+            }
+        }
+
+        $(function(){
+            $("#checkbox_useProxy").on("change",function(){
+                var v=$(this).prop("checked");
+                if(v){
+                    $("#useProxy").val("1");
+                }else{
+                    $("#useProxy").val("0");
+                }
+            });
+            $("#checkbox_cascade").on("change",function(){
+                var v=$(this).prop("checked");
+                if(v){
+                    $("#cascade").val("1");
+                }else{
+                    $("#cascade").val("0");
+                }
+            });
+
+            $("#checkbox_showLog").on("change",function(){
+                var v=$(this).prop("checked");
+                if(v){
+                    $("#showLog").val("1");
+                }else{
+                    $("#showLog").val("0");
+                }
+            });
+
+        })
+    </script>
+</body>
+</html>

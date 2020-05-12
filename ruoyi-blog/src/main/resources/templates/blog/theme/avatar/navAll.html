@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+    <meta name="description" th:content="${@config.getKey('blog.index.description')}">
+    <title th:text="${@config.getKey('blog.index.title')}"></title>
+    <meta name="baidu-site-verification" content="" />
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.base.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.head.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.group.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.layout.css}"/>
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+    <script th:src="@{/blog/avatar/js/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/layer/layer.js}"></script>
+    <script th:src="@{/blog/avatar/js/baseMotheds.js}"></script>
+</head>
+  <body class="bgf6">
+     <!-- header -->
+     <div id="headGroup">
+         <div th:replace="blog/theme/avatar/header"></div>
+     </div>
+    
+     <div class="userHeadGrid layoutHide" id="headTitleGroup">
+        <div class="planetGroup w1200 layoutAuto">
+            <h1 class="title">导航</h1>
+            <p class="detail">精选国内外优秀 UI/UX 网站、灵感创意网站、素材资源网站、垂直资讯网站、小众网站。</p>
+            <i class="planet a1 animateBalloon2"></i><i class="planet a2 animateBalloon4"></i><i class="planet a3 animateBalloon"></i><i class="planet a4 animateBalloon3"></i>
+        </div>
+     </div>
+    
+     <!-- fullTabs -->
+     <div class="fullTabs layoutHide" id="headFullTabs">
+         <div class="menuBox layoutAuto">
+            <span class="item">
+                <a th:href="@{/blog/nav}" class="current">全部</a>
+            </span>
+
+             <span class="item" th:each="item:${linkTypeList}" >
+                 <a th:href="@{'/blog/nav/'+${item.linkType}}" th:text="${item.linkTypeName}"></a>
+             </span>
+
+         </div>
+     </div>
+     
+     <!-- 模块列表 -->
+     <div class="baseGroup w1200 layoutAuto" id="channelGroup">
+         <article>
+             <div class="websiteGrid">
+                 
+
+                 <div class="labelItem" th:each="item:${linkTypeList}">
+                     <div class="displayBox">
+                         <a th:href="@{'/blog/nav/'+${item.linkType}}" th:title="${item.linkTypeName}" target="_blank">
+                         <div class="banner" th:attr="style='background:url('+@{${item.coverImage}}+') no-repeat; background-size:cover;'"></div>
+                         </a>
+                         <h2 class="title">
+                             [[${item.linkTypeName}]]
+                             <a th:href="@{'/blog/nav/'+${item.linkType}}" th:title="${item.linkTypeName}"  class="more" target="_blank">查看更多></a>
+                             <div class="clearfix"></div>
+                         </h2>
+                         <!-- hits -->
+
+                         <div class="itemLi" th:each="link:${item.children}">
+                             <i class="img" th:attr="style='background:url('+@{${link.logo}}+')  no-repeat; background-size:cover;'"></i>
+                             <h3 class="top" th:text="${link.linkName}"></h3>
+                             <p th:text="${link.keywords}"></p>
+                             <a th:href="@{'/blog/nav/link/'+${link.linkId}}" th:title="${link.linkName}"   class="moreBtn" target="_blank">查看</a>
+                         </div>
+
+                         <a href="#" title="申请收录" class="btmMore layoutHide" target="_blank">+申请收录</a>
+                     </div>
+                 </div>
+
+                 
+             </div>
+         </article>
+     </div>
+	
+    <!-- footer -->
+    <footer class="bgfa">
+        <div th:replace="blog/theme/avatar/footer"></div>
+    </footer>
+      
+  </body>
+</html>

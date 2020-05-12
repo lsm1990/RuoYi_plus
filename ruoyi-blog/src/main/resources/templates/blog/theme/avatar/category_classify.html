@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="no-js">
+<head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	  <title>{$seo_title}</title>
+	  <meta name="keywords" content="{$keywords}" />
+	  <meta name="description" content="{$description}" />
+    <link href="{STATIC_URL}avatar/css/dgy.base.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.head.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.group.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.layout.css" rel="stylesheet" type="text/css" />
+	  <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+      <script type="text/javascript" src="{STATIC_URL}avatar/js/jquery-2.1.4.min.js"></script>
+      <script type="text/javascript" src="{STATIC_URL}avatar/js/baseMotheds.js"></script>
+  </head>
+  <body class="bgf6">
+     <!-- header -->
+     <div id="headGroup">
+     {m:include "index","header"}
+     </div>
+    
+     <div class="userHeadGrid layoutHide" id="headTitleGroup">
+        <div class="planetGroup w1100 layoutAuto">
+            <h1 class="title">{get_catname($catid)}</h1>
+            <p class="detail">{$subtitle}</p>
+            <i class="planet a1 animateBalloon2"></i><i class="planet a2 animateBalloon4"></i><i class="planet a3 animateBalloon"></i><i class="planet a4 animateBalloon3"></i>
+        </div>
+     </div>
+    
+     <!-- fullTabs -->
+     <div class="fullTabs layoutHide" id="headFullTabs">
+         <div class="menuBox layoutAuto">
+            <span class="item">
+                <a href="{get_category($catid, 'pclink')}" class="current">全部</a>
+            </span>
+            {php $data = get_childcat($catid);}
+			{loop $data $k=>$v}
+				<span class="item">
+                    <a href="{$v[pclink]}">{$v[catname]}</a>
+                </span>
+			{/loop}
+         </div>
+     </div>
+     
+     <!-- 模块列表 -->
+     <div class="baseGroup w1100 layoutAuto" id="channelGroup">
+         <article>
+             <div class="websiteGrid">
+                 
+                 {php $data = get_childcat($catid);}
+            	 {loop $data $k=>$v}
+                 <div class="labelItem">
+                     <div class="displayBox">
+                         <a href="{$v[pclink]}" title="{$v[catname]}" target="_blank">
+                         <div class="banner" style="background:url('{$v[catimg]}') no-repeat; background-size:cover;"></div>
+                         </a>
+                         <h2 class="title">
+                             {$v[catname]}
+                             <a href="{$v[pclink]}" title="{$v[catname]}" class="more" target="_blank">查看更多></a>
+                             <div class="clearfix"></div>
+                         </h2>
+                         <!-- hits -->
+                		 {m:lists field="title,inputtime,url,thumb,click,webTag" catid="$v['catid']" limit="3"}
+                		 {loop $data $v}
+                         <div class="itemLi">
+                             <i class="img" style="background:url('{$v[thumb]}') no-repeat; background-size:cover;"></i>
+                             <h3 class="top">{$v[title]}</h3>
+                             <p>{$v[webTag]}</p>
+                             <a href="{$v[url]}" title="{$v[title]}" class="moreBtn" target="_blank">查看</a>
+                         </div>
+        		         {/loop}
+                         <a href="#" title="申请收录" class="btmMore layoutHide" target="_blank">+申请收录</a>
+                     </div>
+                 </div>
+        	     {/loop}
+                 
+             </div>
+         </article>
+     </div>
+	
+    <!-- footer -->
+    <footer class="bgfa">
+    {m:include "index","footer"}
+    </footer>
+      
+  </body>
+</html>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.LinkMapper">
+    
+    <resultMap type="Link" id="LinkResult">
+        <result property="linkId"    column="link_id"    />
+        <result property="linkType"    column="link_type"    />
+        <result property="linkName"    column="link_name"    />
+        <result property="keywords"    column="keywords"    />
+        <result property="link"    column="link"    />
+        <result property="description"    column="description"    />
+        <result property="logo"    column="logo"    />
+        <result property="auditState"    column="audit_state"    />
+        <result property="detail"    column="detail"    />
+        <result property="sort"    column="sort"    />
+        <result property="upVote"    column="up_vote"    />
+        <result property="commentFlag"    column="comment_flag"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLinkVo">
+        select link_id, link_type, link_name, keywords, link, description, logo, audit_state, detail, sort, up_vote, comment_flag, status from cms_link
+    </sql>
+
+    <select id="selectLinkList" parameterType="Link" resultMap="LinkResult">
+        <include refid="selectLinkVo"/>
+        <where>  
+            <if test="linkType != null  and linkType != ''"> and link_type = #{linkType}</if>
+            <if test="linkName != null  and linkName != ''"> and link_name like concat('%', #{linkName}, '%')</if>
+            <if test="auditState != null "> and audit_state = #{auditState}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLinkById" parameterType="Long" resultMap="LinkResult">
+        <include refid="selectLinkVo"/>
+        where link_id = #{linkId}
+    </select>
+        
+    <insert id="insertLink" parameterType="Link" useGeneratedKeys="true" keyProperty="linkId">
+        insert into cms_link
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="linkType != null  and linkType != ''">link_type,</if>
+            <if test="linkName != null  and linkName != ''">link_name,</if>
+            <if test="keywords != null  and keywords != ''">keywords,</if>
+            <if test="link != null  and link != ''">link,</if>
+            <if test="description != null  and description != ''">description,</if>
+            <if test="logo != null  and logo != ''">logo,</if>
+            <if test="auditState != null ">audit_state,</if>
+            <if test="detail != null  and detail != ''">detail,</if>
+            <if test="sort != null ">sort,</if>
+            <if test="upVote != null ">up_vote,</if>
+            <if test="commentFlag != null ">comment_flag,</if>
+            <if test="status != null ">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="linkType != null  and linkType != ''">#{linkType},</if>
+            <if test="linkName != null  and linkName != ''">#{linkName},</if>
+            <if test="keywords != null  and keywords != ''">#{keywords},</if>
+            <if test="link != null  and link != ''">#{link},</if>
+            <if test="description != null  and description != ''">#{description},</if>
+            <if test="logo != null  and logo != ''">#{logo},</if>
+            <if test="auditState != null ">#{auditState},</if>
+            <if test="detail != null  and detail != ''">#{detail},</if>
+            <if test="sort != null ">#{sort},</if>
+            <if test="upVote != null ">#{upVote},</if>
+            <if test="commentFlag != null ">#{commentFlag},</if>
+            <if test="status != null ">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLink" parameterType="Link">
+        update cms_link
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="linkType != null  and linkType != ''">link_type = #{linkType},</if>
+            <if test="linkName != null  and linkName != ''">link_name = #{linkName},</if>
+            <if test="keywords != null  and keywords != ''">keywords = #{keywords},</if>
+            <if test="link != null  and link != ''">link = #{link},</if>
+            <if test="description != null  and description != ''">description = #{description},</if>
+            <if test="logo != null  and logo != ''">logo = #{logo},</if>
+            <if test="auditState != null ">audit_state = #{auditState},</if>
+            <if test="detail != null  and detail != ''">detail = #{detail},</if>
+            <if test="sort != null ">sort = #{sort},</if>
+            <if test="upVote != null ">up_vote = #{upVote},</if>
+            <if test="commentFlag != null ">comment_flag = #{commentFlag},</if>
+            <if test="status != null ">status = #{status},</if>
+        </trim>
+        where link_id = #{linkId}
+    </update>
+
+    <delete id="deleteLinkById" parameterType="Long">
+        delete from cms_link where link_id = #{linkId}
+    </delete>
+
+    <delete id="deleteLinkByIds" parameterType="String">
+        delete from cms_link where link_id in 
+        <foreach item="linkId" collection="array" open="(" separator="," close=")">
+            #{linkId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+    <meta name="description" th:content="${@config.getKey('blog.index.description')}">
+    <title th:text="${@config.getKey('blog.index.title')}"></title>
+    <meta name="baidu-site-verification" content="" />
+
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.base.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.head.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.group.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.layout.css}"/>
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+    <script th:src="@{/blog/avatar/js/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/layer/layer.js}"></script>
+    <script th:src="@{/blog/avatar/js/baseMotheds.js}"></script>
+</head>
+<body class="">
+<!-- header -->
+<div class="fixedHeadSwitch">
+    <div th:replace="blog/theme/avatar/header"></div>
+</div>
+
+<div class="baseGroup w1200 mt120 layoutAuto">
+    <div class="leftWrap pr10 layoutAuto">
+
+        <div class="commonHeadLabel mt20">
+                    <span class="title mr20">
+                        <a th:href="@{/blog/category}">全部</a>
+                    </span>
+
+            <span th:each="category:${@cms.selectNavCategories()}"  th:if="${category.parentId==null||category.parentId==0}"  class="title mr20">
+                            <a th:class="${category.categoryId +'' ==categoryId ? 'on':''}" th:href="@{${'/blog/category/' + category.categoryId}}" th:text="${category.categoryName}"></a>
+                        </span>
+
+        </div>
+        <div class="indexListGrid">
+
+            <a th:each="item,temp:${articleList}"   th:href="@{${'/blog/article/'+item.id}}"  target="_blank" class="item">
+
+                <div class="content" th:classappend="${not #strings.isEmpty(item.coverImage)}? 'img'">
+                    <div class="catWrap"><div class="catBox"><span class="i">#</span>[[${item.category.categoryName}]]</div></div>
+                    <h2 th:text="${item.title}"></h2>
+                    <p class="detail layoutHide"  th:text="${#strings.abbreviate(item.description,95)}"></p>
+                    <p class="otherInfo">
+                        <span class="mr5"  th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                        <span class="mr5">浏览 [[${item.hit}]]</span>
+                    </p>
+                    <div class="imgBox" th:if="${not #strings.isEmpty(item.coverImage)}">
+                        <img class="img" th:src="@{${item.coverImage}}" th:alt="${item.title}">
+                    </div>
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <div id="pageGroup" th:if="${totalPages>1}">
+            <span class="pageinfo">共<strong>[[${totalPages}]]</strong>页<strong>[[${total}]]</strong>条记录</span>
+            <a th:href="@{'/blog/category'}" class="homepage">首页</a>
+            <a th:if="${not hasPrevious}" href="javascript:;" class="prepage nopage">上页</a>
+            <a th:if="${hasPrevious}" th:href="@{'/blog/category?pageNum='+${prePage}}"  class="prepage">上页</a>
+            <a  th:each="item:${navNums}" th:href="@{'/blog/category?pageNum='+${item}}" class="listpage" th:text="${item}" th:classappend="${item+'' ==currentPage+'' ? 'curpage':''}"></a>
+            <a th:if="${hasNext}" th:href="@{'/blog/category?pageNum='+${nextPage}}"  class="nextpage">下页</a>
+            <a th:if="${not hasNext}"href="javascript:;" class="nextpage nopage">下页</a>
+            <a th:href="@{'/blog/category?pageNum='+${totalPages}}"  class="endpage">尾页</a>
+        </div>
+
+
+    </div>
+    <div class="rightWrap pl10 layoutAuto">
+
+        <div class="commonHeadLabel small">
+            <span class="title">人气推荐</span>
+        </div>
+
+        <div class="indexListGrid aside">
+
+            <a  th:each="item,temp:${@cms.focusList(5)}"  th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"  target="_blank" class="item">
+                <div class="content img">
+                    <h2 th:text="${item.title}"></h2>
+                    <p class="otherInfo">
+                        <span class="mr5" th:text="${item.category.categoryName}"></span>
+                        <span class="mr5">浏览 [[${item.hit}]]</span>
+                    </p>
+                    <div class="imgBox">
+                        <img class="img" th:src="@{${item.coverImage}}" th:alt="${item.title}">
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- 热门标签 -->
+        <div class="commonHeadLabel small mt40">
+            <span class="title">热门标签</span>
+        </div>
+        <div class="indexTagGrid">
+
+            <a th:each="item,temp:${@cms.selectFullTabs()}" th:href="@{${'/blog/tag/'+item.tagId}}" th:text="${item.tagName}" class="item" target="_blank"></a>
+
+            <div class="clearfix"></div>
+        </div>
+
+        <!-- 广告业务 -->
+        <div class="brandGrid" id="brandGrid"><a href="https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=psmzr0yi" target="_blank"><img class="img" src="https://www.duoguyu.com/dist/images/brand/brand-aliyun.jpg"></a></div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+<!-- footer -->
+<footer class="bgfa">
+    <div th:replace="blog/theme/avatar/footer"></div>
+</footer>
+
+</body>
+</html>

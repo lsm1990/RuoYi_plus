@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.third.mapper.AiHisMapper">
+    
+    <resultMap type="AiHis" id="AiHisResult">
+        <result property="id"    column="id"    />
+        <result property="yhid"    column="yhid"    />
+        <result property="yhmc"    column="yhmc"    />
+        <result property="aiType"    column="ai_type"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="result"    column="result"    />
+        <result property="errorMsg"    column="error_msg"    />
+        <result property="jsonResult"    column="json_result"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectAiHisVo">
+        select id, yhid, yhmc, ai_type, type_name, result, error_msg, json_result, create_time from third_ai_his
+    </sql>
+
+    <select id="selectAiHisList" parameterType="AiHis" resultMap="AiHisResult">
+        <include refid="selectAiHisVo"/>
+        <where>  
+            <if test="yhid != null  and yhid != ''"> and yhid = #{yhid}</if>
+            <if test="yhmc != null  and yhmc != ''"> and yhmc = #{yhmc}</if>
+            <if test="aiType != null  and aiType != ''"> and ai_type = #{aiType}</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="errorMsg != null  and errorMsg != ''"> and error_msg = #{errorMsg}</if>
+            <if test="jsonResult != null  and jsonResult != ''"> and json_result = #{jsonResult}</if>
+        </where>
+    </select>
+    
+    <select id="selectAiHisById" parameterType="Long" resultMap="AiHisResult">
+        <include refid="selectAiHisVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAiHis" parameterType="AiHis" useGeneratedKeys="true" keyProperty="id">
+        insert into third_ai_his
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,</if>
+            <if test="yhid != null  and yhid != ''">yhid,</if>
+            <if test="yhmc != null  and yhmc != ''">yhmc,</if>
+            <if test="aiType != null  and aiType != ''">ai_type,</if>
+            <if test="typeName != null  and typeName != ''">type_name,</if>
+            <if test="result != null  and result != ''">result,</if>
+            <if test="errorMsg != null  and errorMsg != ''">error_msg,</if>
+            <if test="jsonResult != null  and jsonResult != ''">json_result,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="yhid != null  and yhid != ''">#{yhid},</if>
+            <if test="yhmc != null  and yhmc != ''">#{yhmc},</if>
+            <if test="aiType != null  and aiType != ''">#{aiType},</if>
+            <if test="typeName != null  and typeName != ''">#{typeName},</if>
+            <if test="result != null  and result != ''">#{result},</if>
+            <if test="errorMsg != null  and errorMsg != ''">#{errorMsg},</if>
+            <if test="jsonResult != null  and jsonResult != ''">#{jsonResult},</if>
+            now()
+         </trim>
+    </insert>
+
+    <update id="updateAiHis" parameterType="AiHis">
+        update third_ai_his
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="yhid != null  and yhid != ''">yhid = #{yhid},</if>
+            <if test="yhmc != null  and yhmc != ''">yhmc = #{yhmc},</if>
+            <if test="aiType != null  and aiType != ''">ai_type = #{aiType},</if>
+            <if test="typeName != null  and typeName != ''">type_name = #{typeName},</if>
+            <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="errorMsg != null  and errorMsg != ''">error_msg = #{errorMsg},</if>
+            <if test="jsonResult != null  and jsonResult != ''">json_result = #{jsonResult},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAiHisById" parameterType="Long">
+        delete from third_ai_his where id = #{id}
+    </delete>
+
+    <delete id="deleteAiHisByIds" parameterType="String">
+        delete from third_ai_his where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,87 @@
+<script th:src="@{/ruoyi/js/ry-ui.js?v=4.1.0}"></script>
+<header class="commonHeadGrid">
+    <div class="headGrid layoutWidth w1200">
+        <a class="logo" th:title="${@config.getKey('blog.index.title')}" th:href="${@config.getKey('site.url')}"><img th:src="@{/blog/pnews/images/pt_blog_logo.png}" th:alt="${@config.getKey('blog.index.title')}"></a>
+        <div class="menuBtnWrapLayout openBtn" id="touchMenuOpen"><i class="iconfont icon-liebiao"></i></div>
+        <div class="menuGroup strong layoutHide">
+        	<span class="item">
+                <a th:href="@{/admin}" target="_blank">登陆后台</a>
+                <span style="display: inline-block;margin-right: 5px;margin-left: 5px;">|</span>
+                <a onclick="switchBlogTheme()" style="cursor: pointer;" target="_blank">切换模板</a>
+    		</span>
+            <!--{if intval(get_cookie('_userid'))==0}
+        	<span class="item ml20">
+                <a href="{U('member/index/login')}" rel="nofollow" target="_blank" class="loginBtn">登录/注册</a>
+    		</span>
+            {else}
+    	    <span class="itemLogin">
+                <i class="iconfont icon-gengduo more"></i>
+                {safe_replace(get_cookie('_username'))}
+                <div class="loginGroup">
+                    <div class="box">
+                        <img src="{get_memberavatar(get_cookie('_userid'))}" class="avatar">
+                        <div class="itemLi">
+                            <a href="{U('member/index/init')}" class="userName" title="会员中心" target="_blank">{safe_replace(get_cookie('_username'))}</a>
+                        </div>
+                        <div class="itemLi exit">
+                            <a href="{U('member/index/logout')}">安全退出</a>
+                        </div>
+                    </div>
+                </div>
+    		</span>
+            {/if}-->
+        </div>
+    </div>
+    <div class="headGrid nav layoutWidth w1200">
+
+        <!-- searchGroup -->
+        <div class="searchGroup layoutHide">
+            <form method="get" th:action="@{/blog/search}" target="_blank" onsubmit="return checkSearch()">
+                <div id="searchtxt">
+                    <input name="content" type="text" placeholder="请输入关键词进行搜索。" id="searchInput" class="searchInput"/>
+                </div>
+                <button id="searchbtn" class="searchBtn" type="submit"><i class="iconfont icon-sousuo"></i></button>
+            </form>
+        </div>
+
+        <div style="float: right;" class="menuLayout" id="menuLayout">
+            <div class="menuBtnWrapLayout closeBtn" id="touchMenuClose"><i class="iconfont icon-cuowu"></i></div>
+            <nav class="menuGroup">
+                <span class="item"><a th:class="${categoryId=='index' ? 'current' : ''} " th:href="@{/}">首页</a></span>
+
+                <span class="item">
+                    <a th:href="@{/blog/category}" th:class="${categoryId=='category'? 'current':''}" >文章分类</a>
+        		</span>
+                <span class="item">
+                    <a th:href="@{/blog/resource/list?pageSize=6}" th:class="${categoryId=='resource'? 'current':''}" >资源</a>
+        		</span>
+                <span class="item">
+                    <a th:href="@{/blog/nav}" th:class="${categoryId=='nav'? 'current':''}" >导航</a>
+        		</span>
+                <span class="item">
+                    <a th:href="@{/blog/siteMsg}" th:class="${categoryId=='siteMsg'? 'current':''}" >留言</a>
+        		</span>
+                <!--<span class="item">
+                    <a href="http://bbs.pt-cms.com/" target="_blank">社区</a>
+                </span>-->
+            </nav>
+        </div>
+
+
+    </div>
+</header>
+<script type="text/javascript">
+    function checkSearch(){
+        var searchInput = $('#searchInput').val();
+        var searchVal = $.trim(searchInput);
+        if(searchVal == ''){
+            layer.msg("哎呀，你好像忘记输入搜索内容了！");
+            return false;
+        }
+        if(searchVal.length < 2){
+            layer.msg("搜索关键字至少需要2个字哟！");
+            return false;
+        }
+        return true;
+    }
+</script>

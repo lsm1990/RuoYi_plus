@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="keywords" th:content="${article.keywords}">
+    <meta name="description" th:content="${article.description}">
+    <title th:text="${article.title}"></title>
+
+    <script th:src="@{/blog/pnews/js/jquery-2.1.4.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.base.min.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.head.min.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.web.3.0.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/pnews/plugin/iconfont/iconfont.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/pnews/plugin/font-icon/icon.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/pnews/plugin/bootstrap/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/pnews/plugin/markdown/simplemde.min.css}">
+    <link rel="stylesheet" th:href="@{/blog/pnews/plugin/markdown/github-markdown.min.css}">
+    <link rel="stylesheet" th:href="@{/blog/pnews/plugin/markdown/highlight.min.css}">
+    <script th:src="@{/blog/pnews/plugin/bootstrap/bootstrap.min.js}"></script>
+    <script th:src="@{/blog/pnews/plugin/markdown/highlight.min.js}"></script>
+    <script th:src="@{/blog/pnews/plugin/markdown/simplemde.min.js}"></script>
+    <script th:src="@{/blog/pnews/plugin/layer/layer.js}"></script>
+    <script th:src="@{/blog/pnews/js/baseMotheds.js}"></script>
+
+
+    <style th:inline="css">
+        body{font:14px/1.5 "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","å¾®è½¯é›…é»‘",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;-webkit-font-smoothing:antialiased;background: #eaeaea;}
+    </style>
+</head>
+<body>
+<div class="headGroup fixed" id="headGroup">
+    <div class="headWrap">
+        <!-- logoWrap -->
+        <div class="logoWrap">
+            <a class="logo" th:title="${@config.getKey('site.name')}" th:href="${@config.getKey('site.url')}"></a>
+        </div>
+        <!-- menuWrap -->
+        <div class="menuWrap">
+            <ul>
+                <li><a th:class="${categoryId=='index' ? 'current' : ''}"  th:href="@{/}"><span>首页</span></a></li>
+
+                <li th:each="category:${@cms.selectNavCategories()}" >
+                    <a th:class="${category.categoryId +'' ==categoryId ? 'current':''}"  th:href="@{${not #lists.isEmpty(category.nodes)? '#': ('/blog/category/' + category.categoryId)}}" ><span th:text="${category.categoryName}"></span></a>
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- userWrap -->
+        <div class="userWrap">
+            <div class="searchWrap" id="searchWrap">
+                <form method="get" th:action="@{/blog/search}" target="_blank">
+                    <input type="text" class="searchInput" name="content"/>
+                    <button id="searchbtn" type="submit" class="searchBtn doBtn"><i class="iconfont icon-search"></i></button>
+                    <div class="searchBtn coverBtn"><i class="iconfont icon-search"></i></div>
+                </form>
+            </div>
+            <!-- loginBox -->
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<div class="fullTabs index" id="headFullTabs">
+    <div class="menuBox">
+        <span  th:each="item,temp:${@cms.selectFullTabs()}" ><a  th:href="@{${'/blog/tag/'+item.tagId}}" th:text="${item.tagName}" target="_blank"></a></span>
+    </div>
+</div>
+
+<!-- itemGrid for hot -->
+<div class="baseGroup mb20 mt70">
+    <div class="itemGroup">
+        <!-- leftGrid -->
+        <div class="leftGrid">
+            <!-- articleMode -->
+            <div class="articleMode ">
+                <div class="articleContent">
+
+                    <!-- articleImg -->
+                    <div class="articleImg">
+                        <div class="textBox">
+                            <h1 th:text="${article.title}"></h1>
+                            <div class="moreInfo"><span th:text="${article.author}"></span><span>-</span><span th:text="${article.createTime}"></span></div>
+                        </div>
+                        <div class="overlay"></div>
+                        <div class="img" th:attr="style='background:url('+@{${article.coverImage}}+') no-repeat center; background-size:cover;'"></div>
+                    </div>
+
+                    <div class="footerInfo top">
+                        <a  th:each="tag:${article.tagList}" class="iconSpan" th:data-id="${tag.tagId}" target="_blank">[[${tag.tagName}]]</a>
+                    </div>
+                    <!--跳转站点-->
+                    <div class="channelSiteInfo">
+                        <a href="javascript:;" th:data-href="${article.extra2}" th:data-site-name="${article.extra1}" title="查看原文" id="channelSite" class="iconChannelSite jumpHref pt"></a>
+                    </div>
+
+                    <div class="articleDetail"  th:utext="${article.content}" >
+                    </div>
+                    <!--阅读全文-->
+                    <div class="readall_box " style="display: none;">
+                        <div class="read_more_mask"></div>
+                        <a class="button" style="top:-25px;position:relative;">阅读全文</a>
+                        <script type="text/javascript">
+                            $(function () {
+                                if ($(".articleDetail").height() >= 1200) {
+                                    $(".articleDetail").attr("style", "height:1200px;overflow-y:hidden;");
+                                    $(".readall_box").show();
+                                }
+                                $(".readall_box a.button").click(function () {
+                                    $(this).parents().find(".articleDetail").attr("style", "");
+                                    $(this).parents(".readall_box").hide();
+                                });
+                            })
+                        </script>
+                    </div>
+
+                    <div class="thumbs-content" style="margin: 20px auto 10px;width: 291px;text-align: center;">
+                        <span class="thumbs-button fa fa-thumbs-up"> 点赞 <span id="loveCount" th:text="${article.upVote}"></span></span>
+                        <span class="reward-button fa fa-money"> 打赏
+						<p class="reward-content">
+							<span class="reward-img"><img src="/blog/pblog/img/weixin.png"><br>微信赞赏</span>
+							<span class="reward-img"><img src="/blog/pblog/img/zhifubao.png"><br>支付宝赞赏</span></p>
+						<span class="reward-bottom"></span>
+						<span class="reward-bottom-top"></span>
+						</span>
+                    </div>
+
+                    <!--文章来源版权信息-->
+                    <div class="copyInfo">
+                        <p class="theEnd"><span>-</span><b>THE END</b><span>-</span></p>
+                        <div class="mt10">
+                            <p>版权声明：本文来自<a th:href="${article.extra2}"   title="查看原文" class="channelSite ">[[${article.extra1}]]</a>，相关版权归原作者及来源网站所有。</p>
+                            <p><a href="javascript:;" th:data-href="${article.extra2}" th:data-site-name="${article.extra1}" title="查看原文" class="channelSite jumpHref">[ 查看原文 ]</a></p>
+                        </div>
+                    </div>
+                    <!-- 猜你喜欢 -->
+                    <!--<div class="itemBox mb20 mt20" style="padding:10px 0;">
+                        <div class="headGrid" style="padding:0;">
+                            <h3><b>猜你喜欢</b></h3>
+                        </div>
+                        <div class="midMenuGroup guess mb20">
+                            <div class="fullImgGrid">
+                                <ul>
+
+                                    <li>
+                                        <a href="{$v[url]}" title="{$v[title]}" target="_blank" class="fullImgLink">
+                                            <div class="articleGrid v2">
+                                                <div class="article"></div>
+                                                <div class="otherInfo">
+                                                    <h2>{str_cut($v['title'], 60)}</h2>
+                                                </div>
+                                            </div>
+                                            <i class="focusImg" style="background:url('{$v[thumb]}') no-repeat; background-size:cover;"></i>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>-->
+                    <!-- / 猜你喜欢 -->
+
+                    <!--评论-->
+                    <div th:if="${article.commentFlag==1 || article.commentFlag=='1'}" id="comment" class="comment comment-main">
+                        <div class="comment-title">发表评论</div>
+                        <form id="comment-form" class="form-horizontal mt-10">
+                            <input id="articleId" name="tid" type="hidden" th:value="${article.id}">
+                            <div id="user-name-content" class="user-name-content">欢迎您：<b id="user-name"></b></div>
+                            <div class="form-group" id="user-info" style="display: none">
+                                <div class="col-sm-4">
+                                    <input id="nickname" type="text" class="form-control"  name="userName" placeholder="昵称(必填)">
+                                </div>
+                                <div class="col-sm-4">
+                                    <input id="qq" type="text" class="form-control"  name="qq" placeholder="QQ（可获取头像和昵称）">
+                                </div>
+                                <div class="col-sm-4">
+                                    <input id="email" type="text" class="form-control"  name="email" placeholder="邮箱">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12">
+                                    <textarea name="content" id="comment-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div><button id="submitCommentBtn" type="button" class="btn btn-pri">发表评论</button></div>
+                        </form>
+                        <hr class="hr0 mt-15"/>
+                        <ul id="comment-ul" class="comment">
+                        </ul>
+                    </div>
+
+                    <script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+
+                    <script>
+                        var tid='[[${article.id}]]';
+                        var comment_type="article";
+                        $.ajax({
+                            url: ctx+"blog/article/view",
+                            type: "post",
+                            dataType: "json",
+                            data: {"articleId":tid},
+                            success: function(json) {
+                                if(json.code!=0&&json.code!='0'){
+                                    console.log(json.msg);
+                                }
+                            }
+                        });
+
+                        $(function () {
+                            $(".thumbs-button").click(function () {
+                                $.ajax({
+                                    url: ctx+"blog/article/upVote",
+                                    type: "post",
+                                    dataType: "json",
+                                    data: {"articleId":tid},
+                                    success: function(json) {
+                                        if(json.code!=0&&json.code!='0'){
+                                            console.log(json.msg);
+                                        }else{
+                                            $("#loveCount").text(parseInt($("#loveCount").text())+1);
+                                        }
+                                    }
+                                });
+                            })
+                        })
+                    </script>
+                    <script  th:if="${article.commentFlag==1 || article.commentFlag=='1'}" th:src="@{/blog/pnews/js/comment.js}"></script>
+
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <!-- articleMode -->
+        </div>
+        <!-- / leftGrid -->
+        <!-- rightGrid -->
+        <div class="rightGrid h415">
+            <!-- 相关推荐 -->
+            <div class="itemBox mb20" >
+                <div class="headGrid" >
+                    <h3><b>热门</b></h3>
+                </div>
+                <div class="tabInfoBox detail">
+
+                    <div class="aside" th:each="item,temp:${@cms.recommendedList(6)}" >
+                        <a th:title="${item.title}" th:href="${'/blog/article/'+item.id}" target="_blank">
+                            <h3 th:text="${item.title}"></h3>
+                            <div class="desc mb15" th:text="${item.description}"></div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            <!-- / 相关推荐 -->
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<script>
+
+    $(function(){
+        var channelClass;
+        var  channelSite = $('#channelSite').attr('data-site-name');
+        switch (channelSite)
+        {
+            case '一个':
+                channelClass = 'one';
+                break;
+            case '少数派':
+                channelClass = 'sspai';
+                break;
+            case '十五言':
+                channelClass = 'yan15';
+                break;
+            case '站酷':
+                channelClass = 'zcool';
+                break;
+            case '真实故事':
+                channelClass = 'zhenshigushi';
+                break;
+            case '虎嗅':
+                channelClass = 'huxiu';
+                break;
+            case '差评':
+                channelClass = 'chaping';
+                break;
+            case 'NGA':
+                channelClass = 'NGA';
+                break;
+            case '好奇心日报':
+                channelClass = 'haoqixin';
+                break;
+            case '知乎':
+                channelClass = 'zhihu';
+                break;
+            case '果壳':
+                channelClass = 'guoke';
+                break;
+            case '今日头条':
+                channelClass = 'toutiao';
+                break;
+            case '36 氪':
+                channelClass = 'kr36';
+                break;
+            case '大象公会':
+                channelClass = 'dxgh';
+                break;
+            case '界面':
+                channelClass = 'jiemian';
+                break;
+            case '新世相':
+                channelClass = 'xinshixiang';
+                break;
+            case '豆瓣':
+                channelClass = 'douban';
+                break;
+            case '数字尾巴':
+                channelClass = 'dgtle';
+                break;
+            case '网易':
+                channelClass = 'wangyi';
+                break;
+            case '新浪':
+                channelClass = 'sina';
+                break;
+            case '简书':
+                channelClass = 'jianshu';
+                break;
+            case '极客公园':
+                channelClass = 'geekpark';
+                break;
+            case 'PingWest 品玩':
+                channelClass = 'pinwan';
+                break;
+            case '葡萄':
+                channelClass = 'pt';
+                break;
+        }
+        $('#channelSite').removeClass("pt").addClass(channelClass);
+    });
+    function isEmpty(val) {
+        val = $.trim(val);
+        if (val == null)
+            return true;
+        if (val == undefined || val == 'undefined')
+            return true;
+        if (val == "")
+            return true;
+        if (val.length == 0)
+            return true;
+        if (!/[^(^\s*)|(\s*$)]/.test(val))
+            return true;
+        return false;
+    }
+    function isNotEmpty(val) {
+        return !isEmpty(val);
+    }
+    //跳转
+    $(function() {
+        function jumpHref(count,_href) {
+            window.setTimeout(function(){
+                count--;
+                if(count > 0) {
+                    $('#jumpCount').html(count);
+                    jumpHref(count,_href);
+                } else {
+                    location.href = _href;
+                }
+            }, 1000);
+        }
+
+        $('.jumpHref').on('click',function(){
+            var _href = $(this).attr('data-href');
+            var _website = $(this).attr('data-site-name');
+            if(isNotEmpty(_website)&&_website!=""){
+                var _hrefHtml = '<div class="jumpHrefGrid"><div class="hrefGroup"><h4>即将离开本站，跳转至'+ _website +'</h4><p><span id="jumpCount">5</span>秒后自动跳转</p><p><a class="btn" href="'+ _href +'">立即前往</a></p></div></div>';
+                $('body').append(_hrefHtml);
+                jumpHref(5,_href);
+            }else{
+                var _hrefHtml = '<div class="jumpHrefGrid"><div class="hrefGroup"><h4>即将离开本站，跳转至原文</h4><p><span id="jumpCount">5</span>秒后自动跳转</p><p><a class="btn" href="'+ _href +'">立即前往</a></p></div></div>';
+                $('body').append(_hrefHtml);
+                jumpHref(5,_href);
+                return false;
+            }
+
+        });
+    });
+</script>
+<div th:replace="blog/theme/pnews/footer"></div>
+</body>
+</html>

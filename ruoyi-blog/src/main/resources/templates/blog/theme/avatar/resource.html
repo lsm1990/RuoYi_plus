@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+    <meta name="description" th:content="${@config.getKey('blog.index.description')}">
+    <title th:text="${@config.getKey('blog.index.title')}"></title>
+    <meta name="baidu-site-verification" content="" />
+
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.base.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.head.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.group.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.layout.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/plugin/iconfont/iconfont.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/plugin/font-icon/icon.css}"/>
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+
+    <script th:src="@{/blog/avatar/js/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/layer/layer.js}"></script>
+    <script th:src="@{/blog/avatar/js/baseMotheds.js}"></script>
+    <script th:src="@{/blog/avatar/js/detailMotheds.js}"></script>
+
+    <style>
+
+
+    </style>
+    <!-- <script type="text/javascript" src="{STATIC_URL}avatar/plugin/layui/layui.js"></script>
+     <script type="text/javascript" src="{STATIC_URL}avatar/js/digg.js"></script>-->
+</head>
+<body>
+<div class="fixedHeadSwitch">
+    <div th:replace="blog/theme/avatar/header"></div>
+</div>
+
+<!-- baseGroup -->
+<div class="baseGroup w1100 mt100 layoutAuto">
+    <!-- detailGrid -->
+    <div class="detailGrid my">
+
+        <div class="detailHeadLabel">
+            <h1 class="title">[[${resource.title}]]<small> / 资源</small></h1>
+            <p class="info">
+                <span th:text="${#dates.format(resource.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+
+                点击 / <span th:text="${resource.hit}"></span>
+                文 / <span th:text="${resource.userName}"></span>
+            </p>
+        </div>
+
+        <div class="description">
+            <div class="detail">
+                <p th:utext="${resource.description}"></p>
+            </div>
+            <i class="flag"></i>
+        </div>
+
+
+        <article class="articleDetailGroup" th:utext="${resource.detail}">
+        </article>
+
+        <!--阅读全文-->
+        <div class="readall_box " style="display: none;">
+            <div class="read_more_mask"></div>
+            <a class="button" style="top:-25px;position:relative;">阅读全文</a>
+            <script type="text/javascript">
+                $(function () {
+                    if ($(".articleDetailGroup").height() >= 1200) {
+                        $(".articleDetailGroup").attr("style", "height:1200px;overflow-y:hidden;");
+                        $(".readall_box").show();
+                    }
+                    $(".readall_box a.button").click(function () {
+                        $(this).parents().find(".articleDetailGroup").attr("style", "");
+                        $(this).parents(".readall_box").hide();
+                    });
+                })
+            </script>
+        </div>
+
+        <div class="thumbs-content" style="margin: 20px auto 10px;width: 291px;text-align: center;">
+            <span class="thumbs-button fa fa-thumbs-up"> 点赞 <span id="loveCount" th:text="${resource.upVote}"></span></span>
+            <span class="reward-button fa fa-money"> 打赏
+						<p class="reward-content">
+							<span class="reward-img"><img src="/blog/avatar/images/weixin.png"><br>微信赞赏</span>
+							<span class="reward-img"><img src="/blog/avatar/images/zhifubao.png"><br>支付宝赞赏</span></p>
+						<span class="reward-bottom"></span>
+						<span class="reward-bottom-top"></span>
+			</span>
+        </div>
+
+
+        <!-- rightGrid -->
+
+        <div class="rightGrid my">
+            <div class="myInfoGrid">
+                <div class="thumbBox">
+                    <img th:src="@{${resource.coverImage}}" th:alt="${resource.title}">
+                </div>
+                <div class="itemTitle">
+                    <h6 th:text="${resource.title}"></h6>
+                </div>
+                <div class="itemTitle float">
+                    <p>最后更新：</p><h6 th:text="${#dates.format(resource.updateTime,'yyyy-MM-dd HH:mm:ss')}"></h6>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="itemTitle float" th:switch="${resource.type}">
+                    <p>模版类型：</p>
+                    <h6 th:case="1">模板主题</h6>
+                    <h6 th:case="2">小程序</h6>
+                    <h6 th:case="3">软件</h6>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- <div class="itemTitle float">
+                     <p>软件版本：</p><h6>{$cmsVersion}</h6>
+                     <div class="clearfix"></div>
+                 </div>-->
+
+                <div class="itemTitle float" th:switch="${resource.score}">
+                    <p>评分等级：</p>
+                    <h6 th:case="1">
+                        <div class="clearfix">
+                            <div class="star-bar star-bar-show size-M f-l va-m mr-10">
+                                <span class="star" style="width:20%"></span>
+                            </div>
+                            <strong class="f-l f-14 va-m"></strong>
+                        </div>
+                    </h6>
+                    <h6 th:case="1">
+                        <div class="clearfix">
+                            <div class="star-bar star-bar-show size-M f-l va-m mr-10">
+                                <span class="star" style="width:20%"></span>
+                            </div>
+                            <strong class="f-l f-14 va-m"></strong>
+                        </div>
+                    </h6>
+                    <h6 th:case="2">
+                        <div class="clearfix">
+                            <div class="star-bar star-bar-show size-M f-l va-m mr-10">
+                                <span class="star" style="width:40%"></span>
+                            </div>
+                            <strong class="f-l f-14 va-m"></strong>
+                        </div>
+                    </h6>
+                    <h6 th:case="3">
+                        <div class="clearfix">
+                            <div class="star-bar star-bar-show size-M f-l va-m mr-10">
+                                <span class="star" style="width:60%"></span>
+                            </div>
+                            <strong class="f-l f-14 va-m"></strong>
+                        </div>
+                    </h6>
+                    <h6 th:case="4">
+                        <div class="clearfix">
+                            <div class="star-bar star-bar-show size-M f-l va-m mr-10">
+                                <span class="star" style="width:80%"></span>
+                            </div>
+                            <strong class="f-l f-14 va-m"></strong>
+                        </div>
+                    </h6>
+                    <h6 th:case="5">
+                        <div class="clearfix">
+                            <div class="star-bar star-bar-show size-M f-l va-m mr-10">
+                                <span class="star" style="width:100%"></span>
+                            </div>
+                            <strong class="f-l f-14 va-m"></strong>
+                        </div>
+                    </h6>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="itemTitle float" th:if="${resource.free}==0">
+                    <p>下载地址：</p><h6><a  class="downloadBtn">免费获取</a></h6>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="itemTitle float" th:if="${resource.free}==1">
+                    <p>下载地址：</p><h6><a  class="downloadBtn">积分获取</a></h6>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="detail down">
+                    <p class="title">注意事项：</p>
+                    <p>本站内分享的模版默认都是基于<a th:href="${@config.getKey('site.url')}"  target="_blank" title="pt-cms官网">pt-cms</a>，详细安装方法见模版安装说明。</p>
+                    <p>如果下载的模版无法正常使用或报错，请至发邮件寻求帮助，或者加入QQ群谈论反馈问题。</p>
+                    <!--<p style="color:#f30">ps: 小程序、代码片段或静态模版等，请忽略该注意事项。</p>-->
+                </div>
+            </div>
+            <div class="brandGrid" id="brandGrid"></div>
+        </div>
+
+        <!--<div class="rightGrid my fixed bgf">
+            <div class="commonHeadLabel small">
+                <div class="title">推荐阅读</div>
+            </div>
+            <div class="brandGrid" id="brandGrid"></div>
+        </div>-->
+        <!-- zanGroup -->
+        <!--<div id="pt-cms_digg_div" class="zanGroup">
+            <div class="zanBtn" onclick="digg('{U('digg/init')}', {$modelid}, {$id}, 1)">
+                <i class="iconfont icon-zan"></i>
+            </div>
+            <p><span id="up" class="numFont2">{$up}</span></p>
+        </div>-->
+        <!-- / zanGroup -->
+
+        <!-- 原文链接 -->
+        <div class="linkGroup layoutHide">
+            <!-- 收藏 -->
+            <div class="favoriteBtn" id="favorite">
+                <a href="javascript:;" onclick="add_favorite();">收藏</a>
+            </div>
+        </div>
+
+
+        <script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+
+        <script>
+            var tid='[[${resource.id}]]';
+            var comment_type="resource";
+            $.ajax({
+                url: ctx+"blog/resource/view",
+                type: "post",
+                dataType: "json",
+                data: {"id":tid},
+                success: function(json) {
+                    if(json.code!=0&&json.code!='0'){
+                        //console.log(json.msg);
+                    }
+                }
+            });
+
+            $(function () {
+                $(".thumbs-button").click(function () {
+                    $.ajax({
+                        url: ctx+"blog/resource/upVote",
+                        type: "post",
+                        dataType: "json",
+                        data: {"id":tid},
+                        success: function(json) {
+                            if(json.code!=0&&json.code!='0'){
+                                console.log(json.msg);
+                            }else{
+                                $("#loveCount").text(parseInt($("#loveCount").text())+1);
+                            }
+                        }
+                    });
+                })
+            })
+        </script>
+
+        <hr class="hr0 mt-15"/>
+        <!-- 评论区 开始 -->
+        <div  class="commonHeadLabel small mt20">
+            <div class="title">评论列表</div>
+        </div>
+        <div class="commentGrid comment">
+
+            <div  class="commentForm">
+
+                <form id="comment-form" class="form-horizontal mt-10">
+                    <input id="articleId" name="tid" type="hidden" th:value="${resource.id}">
+                    <input   name="type" type="hidden" value="resource">
+                    <div id="user-name-content" class="user-name-content">欢迎您：<b id="user-name"></b></div>
+                    <div class="guestBookGroup" id="user-info" style="display: none;padding: 0;">
+
+                        <div class="inputLabel" style="width: 30%;float:left;margin-right:38px;">
+                            <input id="nickname" type="text" class="inputBlock"  name="userName" placeholder="昵称(必填)">
+                        </div>
+                        <div class="inputLabel" style="width: 30%;float:left;margin-right: 38px;">
+                            <input id="qq" type="text" class="inputBlock"  name="qq" placeholder="QQ（可获取头像和昵称）">
+                        </div>
+                        <div class="inputLabel" style="width: 30%;float:left;">
+                            <input id="email" type="text" class="inputBlock"  name="email" placeholder="邮箱">
+                        </div>
+                    </div>
+
+                    <textarea id="comment-textarea" class="commentTextarea"  name="content" placeholder="我来说两句~"></textarea>
+
+                    <div class="btnBox"><input type="button" id="submitCommentBtn" class="submitBtn" name="dosubmit" value="发表评论"></div>
+                </form>
+
+            </div>
+            <hr class="hr0 mt-15"/>
+            <!-- 评论列表 -->
+            <div class="commentList comment"  id="commentList">
+
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+<script  th:src="@{/blog/avatar/js/comment.js}"></script>
+
+<!-- footer -->
+<footer class="bgfa" style="position:relative; z-index:10;">
+    <div th:replace="blog/theme/avatar/footer"></div>
+</footer>
+<script>
+
+    function add_favorite(title) {
+        $.ajax({
+            type: 'POST',
+            url: '{U("api/index/favorite")}',
+            data: 'title='+title+'&url='+location.href,
+            dataType: "json",
+            success: function (msg) {
+                if(msg.status == 1){
+                    $("#favorite").html('收藏成功');
+                }else{
+                    layer.msg('请先登录!');
+                }
+            }
+        });
+    };
+
+</script>
+
+</body>
+</html>

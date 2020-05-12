@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+    <meta name="description" th:content="${@config.getKey('blog.index.description')}">
+    <title th:text="${@config.getKey('blog.index.title')}"></title>
+    <meta name="baidu-site-verification" content="" />
+
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.base.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.head.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.group.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.layout.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/plugin/iconfont/iconfont.css}"/>
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+
+    <script th:src="@{/blog/avatar/js/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/blog/avatar/js/baseMotheds.js}"></script>
+    <script th:src="@{/blog/avatar/js/detailMotheds.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/layer/layer.js}"></script>
+</head>
+<body>
+<!-- header -->
+<div class="fixedHeadSwitch">
+    <div th:replace="blog/theme/avatar/header"></div>
+</div>
+
+<!-- baseGroup -->
+<div class="baseGroup w1100 mt100 layoutAuto">
+    <!-- detailGrid -->
+    <div class="detailGrid my">
+
+        <!-- rightGrid -->
+        <div class="rightGrid my">
+            <div class="myInfoGrid">
+                <div class="commonHeadLabel small">
+                    <div class="title">关于本站</div>
+                </div>
+                <i class="avatar"></i>
+                <div class="itemTitle">
+                    <p>hey, I am</p><h6>markbro</h6>
+                </div>
+                <div class="itemTitle">
+                    <p>邮箱：</p><h6><a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=747506908@qq.com" target="_blank">747506908@qq.com</a></h6>
+                </div>
+                <div class="itemTitle">
+                    <p>博客：</p><h6>https://www.xxx.com</h6>
+                </div>
+
+                <div class="detail">
+                    <p>我是一个设计爱好者、斜杠青年、伪文青，同时也是一位全栈攻(ban)城(zhuan)狮(de)。</p>
+                    <p>目前在帝都的一家互联网公司供职。平时不忙时，喜欢偶发性改改UI、写写一些稀奇古怪的界面，然后发布一些围绕pt-cms的 <a href="https://www.duoguyu.com/resource/" target="_blank" title="模版主题资源下载">模版主题</a>。</p>
+                    <p>如你所见，这是我的个人博客自留地。后台采用了 <a href="#" target="_blank" title="个人博客">Java轻量级葡萄内容管理系统</a>  <a href="http://www.pt-cms.com" target="_blank" title="pt-cms官网">pt-cms</a> - v1.2版本，前端界面则由我独自设计与开发，当前博客模板主题为：<b>Avatar</b> v1.2.2 Beta。</p>
+                    <p>当前了，毕竟我只是一位设计爱好者，在审美设计上也有许多的缺陷和不足。如果你有一些好的想法、创意或者寻求帮助的话，可以发邮件给我(<a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=markbro@duoguyu.com" target="_blank">markbro@duoguyu.com</a>) 或者 到<a href="http://bbs.pt-cms.com" target="_blank" title="pt-cms论坛">pt-cms社区</a>逛逛。</p>
+                    <p>最后，祝自由快乐!</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 留言信息 -->
+        <div class="commonHeadLabel small">
+            <div class="title">留言板</div>
+        </div>
+
+
+        <form id="comment-form" class="form-horizontal commentGrid mt-10 comment guestBookGroup">
+            <input   name="tid" type="hidden" value="-1">
+            <input   name="type" type="hidden" value="liuyan">
+            <div id="user-name-content" class="user-name-content">欢迎您：<b id="user-name"></b></div>
+            <div class="guestBookGroup" id="user-info" style="display: none;padding: 0;">
+
+                <div class="inputLabel" style="width: 30%;float:left;margin-right:38px;">
+                    <input id="nickname" type="text" class="inputBlock"  name="userName" placeholder="昵称(必填)">
+                </div>
+                <div class="inputLabel" style="width: 30%;float:left;margin-right: 38px;">
+                    <input id="qq" type="text" class="inputBlock"  name="qq" placeholder="QQ（可获取头像和昵称）">
+                </div>
+                <div class="inputLabel" style="width: 30%;float:left;">
+                    <input id="email" type="text" class="inputBlock"  name="email" placeholder="邮箱">
+                </div>
+            </div>
+
+            <textarea id="comment-textarea" style="background: #fff;" class="commentTextarea"  name="content" placeholder="我来说两句~"></textarea>
+            <input type="button" id="submitCommentBtn" name="dosubmit" value="提交留言" class="submitBtn"/>
+
+        </form>
+        <!-- 留言列表 -->
+        <div class="commonHeadLabel small mt40">
+            <div class="title">最新留言</div>
+        </div>
+        <div class="commentGrid" style="padding: 0 10px;">
+            <ul class="itemUl comment" id="commentList">
+
+            </ul>
+        </div>
+
+        <script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+        <script>
+            var tid=-1;
+            var comment_type="liuyan";
+        </script>
+        <script  th:src="@{/blog/avatar/js/comment.js}"></script>
+
+        <!-- 友联 -->
+        <div class="commonHeadLabel small mt40">
+            <div class="title">友情链接 <small class="info" style="font-weight:normal;">/ 交换友链，请发E-mail至747506908@qq.com</small></div>
+        </div>
+        <div class="newArticleGrid link">
+            <div  th:each="item:${@cms.getFriendLinks()}"  class="itemLi layoutAuto">
+                <a th:href="${item.link}"   target="_blank" class="content">
+                    <div class="img" th:attr="style='background:url('+@{${item.logo}}+') no-repeat center; background-size:cover;'"></div>
+                    <h2 th:text="${item.name}"></h2>
+                    <p th:text="${#strings.abbreviate(item.description,65)}"></p>
+                </a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <!-- 特别鸣谢 开始 -->
+        <div class="commonHeadLabel small mt40">
+            <div class="title">特别鸣谢</div>
+        </div>
+        <div class="thankGroup">
+            <p><a href="http://www.pt-cms.com" target="_blank" title="pt-cms官网">pt-cms</a> Java版轻量级开源管理系统，提供后台系统支持。</p>
+            <p><a href="#" target="_blank" title="若依后台管理">若依后台管理</a> 若依后台管理系统提供技术支持。</p>
+        </div>
+        <!-- 特别鸣谢 结束 -->
+
+        <!-- 更新日志 开始 -->
+        <div class="commonHeadLabel small mt40">
+            <div class="title">更新日志</div>
+        </div>
+        <div class="detailGroup">
+            <ul class="updateGroup">
+                <li>
+                    <p class="title"><span class="cfBlue mr10">Version 1.1.0</span><small>2019/06/12</small></p>
+                    <p>当前主题: <b>Avatar</b> v1.2.2。</p>
+                    <p><b>Add:</b></p>
+                    <p class="pl20">首页增加“最新留言”板块，展示最近3条留言信息。</p>
+                    <p><b>Update:</b></p>
+                    <p class="pl20">1: 将首页“推荐资源”栏目，修改为滑动视觉效果; 优化首页友联UI等</p>
+                    <p class="pl20">2: 调整“关于我”界面栏目，修复一处留言分页的前端bug;</p>
+                    <p class="pl20">3: 优化其它小细节等；</p>
+                    <p class="pl20">4: 升级至响应式（2019/06/21 Update.）。</p>
+                    <p class="tipsInfo">tips: <a href="#" target="_blank" title="Avatar响应式博客模版主题-尝鲜版，免费下载"><b>Avatar</b> 响应式博客模版主题-尝鲜版</a> QQ交流群已提供免费下载。</p>
+                </li>
+            </ul>
+        </div>
+        <!-- 更新日志 结束 -->
+    </div>
+</div>
+
+<!-- footer -->
+<footer class="bgfa">
+    <div th:replace="blog/theme/avatar/footer"></div>
+</footer>
+
+<script type="text/javascript">
+    function check(){
+        if(document.guest.title.value==""){
+            layer.msg("留言主题不能为空！");
+            return false;
+        }
+        if(document.guest.name.value==""){
+            layer.msg("请填写您的昵称！");
+            return false;
+        }
+        if(document.guest.bookmsg.value==""){
+            layer.msg("请填写留言内容！");
+            return false;
+        }
+        if(document.guest.code.value==""){
+            layer.msg("请填写验证码！");
+            return false;
+        }
+        return true;
+    }
+</script>
+
+</body>
+</html>

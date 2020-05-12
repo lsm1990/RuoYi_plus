@@ -1,0 +1,12 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance: 
+    preferIpAddress: true
+server:
+  port: 1223
+#\u8be5\u914d\u7f6e\u548ccloud\u7684bootstrap.properties\u914d\u7f6e\u9879\u51b2\u7a81\uff0c\u5f85\u89e3\u51b3
+spring:
+  application:
+    name: zebra-yritsz-config-servser

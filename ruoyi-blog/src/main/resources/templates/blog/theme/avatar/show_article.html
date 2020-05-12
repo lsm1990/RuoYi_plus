@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{$seo_title}</title>
+    <meta name="keywords" content="{$keywords}" />
+    <meta name="description" content="{$description}" />
+    <link href="{STATIC_URL}avatar/css/dgy.base.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.head.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.group.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.layout.css" rel="stylesheet" type="text/css" />
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{STATIC_URL}avatar/js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="{STATIC_URL}avatar/js/baseMotheds.js"></script>
+    <script type="text/javascript" src="{STATIC_URL}plugin/layer/3.0.1/layer.js"></script>
+    <script type="text/javascript" src="{STATIC_URL}avatar/plugin/layui/layui.js"></script>
+    <script type="text/javascript" src="{STATIC_URL}avatar/js/detailMotheds.js"></script>
+	<script type="text/javascript" src="{STATIC_URL}avatar/js/digg.js"></script>
+</head>
+<body>
+    <div class="fixedHeadSwitch">
+        {m:include "index","header"}
+    </div>
+            
+    <!-- baseGroup -->
+    <div class="baseGroup w1100 mt100 layoutAuto">
+        <!-- detailGrid -->
+        <div class="detailGrid my">
+                
+            <div class="detailHeadLabel">
+               <h1 class="title">{$title}<small> / {get_catname($catid)}</small></h1>
+               <p class="info">
+                   <span>{format_time($inputtime)}</span>
+                   阅读 / <span>{$click}</span>
+                   来源 / <span>{$copyfrom}</span>
+                   文 / <span>{$nickname}</span>
+               </p>
+            </div>
+                
+            <div class="description">
+                <div class="detail">
+                    <p>{$description}</p>
+                </div>
+                <i class="flag"></i>
+            </div>
+            
+            
+            <article class="articleDetailGroup">
+                {$content}
+            </article>
+			
+    		
+    		<!-- rightGrid -->
+            {if $isTheme}
+    		<div class="rightGrid my">
+                <div class="myInfoGrid">
+                    <div class="thumbBox">
+                        <img src="{$thumb}" alt="{$title}">
+                    </div>
+                    <div class="itemTitle">
+                        <h6>{$title}</h6>
+                    </div>
+                    <div class="itemTitle float">
+                        <p>最后更新：</p><h6>{date('Y/m/d H:i:s',$updatetime)}</h6>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="itemTitle float">
+                        <p>模版类型：</p><h6>{$themeType}</h6>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="itemTitle float">
+                        <p>软件版本：</p><h6>{$cmsVersion}</h6>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="itemTitle float">
+                        <p>评分等级：</p><h6>{$themeScore}</h6>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="itemTitle float">
+                        <p>下载地址：</p><h6><a href="{$webZip}" class="downloadBtn">免费获取</a></h6>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="detail down">
+                        <p class="title">注意事项：</p>
+                        <p>本站内分享的模版默认都是基于<a href="http://www.pt-cms.com" target="_blank" title="pt-cms官网">pt-cms</a>，详细安装方法见<a href="https://www.duoguyu.com/pt-cms/10.html" target="_blank" title="模版安装说明">模版安装说明</a>。</p>
+                        <p>如果下载的模版无法正常使用或报错，请至<a href="http://bbs.pt-cms.com" target="_blank" title="pt-cms论坛">pt-cms社区论坛</a>寻求帮助，或者加入QQ群（161208398）谈论反馈问题。</p>
+                        <p style="color:#f30">ps: 小程序、代码片段或静态模版等，请忽略该注意事项。</p>
+                    </div>
+                </div>
+                <div class="brandGrid" id="brandGrid"></div>
+    		</div>
+            {else}
+    		<div class="rightGrid my fixed bgf">
+                <div class="commonHeadLabel small">
+                   <div class="title">推荐阅读</div>
+                </div>
+                <div class="labelItem">
+                	{m:lists field="title,url,thumb,click,inputtime" modelid="$modelid" order="RAND()" limit="4"}
+                	{loop $data $v}
+                    <a href="{$v[url]}" class="item">
+                        <h3>{str_cut($v['title'], 80)}</h3>
+                        <p>阅读 {$v[click]} <span>/</span> {format_time($v['inputtime'])}</p>
+                    </a>
+                	{/loop}
+                </div>
+                <div class="brandGrid" id="brandGrid"></div>
+                
+    		</div>
+            {/if}
+            
+            
+            
+            
+			<!-- zanGroup -->
+			<div id="pt-cms_digg_div" class="zanGroup">
+				<div class="zanBtn" onclick="digg('{U('digg/init')}', {$modelid}, {$id}, 1)">
+				    <i class="iconfont icon-zan"></i>
+				</div>
+				<p><span id="up" class="numFont2">{$up}</span></p>
+			</div>
+			<!-- / zanGroup -->
+			
+            <!-- 原文链接 -->
+            <div class="linkGroup layoutHide">
+			    {if !empty($webSite)}
+				原文链接:<a class="website" title="原文链接" href="{$webSite}" target="_blank">{$webSite}</a>
+			    {/if}
+                <!-- 收藏 -->
+                <div class="favoriteBtn" id="favorite">
+                    <a href="javascript:;" onclick="add_favorite('{$title}');">收藏</a>
+                </div>
+            </div>
+            
+            <!-- 标签 -->
+            <div class="tagGroup">
+			    {m:centent_tag modelid="$modelid" id="$id" limit="10"}
+			    {if !empty($data)}
+			    {loop $data $v}
+				<a class="tag" href="{U('search/index/tag',array('id'=>$v['id']))}" target="_blank"># {$v[tag]}</a>
+			    {/loop}
+			    {/if}
+            </div>
+    		<div class="clearfix"></div>
+    		
+    		<!-- 评论区 开始 -->
+            <div class="commonHeadLabel small mt80">
+               <div class="title">评论列表</div>
+            </div>
+    		<div class="commentGrid">
+    			<div class="commentForm">
+        			<form action="{U('comment/index/init')}" method="post" onsubmit="return check_comm(this)">
+            			<input type="hidden" name="modelid" value="{$modelid}">
+            			<input type="hidden" name="catid" value="{$catid}">
+            			<input type="hidden" name="id" value="{$id}">
+            			<input type="hidden" name="title" value="{$title}">
+            			<input type="hidden" name="url" value="{$url}">
+            			<textarea class="commentTextarea" id="content" name="content" placeholder="我来说两句~"></textarea>
+				        <div class="btnBox"><input type="submit" class="submitBtn" name="dosubmit" value="提交"></div>
+        			</form>
+    			</div>
+    			
+    		    <!-- 评论列表 -->
+        		<div class="commentList">
+        			{m:comment_list modelid="$modelid" catid="$catid" id="$id" limit="20"}
+        			<div class="title">共{count($data)}条评论</div>
+        			<div class="commentGrid">
+            			<ul class="itemUl">
+            				{loop $data $v}
+            				<li class="item">
+        						<div class="username"># <a href="{U('member/myhome/init', array('userid'=>$v['userid']))}" target="blank">{$v[username]}</a> <span>{date('Y/m/d H:i:s',$v['inputtime'])}</span><a href="javascript:toreply('{$v[id]}');" class="reply">回复</a></div>
+        						<div class="commentGroup">
+        						    <p>{nl2br($v['content'])}</p>
+            						<div id="rep_{$v[id]}" style="display:none">
+                						<form action="{U('comment/index/init')}" method="post" onsubmit="return check_rep(this)">
+                    						<input type="hidden" name="modelid" value="{$modelid}">
+                    						<input type="hidden" name="catid" value="{$catid}">
+                    						<input type="hidden" name="id" value="{$id}">
+                    						<input type="hidden" name="title" value="{$title}">
+                    						<input type="hidden" name="url" value="{$url}">
+                    						<input type="hidden" name="reply" value="{$v[id]}">
+                    						<input type="hidden" name="reply_to" value="{$v[username]}">
+                    						<textarea name="content" class="commentTextarea reply" placeholder="我来说两句~"></textarea>
+                    						<div class="btnBox"><input type="submit" class="submitBtn" name="dosubmit" value="提交"></div>
+                						</form>
+            						</div>
+            						
+        						</div>
+            				</li>
+            				{/loop}
+            				{if empty($data)}<li class="tips">这篇文章还没有收到评论，赶紧来抢沙发吧~</li>{/if}
+            			</ul>
+        			</div>
+        		</div>
+        		
+    		</div>
+    		
+    		
+    	</div>	
+    </div>
+    
+    <!-- footer -->
+    <footer class="bgfa" style="position:relative; z-index:10;">
+    {m:include "index","footer"}
+    </footer>
+    
+    <script>
+        function add_favorite(title) {
+        	$.ajax({
+        		type: 'POST',
+        		url: '{U("api/index/favorite")}', 
+        		data: 'title='+title+'&url='+location.href,
+        		dataType: "json", 
+        		success: function (msg) {
+        			if(msg.status == 1){
+        				$("#favorite").html('收藏成功');
+        			}else{
+	                    layer.msg('请先登录!');
+        			}
+        		}
+        	});
+        };
+
+        layui.use('code', function(){
+            layui.code();
+            layui.code({
+              elem: 'pre',
+              encode: true,
+              title: '#示例代码',
+              about: false
+            });
+        });
+    </script>
+    
+  </body>
+</html>

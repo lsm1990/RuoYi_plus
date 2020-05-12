@@ -1,0 +1,71 @@
+/*
+** Name: dgy.layout.css
+** Date: 2019/06/13.
+** Anthor: markbro@duoguyu.com.
+** Version: 1.0.1.
+** Last: 2019/06/13/ markbro.
+*/
+.menuBtnWrapLayout{ display:none;}
+.blur{filter: blur(8px);}
+
+@media screen and (max-width: 768px) {
+    
+body{padding:0 10px;}
+#pageGroup{ margin-bottom:50px;}
+
+.launchTopGird { padding:10px 0 40px;}
+.commonHeadGrid.fixed, .fixedHeadSwitch .commonHeadGrid { position:relative;}
+
+.indexListGrid{ padding: 0 10px;}
+.commonHeadGrid .headGrid.nav{ margin-top:-40px;}
+.commonHeadGrid .headGrid.nav .menuGroup .item{ padding:10px;}
+.commonHeadGrid .headGrid.nav .menuGroup a{ display:block;}
+
+.layoutWidth{ width:100% !important;}
+.layoutHide{ display:none !important;}
+.layoutAuto{ width:100% !important; height:auto !important;}
+
+.mt100, .mt120{ margin-top:30px !important;}
+
+/* detail */
+.rightGrid.my {  margin-left: 0; width: 100%; position: relative; left: 0; top: 0; }
+.detailGrid.my { padding: 0 10px; }
+
+/* .posterGrid */
+.posterGrid{ width:100%;}
+.posterGrid .bodyBox{ padding:10px; }
+.posterGrid .poster{ height:200px;}
+
+/* websiteGrid */
+.websiteGrid .labelItem, .newArticleGrid.web .itemLi { float:none; width:100%; }
+
+.webHeadLabel{ padding:10px 80px 10px 90px; min-height: 72px;}
+.webHeadLabel .webImg{ margin-top:-30px; width:60px; height:60px; }
+.webHeadLabel .website{ margin-top:-15px; width:80px; height:30px; font-size:12px; line-height:30px; border-radius:15px;}
+.webHeadLabel h1{ font-size:24px; line-height:28px;}
+
+
+/* menuGroup */
+.menuBtnWrapLayout{ display:block; position:fixed; background:#fff; right:-15px; bottom:50px; width:60px; height:40px; padding-left:15px; line-height:40px; color:#aaa; border-radius:20px; box-shadow:0 0 5px #ccc; z-index:1000;}
+.menuBtnWrapLayout.openBtn{ }
+.menuBtnWrapLayout.closeBtn{  position:absolute; right:175px; color:#409eff;}
+.menuBtnWrapLayout .iconfont{ font-size:18px;}
+
+.menuLayout{ position:fixed; right:-120%; top:0; bottom:0; height:100%; width:100%; /*background:rgba(0,0,0,.5);*/ overflow:hidden; -webkit-transition: all 0.2s ease; -moz-transition: all 0.2s ease; transition: all 0.2s ease; z-index:1050;}
+.menuLayout .menuGroup{ display:block; background:#fff; box-shadow:0 0 5px #ccc; position:absolute; right:0; top:0; bottom:0; height:100%; width:190px; padding:20px; z-index:1060;}
+.menuLayout .menuGroup .item{ display:block; width:100%; border-bottom:1px dotted #eee; padding:10px; }
+.menuLayout.on{ right:0; -webkit-transition: all 0.2s ease; -moz-transition: all 0.2s ease; transition: all 0.2s ease;}
+  
+}
+
+/*
+@media screen and (max-width: 414px) and (min-width: 376px) {
+}
+
+@media screen and (max-width: 375px) and (min-width: 321px) {
+}
+@media screen and (max-width: 320px) {
+    body{padding:0 10px; min-width:320px;}
+    
+}
+*/

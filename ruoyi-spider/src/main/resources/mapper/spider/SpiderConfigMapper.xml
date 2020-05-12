@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.spider.mapper.SpiderConfigMapper">
+    
+    <resultMap type="SpiderConfig" id="SpiderConfigResult">
+        <result property="id"    column="id"    />
+        <result property="spiderCode"    column="spider_code"    />
+        <result property="spiderName"    column="spider_name"    />
+        <result property="entryUrls"    column="entry_urls"    />
+        <result property="targetRegex"    column="target_regex"    />
+        <result property="cascade"    column="cascade"    />
+        <result property="tableName"    column="table_name"    />
+        <result property="domain"    column="domain"    />
+        <result property="charset"    column="charset"    />
+        <result property="sleepTime"    column="sleep_time"    />
+        <result property="retryTimes"    column="retry_times"    />
+        <result property="threadCount"    column="thread_count"    />
+        <result property="useProxy"    column="use_proxy"    />
+        <result property="showLog"    column="show_log"    />
+    </resultMap>
+
+    <sql id="selectSpiderConfigVo">
+        select id,spider_code, spider_name, entry_urls, target_regex,`cascade`, `table_name`, `domain`, charset, sleep_time, retry_times, thread_count, use_proxy,show_log from spider_config
+    </sql>
+
+    <select id="selectSpiderConfigList" parameterType="SpiderConfig" resultMap="SpiderConfigResult">
+        <include refid="selectSpiderConfigVo"/>
+        <where>
+            <if test="spiderCode != null  and spiderCode != ''"> and spider_code like concat('%', #{spiderCode}, '%')</if>
+            <if test="spiderName != null  and spiderName != ''"> and spider_name like concat('%', #{spiderName}, '%')</if>
+            <if test="tableName != null  and tableName != ''"> and table_name like concat('%', #{tableName}, '%')</if>
+            <if test="domain != null  and domain != ''"> and domain like concat('%', #{domain}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSpiderConfigById" parameterType="Long" resultMap="SpiderConfigResult">
+        <include refid="selectSpiderConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSpiderConfigByCode" parameterType="String" resultMap="SpiderConfigResult">
+        <include refid="selectSpiderConfigVo"/>
+        where spider_code = #{code}
+    </select>
+
+
+    <insert id="insertSpiderConfig" parameterType="SpiderConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into spider_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="spiderCode != null  and spiderCode != ''">spider_code,</if>
+            <if test="spiderName != null  and spiderName != ''">spider_name,</if>
+            <if test="entryUrls != null  and entryUrls != ''">entry_urls,</if>
+            <if test="targetRegex != null  and targetRegex != ''">target_regex,</if>
+            <if test="cascade != null  and cascade != ''">cascade,</if>
+            <if test="tableName != null  and tableName != ''">table_name,</if>
+            <if test="domain != null  and domain != ''">domain,</if>
+            <if test="charset != null  and charset != ''">charset,</if>
+            <if test="sleepTime != null ">sleep_time,</if>
+            <if test="retryTimes != null ">retry_times,</if>
+            <if test="threadCount != null ">thread_count,</if>
+            <if test="useProxy != null ">use_proxy,</if>
+            <if test="showLog != null ">show_log,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="spiderCode != null  and spiderCode != ''">#{spiderCode},</if>
+            <if test="spiderName != null  and spiderName != ''">#{spiderName},</if>
+            <if test="entryUrls != null  and entryUrls != ''">#{entryUrls},</if>
+            <if test="targetRegex != null  and targetRegex != ''">#{targetRegex},</if>
+            <if test="cascade != null  and cascade != ''">#{cascade},</if>
+            <if test="tableName != null  and tableName != ''">#{tableName},</if>
+            <if test="domain != null  and domain != ''">#{domain},</if>
+            <if test="charset != null  and charset != ''">#{charset},</if>
+            <if test="sleepTime != null ">#{sleepTime},</if>
+            <if test="retryTimes != null ">#{retryTimes},</if>
+            <if test="threadCount != null ">#{threadCount},</if>
+            <if test="useProxy != null ">#{useProxy},</if>
+            <if test="showLog != null ">#{showLog},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSpiderConfig" parameterType="SpiderConfig">
+        update spider_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="spiderCode != null  and spiderCode != ''">spider_code = #{spiderCode},</if>
+            <if test="spiderName != null  and spiderName != ''">spider_name = #{spiderName},</if>
+            <if test="entryUrls != null  and entryUrls != ''">entry_urls = #{entryUrls},</if>
+            <if test="targetRegex != null  and targetRegex != ''">target_regex = #{targetRegex},</if>
+            <if test="cascade != null  and cascade != ''">`cascade` = #{cascade},</if>
+            <if test="tableName != null  and tableName != ''">`table_name` = #{tableName},</if>
+            <if test="domain != null  and domain != ''">`domain` = #{domain},</if>
+            <if test="charset != null  and charset != ''">charset = #{charset},</if>
+            <if test="sleepTime != null ">sleep_time = #{sleepTime},</if>
+            <if test="retryTimes != null ">retry_times = #{retryTimes},</if>
+            <if test="threadCount != null ">thread_count = #{threadCount},</if>
+            <if test="useProxy != null ">use_proxy = #{useProxy},</if>
+            <if test="showLog != null ">show_log = #{showLog},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSpiderConfigById" parameterType="Long">
+        delete from spider_config where id = #{id}
+    </delete>
+
+    <delete id="deleteSpiderConfigByIds" parameterType="String">
+        delete from spider_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

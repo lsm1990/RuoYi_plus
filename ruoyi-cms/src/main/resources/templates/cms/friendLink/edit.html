@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改友情链接')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-friendLink-edit" th:object="${friendLink}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">友链名称：</label>
+                <div class="col-sm-8">
+                    <input name="name" th:field="*{name}" class="form-control" required type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">链接：</label>
+                <div class="col-sm-8">
+                    <input name="link" th:field="*{link}" class="form-control" required type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">logo：</label>
+                <div class="col-sm-8">
+                    <input name="logo"  th:field="*{logo}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">站点描述：</label>
+                <div class="col-sm-8">
+                    <textarea name="description" required  class="form-control">[[${friendLink.description}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('audit_state')}">
+                        <input type="radio" th:id="${'auditState_' + dict.dictCode}" name="auditState" th:value="${dict.dictValue}" th:field="*{auditState}">
+                        <label th:for="${'auditState_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "cms/friendLink";
+        $("#form-friendLink-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-friendLink-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

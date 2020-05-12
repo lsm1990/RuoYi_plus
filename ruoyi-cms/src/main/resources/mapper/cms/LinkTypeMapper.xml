@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.LinkTypeMapper">
+    
+    <resultMap type="LinkType" id="LinkTypeResult">
+        <result property="id"    column="id"    />
+        <result property="linkType"    column="link_type"    />
+        <result property="linkTypeName"    column="link_type_name"    />
+        <result property="description"    column="description"    />
+        <result property="coverImage"    column="cover_image"    />
+        <result property="sort"    column="sort"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLinkTypeVo">
+        select id, link_type, link_type_name,description, cover_image, sort, status from cms_link_type
+    </sql>
+
+    <select id="selectLinkTypeList" parameterType="LinkType" resultMap="LinkTypeResult">
+        <include refid="selectLinkTypeVo"/>
+        <where>  
+            <if test="linkType != null  and linkType != ''"> and link_type = #{linkType}</if>
+            <if test="linkTypeName != null  and linkTypeName != ''"> and link_type_name like concat('%', #{linkTypeName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLinkTypeById" parameterType="Long" resultMap="LinkTypeResult">
+        <include refid="selectLinkTypeVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectLinkTypeByType" parameterType="String" resultMap="LinkTypeResult">
+        <include refid="selectLinkTypeVo"/>
+        where link_type = #{type}
+    </select>
+
+    <insert id="insertLinkType" parameterType="LinkType" useGeneratedKeys="true" keyProperty="id">
+        insert into cms_link_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="linkType != null  and linkType != ''">link_type,</if>
+            <if test="linkTypeName != null  and linkTypeName != ''">link_type_name,</if>
+            <if test="description != null  and description != ''">description,</if>
+            <if test="coverImage != null  and coverImage != ''">cover_image,</if>
+            <if test="sort != null ">sort,</if>
+            <if test="status != null ">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="linkType != null  and linkType != ''">#{linkType},</if>
+            <if test="linkTypeName != null  and linkTypeName != ''">#{linkTypeName},</if>
+            <if test="description != null  and description != ''">#{description},</if>
+            <if test="coverImage != null  and coverImage != ''">#{coverImage},</if>
+            <if test="sort != null ">#{sort},</if>
+            <if test="status != null ">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLinkType" parameterType="LinkType">
+        update cms_link_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="linkType != null  and linkType != ''">link_type = #{linkType},</if>
+            <if test="linkTypeName != null  and linkTypeName != ''">link_type_name = #{linkTypeName},</if>
+            <if test="description != null  and description != ''">description = #{description},</if>
+            <if test="coverImage != null  and coverImage != ''">cover_image = #{coverImage},</if>
+            <if test="sort != null ">sort = #{sort},</if>
+            <if test="status != null ">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLinkTypeById" parameterType="Long">
+        delete from cms_link_type where id = #{id}
+    </delete>
+
+    <delete id="deleteLinkTypeByIds" parameterType="String">
+        delete from cms_link_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

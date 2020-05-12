@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EventLogMapper">
+    
+    <resultMap type="EventLog" id="EventLogResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="eventCode"    column="event_code"    />
+        <result property="eventName"    column="event_name"    />
+        <result property="source"    column="source"    />
+        <result property="datas"    column="datas"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectEventLogVo">
+        select id, user_id, user_name, event_code, event_name, source, datas, create_time from sys_event_log
+    </sql>
+
+    <select id="selectEventLogList" parameterType="EventLog" resultMap="EventLogResult">
+        <include refid="selectEventLogVo"/>
+        <where>  
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="eventCode != null  and eventCode != ''"> and event_code = #{eventCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectEventLogById" parameterType="Long" resultMap="EventLogResult">
+        <include refid="selectEventLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEventLog" parameterType="EventLog" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_event_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="userName != null  and userName != ''">user_name,</if>
+            <if test="eventCode != null  and eventCode != ''">event_code,</if>
+            <if test="eventName != null  and eventName != ''">event_name,</if>
+            <if test="source != null  and source != ''">source,</if>
+            <if test="datas != null  and datas != ''">datas,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="userName != null  and userName != ''">#{userName},</if>
+            <if test="eventCode != null  and eventCode != ''">#{eventCode},</if>
+            <if test="eventName != null  and eventName != ''">#{eventName},</if>
+            <if test="source != null  and source != ''">#{source},</if>
+            <if test="datas != null  and datas != ''">#{datas},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEventLog" parameterType="EventLog">
+        update sys_event_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="userName != null  and userName != ''">user_name = #{userName},</if>
+            <if test="eventCode != null  and eventCode != ''">event_code = #{eventCode},</if>
+            <if test="eventName != null  and eventName != ''">event_name = #{eventName},</if>
+            <if test="source != null  and source != ''">source = #{source},</if>
+            <if test="datas != null  and datas != ''">datas = #{datas},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEventLogById" parameterType="Long">
+        delete from sys_event_log where id = #{id}
+    </delete>
+
+    <delete id="deleteEventLogByIds" parameterType="String">
+        delete from sys_event_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

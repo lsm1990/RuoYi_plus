@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增附件')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-attachment-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">组ID：</label>
+                <div class="col-sm-8">
+                    <input name="zid" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">用户ID：</label>
+                <div class="col-sm-8">
+                    <input name="userId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">类型：</label>
+                <div class="col-sm-8">
+                    <select name="fileType"  class="form-control" th:with="types=${@cms.selectFileTypeDictData()}">
+                        <option value="">所有</option>
+                        <option th:each="type : ${types}" th:text="${type.dictLabel}" th:value="${type.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">名称：</label>
+                <div class="col-sm-8">
+                    <textarea name="fileName" class="form-control" required></textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">路径：</label>
+                <div class="col-sm-8">
+                    <input name="filePath" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">大小：</label>
+                <div class="col-sm-8">
+                    <input name="size" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">排序：</label>
+                <div class="col-sm-8">
+                    <input name="sort" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "cms/attachment"
+        $("#form-attachment-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-attachment-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

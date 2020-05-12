@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.third.mapper.SmsHisMapper">
+    
+    <resultMap type="SmsHis" id="SmsHisResult">
+        <result property="id"    column="id"    />
+        <result property="yhid"    column="yhid"    />
+        <result property="yhmc"    column="yhmc"    />
+        <result property="carrieroperator"    column="carrieroperator"    />
+        <result property="phone"    column="phone"    />
+        <result property="content"    column="content"    />
+        <result property="returncode"    column="returncode"    />
+        <result property="createTime"    column="createTime"    />
+    </resultMap>
+
+    <sql id="selectSmsHisVo">
+        select id, yhid, yhmc, carrieroperator, phone, content, returncode, createTime from third_sms_his
+    </sql>
+
+    <select id="selectSmsHisList" parameterType="SmsHis" resultMap="SmsHisResult">
+        <include refid="selectSmsHisVo"/>
+        <where>  
+            <if test="yhid != null  and yhid != ''"> and yhid = #{yhid}</if>
+            <if test="yhmc != null  and yhmc != ''"> and yhmc = #{yhmc}</if>
+            <if test="carrieroperator != null  and carrieroperator != ''"> and carrieroperator = #{carrieroperator}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="returncode != null  and returncode != ''"> and returncode = #{returncode}</if>
+            <if test="createTime != null "> and createTime = #{createTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSmsHisById" parameterType="Long" resultMap="SmsHisResult">
+        <include refid="selectSmsHisVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSmsHis" parameterType="SmsHis" useGeneratedKeys="true" keyProperty="id">
+        insert into third_sms_his
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="yhid != null  and yhid != ''">yhid,</if>
+            <if test="yhmc != null  and yhmc != ''">yhmc,</if>
+            <if test="carrieroperator != null  and carrieroperator != ''">carrieroperator,</if>
+            <if test="phone != null  and phone != ''">phone,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="returncode != null  and returncode != ''">returncode,</if>
+            createTime,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="yhid != null  and yhid != ''">#{yhid},</if>
+            <if test="yhmc != null  and yhmc != ''">#{yhmc},</if>
+            <if test="carrieroperator != null  and carrieroperator != ''">#{carrieroperator},</if>
+            <if test="phone != null  and phone != ''">#{phone},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="returncode != null  and returncode != ''">#{returncode},</if>
+            now()
+         </trim>
+    </insert>
+
+    <update id="updateSmsHis" parameterType="SmsHis">
+        update third_sms_his
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="yhid != null  and yhid != ''">yhid = #{yhid},</if>
+            <if test="yhmc != null  and yhmc != ''">yhmc = #{yhmc},</if>
+            <if test="carrieroperator != null  and carrieroperator != ''">carrieroperator = #{carrieroperator},</if>
+            <if test="phone != null  and phone != ''">phone = #{phone},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="returncode != null  and returncode != ''">returncode = #{returncode},</if>
+            <if test="createTime != null ">createTime = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSmsHisById" parameterType="Long">
+        delete from third_sms_his where id = #{id}
+    </delete>
+
+    <delete id="deleteSmsHisByIds" parameterType="String">
+        delete from third_sms_his where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

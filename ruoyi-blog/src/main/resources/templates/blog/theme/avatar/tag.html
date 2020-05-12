@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+    <meta name="description" th:content="${@config.getKey('blog.index.description')}">
+    <title th:text="${@config.getKey('blog.index.title')}"></title>
+    <meta name="baidu-site-verification" content="" />
+
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.base.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.head.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.group.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.layout.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/plugin/iconfont/iconfont.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/plugin/font-icon/icon.css}"/>
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+
+    <script th:src="@{/blog/avatar/js/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/layer/layer.js}"></script>
+    <script th:src="@{/blog/avatar/js/baseMotheds.js}"></script>
+    <script th:src="@{/blog/avatar/js/detailMotheds.js}"></script>
+</head>
+<body>
+<div th:replace="blog/theme/avatar/header"></div>
+
+<!-- channelHeadGrid -->
+<div class="userHeadGrid layoutHide">
+    <div class="planetGroup w1100">
+        <h1 class="title" th:text="${tagName}"></h1>
+        <p class="detail">为您找到相关结果<b class="mlr5">[[${total}]]</b>条</p>
+        <i class="planet a1 animateBalloon2"></i><i class="planet a2 animateBalloon4"></i><i class="planet a3 animateBalloon"></i><i class="planet a4 animateBalloon3"></i>
+    </div>
+</div>
+
+<!-- article -->
+<!-- baseGroup -->
+<div class="baseGroup w1100 layoutAuto">
+    <!-- detailGrid -->
+    <div class="detailGrid my">
+        <div class="boxGroup">
+            <div class="commonHeadLabel small">
+                <div class="title">搜索结果</div>
+            </div>
+            <div class="clearfix"></div>
+            <!-- searchData -->
+            <div class="searchListGrid">
+
+                <div class="item" th:each="item,temp:${articleList}" >
+                    <h2><a th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"  target="_blank" th:text="${item.title}" ></a></h2>
+                    <div class="content">
+
+                        <div class="imgBox" th:if="${not #strings.isEmpty(item.coverImage)}"><img th:src="@{${item.coverImage}}" th:alt="${item.title}"></div>
+
+                        <p class="detail"  th:text="${#strings.abbreviate(item.description,120)}"></p>
+                        <p>[[${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}]]<span class="mlr">/</span> 阅读 [[${item.hit}]]</p>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
+                <div class="tips" th:if="${#lists.isEmpty(articleList)}">哎呀，没有搜索到任何内容~</div>
+                <div class="clearfix"></div>
+            </div>
+            <div id="pageGroup" th:if="${totalPages>1}">
+                <span class="pageinfo">共<strong>[[${totalPages}]]</strong>页<strong>[[${total}]]</strong>条记录</span>
+                <a th:href="@{'/blog/tag/'+${tagId}}" class="homepage">首页</a>
+                <a th:if="${not hasPrevious}" href="javascript:;" class="prepage nopage">上页</a>
+                <a th:if="${hasPrevious}" th:href="@{'/blog/tag/'+${tagId}'?pageNum='+${prePage}}"  class="prepage">上页</a>
+                <a  th:each="item:${navNums}" th:href="@{'/blog/tag/'+${tagId}'?pageNum='+${item}}" class="listpage" th:text="${item}" th:classappend="${item+'' ==currentPage+'' ? 'curpage':''}"></a>
+                <a th:if="${hasNext}" th:href="@{'/blog/tag/'+${tagId}'&pageNum='+${nextPage}}"  class="nextpage">下页</a>
+                <a th:if="${not hasNext}"href="javascript:;" class="nextpage nopage">下页</a>
+                <a th:href="@{'/blog/tag/'+${tagId}'?pageNum='+${totalPages}}"  class="endpage">尾页</a>
+            </div>
+
+            <!-- rightGrid -->
+            <div class="rightGrid my layoutHide">
+
+                <div class="commonHeadLabel small">
+                    <div class="title">推荐阅读</div>
+                </div>
+                <div class="labelItem">
+
+                    <a th:each="item,temp:${@cms.hotList(5)}"  th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}" class="item">
+                        <h3 th:text="${item.title}"></h3>
+                        <p>阅读 [[${item.hit}]]<span>/</span>[[${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}]]</p>
+                    </a>
+
+                </div>
+                <div class="brandGrid" id="brandGrid"></div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- footer -->
+<footer class="bgfa">
+    <div th:replace="blog/theme/avatar/footer"></div>
+</footer>
+
+</body>
+</html>

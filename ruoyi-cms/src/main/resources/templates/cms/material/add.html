@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增素材')" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-material-add" th:object="${material}">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">素材名称：</label>
+            <div class="col-sm-8">
+                <input name="materialName" id="materialName" class="form-control" type="text" required style="width:calc(100% - 100px);float: left; margin-right: 3px;">
+                <button id="uploadBtn"  type="button" class="btn btn-sm btn-primary" style="display: inline-block; width: 95px;position: relative;float: left;height: 33px;"><i class="fa fa-check"></i>上 传</button>&nbsp;
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: -15px;">
+            <label class="col-sm-3 control-label">素材类型：</label>
+            <div class="col-sm-8">
+                <input type="hidden" name="materialType">
+                <div class="radio-box" th:each="dict : ${@dict.getType('material_type')}">
+                    <input type="radio" th:id="${'materialType_' + dict.dictCode}" th:readonly="readonly" name="materialTypeDisplay" th:value="${dict.dictValue}"  >
+                    <label th:for="${'materialType_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">素材分组：</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input id="groupId" name="groupId" type="hidden" th:field="*{groupId}" />
+                    <input class="form-control" type="text" onclick="selectMaterialGroupTree()" id="groupName" readonly="true" th:field="*{groupName}">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">素材描述：</label>
+            <div class="col-sm-8">
+                <textarea  name="description" class="form-control"></textarea>
+            </div>
+        </div>
+        <!--<div class="form-group">
+            <label class="col-sm-3 control-label">启用状态：</label>
+            <div class="col-sm-8">
+
+                <div class="radio-box" th:each="dict : ${@dict.getType('use_state')}">
+                    <input type="radio" th:id="${'useState_' + dict.dictCode}" th:readonly="readonly" name="useState" th:value="${dict.dictValue}"  th:checked="${dict.default}"   >
+                    <label th:for="${'useState_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+
+            </div>
+        </div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">保存路径：</label>
+            <div class="col-sm-8">
+                <input name="savePath" id="savePath" readonly class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">素材大小：</label>
+            <div class="col-sm-8">
+                <input name="materialSize" id="materialSize" class="form-control"  type="hidden">
+                <input name="materialSizeDisplay" id="materialSizeDisplay" class="form-control" readonly type="text">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">宽：</label>
+            <div class="col-sm-8">
+                <input name="width" id="width" class="form-control" readonly type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">高：</label>
+            <div class="col-sm-8">
+                <input name="height" id="height" class="form-control" readonly type="text">
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+
+<script th:src="@{/ajax/libs/plupload/plupload.full.min.js}"></script>
+<script type="text/javascript">
+    //1图片2 视频3文本4音频5压缩6其它
+    //图片
+    var imageReg = /.+\.(gif|jpg|jpeg|png|webp|bmp)/i;
+    //视频
+    var vedioReg = /.+\.(mpg?4|3gp|wav|wma|wmv)/i;
+    //文本
+    var textReg=/.+\.(txt|pdf|doc|docx|xls|xlsx|ppt|pptx|ini)/i;
+    //视频
+    var audioReg = /.+\.(mp3|mid|wav|wma|avi)/i;
+    //压缩
+    var zipReg = /.+\.(zip|rar|gz|bz2|jar)/i;
+
+    //素材类型
+    //图片
+    var MATERIAL_TYPE_IMAGE="1";
+    //视频
+    var MATERIAL_TYPE_VIDEO="2";
+    //文本
+    var MATERIAL_TYPE_TXT="3";
+    //音频
+    var MATERIAL_TYPE_AUDIO="4";
+    //压缩
+    var MATERIAL_TYPE_ZIP="5";
+    //其它
+    var MATERIAL_TYPE_OTHER="6";
+    function autoSetMaterialType(name){
+        var v=MATERIAL_TYPE_OTHER;
+        if(imageReg.test(name)){
+            v=MATERIAL_TYPE_IMAGE;
+        }else if(vedioReg.test(name)){
+            v=MATERIAL_TYPE_VIDEO;
+        }else if(textReg.test(name)){
+            v=MATERIAL_TYPE_TXT;
+        }else if(audioReg.test(name)){
+            v=MATERIAL_TYPE_AUDIO;
+        }else if(zipReg.test(name)){
+            v=MATERIAL_TYPE_ZIP;
+        }else{
+            v=MATERIAL_TYPE_OTHER;
+        }
+        $("[name='materialType']").val(v);
+        $("[name='materialTypeDisplay'][value='"+v+"']").iCheck('check');
+    }
+    var prefix = ctx + "cms/material"
+    $("#form-material-add").validate({
+        focusCleanup: true
+    });
+    $(function(){
+
+        $("[name='materialTypeDisplay']").iCheck('disable');
+        // alert(prefix);
+    })
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-material-add').serialize());
+        }
+    }
+    var prefixGroup = ctx + "cms/materialGroup";
+    /*素材分组-新增-选择父部门树*/
+    function selectMaterialGroupTree() {
+        var options = {
+            title: '素材分组选择',
+            width: "380",
+            url: prefixGroup + "/selectMaterialGroupTree/" + $("#groupId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero){
+        var body = layer.getChildFrame('body', index);
+        $("#groupId").val(body.find('#treeId').val());
+        $("#groupName").val(body.find('#treeName').val());
+        layer.close(index);
+    }
+
+</script>
+
+<script type="text/javascript">
+    var uploader = new plupload.Uploader({ //实例化一个plupload上传对象
+        runtimes: 'html5,silverlight,html4,flash',
+        browse_button : 'uploadBtn',
+        url : ctx+"cms/uploadMaterial",
+        flash_swf_url : "/ajax/libs/plupload/Moxie.swf",
+        silverlight_xap_url : "/ajax/libs/plupload/Moxie.xap",
+        filters: {
+            max_file_size: '10mb', //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
+            mime_types : [{ title : "图片文件", extensions:"jpg,jpeg,gif,png,bmp" },
+                {title: "视频文件", extensions: "mp4,mpeg4,3gp,wav,wma,wmv"},
+                {title: "文本文件", extensions: "txt,pdf,doc,docx,xls,xlsx,ppt,pptx,ini"},
+                {title: "视频文件", extensions: "zip,rar,gz,bz2,jar"},
+                {title: "音频文件", extensions: "mp3,mid,wav,wma,avi"}
+            ]
+        }//只允许上传图片文件
+    });
+    //绑定文件添加进队列事件
+    uploader.bind('FilesAdded',function(uploader,files){
+        uploader.start(); //开始上传
+    });
+    uploader.bind('Error',function(up, err){
+        alert(err.message);//上传出错的时候触发
+    });
+    uploader.bind("FileUploaded", function(up, file, res){
+
+        var json=res.response;
+        json=JSON.parse(json);
+
+        if(json.code!=0&&json.code!='0'){
+            $.modal.alertError(json.msg);
+        }
+        uploadCallback(json.data);
+
+    })
+    window.onload = function() {
+        uploader.init(); //初始化
+    };
+    function uploadCallback(json){
+
+        $("#width").val(json.width);
+        $("#height").val(json.height);
+        $("#materialSizeDisplay").val(renderFileSize(json.size));
+        $("#materialSize").val(json.size);
+        $("#materialName").val(json.name);
+        $("#savePath").val(json.path);
+        autoSetMaterialType(json.name);
+    }
+</script>
+</body>
+</html>

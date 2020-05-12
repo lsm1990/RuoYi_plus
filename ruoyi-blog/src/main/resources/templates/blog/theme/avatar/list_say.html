@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="no-js">
+<head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	  <title>{$seo_title}</title>
+	  <meta name="keywords" content="{$keywords}" />
+	  <meta name="description" content="{$description}" />
+    <link href="{STATIC_URL}avatar/css/dgy.base.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.head.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.group.css" rel="stylesheet" type="text/css" />
+    <link href="{STATIC_URL}avatar/css/dgy.layout.css" rel="stylesheet" type="text/css" />
+	  <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+      <script type="text/javascript" src="{STATIC_URL}avatar/js/jquery-2.1.4.min.js"></script>
+      <script type="text/javascript" src="{STATIC_URL}avatar/js/baseMotheds.js"></script>
+  </head>
+  <body class="">
+    <!-- header -->
+    <div class="fixedHeadSwitch">
+    {m:include "index","header"}
+    </div>
+    
+    <!-- article -->
+    <div class="baseGroup mt120 layoutAuto" id="channelGroup">
+        
+        <div class="articleModeGrid on w3">
+            {m:lists field="title,inputtime,url,click,thumb,nickname" catid="$catid" limit="9" page="page"}
+            {loop $data $v}
+            <div class="itemLi layoutAuto">
+                <a href="{$v[url]}" target="_blank" class="content">
+                    <div class="imgBox full">
+                        <img class="img" src="{$v[thumb]}" alt="{$v[title]}">
+                    </div>
+                    <div class="articleGroup">
+                        <h2>{str_cut($v['title'], 120)}</h2>
+                        <div class="btmInfo">
+                            <span class="">{format_time($v['inputtime'])}</span>
+                            <div class="text">by. <span class="strong">{$v[nickname]}</span></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {/loop}
+            <div class="clearfix"></div>
+        </div>
+        <div id="pageGroup">{$pages}</div>
+        
+    </div>
+
+    <!-- footer -->
+    <footer class="bgfa">
+    {m:include "index","footer"}
+    </footer>
+      
+  </body>
+</html>

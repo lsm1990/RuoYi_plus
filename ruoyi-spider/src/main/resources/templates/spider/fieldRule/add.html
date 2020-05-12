@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增字段值处理规则')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-fieldRule-add">
+            <div class="form-group" style="display: none;">
+                <label class="col-sm-3 control-label">字段ID：</label>
+                <div class="col-sm-8">
+                    <input name="fieldId" class="form-control" th:value="${fieldId}" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">数据处理规则：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('field_value_process_type')}">
+                        <input type="radio" th:id="${'processType_' + dict.dictCode}" name="processType" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${'processType_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group replace">
+                <label class="col-sm-3 control-label">替换正则：</label>
+                <div class="col-sm-8">
+                    <input id="replacereg" name="replacereg" class="form-control" required type="text">
+                </div>
+            </div>
+            <div class="form-group replace">
+                <label class="col-sm-3 control-label">替换内容：</label>
+                <div class="col-sm-8">
+                    <input  name="replacement" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group substr">
+                <label class="col-sm-3 control-label">截取字符串目标：</label>
+                <div class="col-sm-8">
+                    <input id="substrTarget" name="substrTarget" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">排序：</label>
+                <div class="col-sm-8">
+                    <input name="sort" class="form-control" required type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "spider/fieldRule"
+        $("#form-fieldRule-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-fieldRule-add').serialize());
+            }
+        }
+        function showHideDiv(){
+            var v=$("[name=processType]:checked").val();
+            if(v=="replace"){
+                $(".replace").show();
+                $(".substr").hide();
+                $("#replacereg").attr("required","required");
+                $("#substrTarget").removeAttr("required");
+
+            }else if(v=="substrbefore"){
+                $(".replace").hide();
+                $(".substr").show();
+                $("#replacereg").removeAttr("required");
+                $("#substrTarget").attr("required","required");
+
+            }else if(v=="substrafter"){
+                $(".replace").hide();
+                $(".substr").show();
+                $("#replacereg").removeAttr("required");
+                $("#substrTarget").attr("required","required");
+
+            }else{}
+        }
+        $(function(){
+
+            $('[name=processType]').on('ifChecked', function(event){
+                showHideDiv();
+            });
+
+
+        })
+    </script>
+</body>
+</html>

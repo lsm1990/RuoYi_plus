@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('邮件列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>接收者邮箱：</p>
+                                <input type="text" name="toEmail"/>
+                            </li>
+                            <li>
+                                <p>主题：</p>
+                                <input type="text" name="subject"/>
+                            </li>
+                            <li>
+                                <p>是否发送：</p>
+                                <select name="sendFlag" th:with="type=${@dict.getType('send_flag')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="cms:email:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editTab()" shiro:hasPermission="cms:email:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="cms:email:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="cms:email:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('cms:email:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('cms:email:remove')}]];
+        var sendFlagDatas = [[${@dict.getType('send_flag')}]];
+        var sendTypeDatas = [[${@dict.getType('send_type')}]];
+        var prefix = ctx + "cms/email";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "邮件",
+                columns: [{
+                    checkbox: true
+                },
+                {field : 'id',title : 'ID',visible: false},
+                {field : 'emailType',title : '邮件类型',visible: false},
+                {field : 'userId',title : '用户ID',visible: false},
+                {field : 'fromEmail',title : '发送者邮箱',visible: false},
+                {field : 'fromEmailPwd',title : '发送者邮箱密码',visible: false},
+                {field : 'toEmail',title : '接收者邮箱'},
+                {field : 'subject',title : '主题'},
+                {field : 'content',title : '内容',visible: false},
+                {field : 'sendFlag',title : '是否发送',formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(sendFlagDatas, value);
+                    }
+                },
+                {field : 'sendTime',title : '发送时间'},
+                {field : 'sendType',title : '发送类型',formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(sendTypeDatas, value);
+                    }
+                },
+                {field : 'planTime',title : '定时时间',visible: false},
+                {field : 'copyTo',title : '抄送用户',visible: false},
+                {field : 'attachfiles',title : '附件',visible: false},
+                {title: '操作', align: 'center', formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-warning btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="sendEmail(\'' + row.id + '\')"><i class="fa fa-upload"></i>发送</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editTab(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        function sendEmail(id){
+            $.modal.confirm("确认要发送该邮件吗？", function() {
+                $.operate.post(prefix+"/sendEmail",{ids:id});
+            });
+        }
+    </script>
+</body>
+</html>

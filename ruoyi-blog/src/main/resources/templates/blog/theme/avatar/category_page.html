@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="no-js">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>{$seo_title}</title>
+        <meta name="keywords" content="{$keywords}" />
+        <meta name="description" content="{$description}" />
+        <link href="{STATIC_URL}avatar/css/dgy.base.css" rel="stylesheet" type="text/css" />
+        <link href="{STATIC_URL}avatar/css/dgy.head.css" rel="stylesheet" type="text/css" />
+        <link href="{STATIC_URL}avatar/css/dgy.group.css" rel="stylesheet" type="text/css" />
+        <link href="{STATIC_URL}avatar/css/dgy.layout.css" rel="stylesheet" type="text/css" />
+        <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="{STATIC_URL}avatar/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="{STATIC_URL}avatar/js/baseMotheds.js"></script>
+        <script type="text/javascript" src="{STATIC_URL}plugin/layer/3.0.1/layer.js"></script>
+    </head>
+  <body>
+    <!-- header -->
+    <div class="fixedHeadSwitch">
+        {m:include "index","header"}
+    </div>
+    
+    <!-- baseGroup -->
+    <div class="baseGroup w1100 mt100 layoutAuto">
+        <!-- detailGrid -->
+        <div class="detailGrid my">
+                
+            <!-- rightGrid -->
+            <div class="rightGrid my">
+                <div class="myInfoGrid">
+                    <div class="commonHeadLabel small">
+                       <div class="title">关于多骨鱼</div>
+                    </div>
+                    <i class="avatar"></i>
+                    <div class="itemTitle">
+                        <p>hey, I am</p><h6>markbro</h6>
+                    </div>
+                    <div class="itemTitle">
+                        <p>邮箱：</p><h6>markbro@duoguyu.com</h6>
+                    </div>
+                    <div class="itemTitle">
+                        <p>博客：</p><h6>https://www.duoguyu.com</h6>
+                    </div>
+                    <div class="detail">
+                        <p>我是一个设计爱好者、斜杠青年、伪文青，同时也是一位前端攻(ban)城(zhuan)狮(de)，然后这是我的一块自留地。</p>
+                        <p>目前在帝都的一家互联网公司供职。平时不忙时，喜欢偶发性改改UI、写写一些稀奇古怪的界面，然后发布一些围绕pt-cms的 <a href="https://www.duoguyu.com/resource/" target="_blank" title="模版主题资源下载">模版主题</a>。</p>
+                        <p>如你所见，这是我的个人博客自留地，博客后台采用了 <a href="http://blog.pt-cms.com" target="_blank" title="个人博客">袁志蒙</a> 的优秀轻量级后台管理程序 <a href="http://www.pt-cms.com" target="_blank" title="pt-cms官网">pt-cms</a> - v5.2版本，前端界面则由我独自设计与开发，当前博客模板主题为：<b>Avatar</b> v1.2.2 Beta。</p>
+                        <p>当前了，毕竟我只是一位设计爱好者，在审美设计上也有许多的缺陷和不足。如果你有一些好的想法、创意或者寻求帮助的话，可以发邮件给我(<a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=markbro@duoguyu.com" target="_blank">markbro@duoguyu.com</a>) 或者 到<a href="http://bbs.pt-cms.com" target="_blank" title="pt-cms论坛">pt-cms社区</a>逛逛。</p>
+                        <p>最后，祝自由快乐!</p>
+                    </div>
+                </div>
+                <div class="brandGrid" id="brandGrid"></div>
+            </div>
+            
+            <!-- 留言信息 -->
+            <div class="commonHeadLabel small">
+               <div class="title">留言</div>
+            </div>
+            <div class="guestBookGroup">
+                <form action="{U('guestbook/index/init')}" method="post" name="guest" onsubmit="return check()">
+                    <div class="inputLabel" style="display:none">
+                        <input name="title" type="hidden" class="inputBlock" value="留言标题" placeholder="留言标题" />
+                    </div>
+                    <div class="inputLabel">
+                        <input name="name" type="text" class="inputBlock" placeholder="昵称" />
+                    </div>
+                    <div class="inputLabel" style="display:none">
+                        <input name="email" type="email" class="inputBlock" placeholder="Email(选填)" />
+                    </div>
+                    <div class="inputLabel">
+                        <textarea name="bookmsg" cols="50" rows="6" class="textareaBlock" placeholder="留言内容" ></textarea>
+                    </div>
+                    <div class="inputLabel qrcode">
+                        <input name="code" type="text" class="inputBlock" placeholder="验证码" ><img class="qrcode" src="{U('api/index/code')}" onclick="this.src=this.src+'?'" title="看不清？点击更换">
+                    </div>
+                    <input type="submit" name="dosubmit" value="提交留言" class="submitBtn"/>
+                </form>
+            </div>
+            <!-- 留言列表 -->
+            <div class="commonHeadLabel small mt40">
+               <div class="title">最新留言</div>
+            </div>
+            <div class="commentGrid" style="padding: 0 10px;">
+                <ul class="itemUl">
+                    {m:guestbook page="page"}
+                    {loop $data $v}
+                    <li class="item">
+                        <div class="username"># {$v[name]} <span>{date('Y/m/d H:i:s',$v['booktime'])}</span></div>
+                        <div class="commentGroup">
+                            <p class="detailText">{$v['bookmsg']}</p>
+                            {loop $v['admin_reply'] $v}
+                            <p class="adminText"><strong style="color:#409eff">管理员</strong>：{$v[bookmsg]}</p>
+                            {/loop}
+                        </div>
+                    </li>
+                    {/loop}
+                    {if empty($data)}<li class="tips">暂无留言，赶紧来抢沙发吧~</li>{/if}
+                </ul>
+            </div>
+            
+            <!-- 友联 -->
+            <div class="commonHeadLabel small mt40">
+               <div class="title">友情链接 <small class="info" style="font-weight:normal;">/ 交换友联，请发E-mail至markbro@duoguyu.com</small></div>
+            </div>
+            <div class="newArticleGrid link">
+                {m:link field="url,logo,name,msg" where="status=1" order="listorder ASC" limit="10"}
+                {loop $data $v}
+                <div class="itemLi layoutAuto">
+                    <a href="{$v[url]}" target="_blank" class="content">
+                        <div class="img" style="background:url('{$v[logo]}') no-repeat; background-size:cover;"></div>
+                        <h2>{str_cut($v['name'], 75)}</h2>
+                        <p>{$v[msg]}</p>
+                    </a>
+                </div>
+                {/loop}
+                <div class="clearfix"></div>
+            </div>
+            
+            <!-- 特别鸣谢 开始 -->
+            <div class="commonHeadLabel small mt40">
+               <div class="title">特别鸣谢</div>
+            </div>
+            <div class="thankGroup">
+                <p><a href="http://www.pt-cms.com" target="_blank" title="pt-cms官网">pt-cms</a> 轻量级开源管理系统，提供后台系统支持。</p>
+                <p><a href="http://blog.pt-cms.com" target="_blank" title="袁志蒙博客">袁志蒙</a> 友情提供后端技术支持。</p>
+            </div>
+            <!-- 特别鸣谢 结束 -->
+            
+            <!-- 更新日志 开始 -->
+            <div class="commonHeadLabel small mt40">
+               <div class="title">更新日志</div>
+            </div>
+            <div class="detailGroup">
+                <ul class="updateGroup">
+                    <li>
+                        <p class="title"><span class="cfBlue mr10">Version 5.3.6 Beta</span><small>2019/06/12</small></p>
+                        <p>当前主题: <b>Avatar</b> v1.2.2。</p>
+                        <p><b>Add:</b></p>
+                        <p class="pl20">首页增加“最新留言”板块，展示最近3条留言信息。</p>
+                        <p><b>Update:</b></p>
+                        <p class="pl20">1: 将首页“推荐资源”栏目，修改为滑动视觉效果; 优化首页友联UI等</p>
+                        <p class="pl20">2: 调整“关于我”界面栏目，修复一处留言分页的前端bug;</p>
+                        <p class="pl20">3: 优化其它小细节等。</p>
+                    </li>
+                    <li>
+                        <p class="title"><span class="cfBlue mr10">Version 5.3.2 Beta</span><small>2019/05/09</small></p>
+                        <p>变更主题至: <b>Avatar</b> v1.0.1。</p>
+                        <p><b>Update:</b></p>
+                        <p class="pl20">1: 升级全新界面风格，调整至1100px容器宽度，优化导航栏目;</p>
+                        <p class="pl20">2: 增加“隔三岔五”栏目，不定期更新一篇语录及配图;</p>
+                        <p class="pl20">3: 调整文章列表布局，优化资讯内容风格。</p>
+                    </li>
+                    <li>
+                        <p class="title"><span class="cfBlue mr10">Version 5.2.1 Beta</span><small>2019/03/24</small></p>
+                        <p>主题升级至: <b>Intro</b> v5.2。</p>
+                        <p><b>Add:</b></p>
+                        <p class="pl20">1: 首页增加“最近更新”板块;</p>
+                        <p class="pl20">2: 札记增加“图文/标题”模式，默认为标题模式，下次访问时可根据记录历史模式载入视图;</p>
+                        <p class="pl20">3: 内容页增加“点赞”功能。</p>
+                        <p><b>Update:</b></p>
+                        <p class="pl20">1: 优化札记及资源栏目的界面视图UI;</p>
+                        <p class="pl20">2: 更新内容页布局风格；更新404页面(文青版)，猛戳此处获取<a href="https://www.duoguyu.com/wtf/16.html?v=avatar" target="_blank" title="404页面(文青版)">404页面(文青版)</a>。</p>
+                        <p><b>Fix:</b></p>
+                        <p class="pl20">菜单导航在firefox浏览器显示异常的问题。</p>
+                        <p class="tipsInfo">tips: <a href="https://www.duoguyu.com/resource/19.html?v=avatar" target="_blank" title="Intro v5.2 完整版模版主题免费下载"><b>Intro</b> v5.2 完整版</a> 模版主题已提供免费下载。</p>
+                    </li>
+                    <li>
+                        <p class="title"><span class="cfBlue mr10">Version 5.1.0 Beta</span><small>2019/03/20</small></p>
+                        <p>正式命名为: <b>Intro</b>, 意为“序章”。</p>
+                        <p><b>Update:</b></p>
+                        <p class="pl20">调整“资源、小程序”栏目的界面UI，优化部分交互代码。</p>
+                    </li>
+                    <li>
+                        <p class="title"><span class="cfBlue mr10">Version 5.0.0</span><small>2019/03/14</small></p>
+                        <p><b>一切过往，皆为序章</b></p>
+                        <p>大版本全新重构，从零开始，回归博客本体。原主站已加入时光博物馆，猛戳此处<a href="http://old.duoguyu.com?v=avatar" target="_blank" title="多骨鱼旧站">查看旧站</a> 。</p>
+                    </li>
+                    <li>
+                        <p class="title"><span class="cfBlue mr10">Version 3.2</span><small>2018/09/15</small></p>
+                        <p>站点属性定义为互联网垂直资讯类网站，后台管理系统升级至pt-cms v5.2版本。</p>
+                    </li>
+                    <li>
+                        <p class="title"><span class="cfBlue mr10">Version 2.0</span><small>2018/01/05</small></p>
+                        <p>站点主题二次改版，界面更加清爽简约，并升级了默认的评论模块。</p>
+                        <p>配置更安全的SSL加密传输协议，支持HTTPS访问。</p>
+                    </li>
+                    <li>
+                        <p class="title"><span class="cfBlue mr10">Version 1.0.2</span><small>2017/08/25</small></p>
+                        <p>多骨鱼完成建站并部署上线，采用的是pt-cms 3.0版本后台管理系统。</p>
+                    </li>
+                </ul>
+            </div>
+            <!-- 更新日志 结束 -->
+            
+            
+        </div>
+    </div>
+    
+    <!-- footer -->
+    <footer class="bgfa">
+    {m:include "index","footer"}
+    </footer>
+    
+    <script type="text/javascript">
+        function check(){
+            if(document.guest.title.value==""){
+                layer.msg("留言主题不能为空！");
+                return false;
+            }
+            if(document.guest.name.value==""){
+                layer.msg("请填写您的昵称！");
+                return false;
+            }
+            if(document.guest.bookmsg.value==""){
+                layer.msg("请填写留言内容！");
+                return false;
+            }
+            if(document.guest.code.value==""){
+                layer.msg("请填写验证码！");
+                return false;
+            }       
+            return true;
+        }
+    </script>
+    
+  </body>
+</html>

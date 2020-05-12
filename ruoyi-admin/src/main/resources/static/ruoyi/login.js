@@ -1,0 +1,129 @@
+var cookieName=getCookie('admin_username');
+var cookiePass=getCookie('admin_password');
+var cookieRememberMe=getCookie('admin_rememberMe');
+
+function getCookie(name){
+    //获取cookie字符串
+    var strCookie=document.cookie;
+    //将多cookie切割为多个名/值对
+    var arrCookie=strCookie.split("; ");
+    var value="";
+    //遍历cookie数组，处理每个cookie对
+    for(var i=0;i<arrCookie.length;i++){
+        var arr=arrCookie[i].split("=");
+        if(name==arr[0]){
+            value=arr[1];
+            break;
+        }
+    }
+    return value;
+}
+$(function() {
+    if(cookieRememberMe=="1"){
+        $("#rememberMe").attr("checked",true);
+    }else{
+        $("#rememberMe").attr("checked",false);
+    }
+    if($.common.isNotEmpty(cookieName)){
+        $("#username").val(cookieName);
+    }
+    if($.common.isNotEmpty(cookiePass)){
+        $("#password").val(cookiePass);
+    }
+
+	validateKickout();
+    validateRule();
+	$('.imgcode').click(function() {
+		var url = ctx + "captcha/captchaImage?type=" + captchaType + "&s=" + Math.random();
+		$(".imgcode").attr("src", url);
+	});
+});
+
+$.validator.setDefaults({
+    submitHandler: function() {
+		login();
+    }
+});
+
+function login() {
+	$.modal.loading($("#btnSubmit").data("loading"));
+	var username = $.common.trim($("input[name='username']").val());
+    var password = $.common.trim($("input[name='password']").val());
+    var validateCode = $("input[name='validateCode']").val();
+    var rememberMe = $("input[name='rememberMe']").is(':checked');
+    $.ajax({
+        type: "post",
+        url: ctx + "login",
+        xhrFields: {
+            withCredentials: true
+        },
+        data: {
+            "username": username,
+            "password": password,
+            "validateCode" : validateCode,
+            "rememberMe": rememberMe
+        },
+        success: function(r) {
+            if (r.code == 0) {
+                location.href = ctx + 'index';
+            } else {
+            	$.modal.closeLoading();
+            	$('.imgcode').click();
+            	$(".code").val("");
+            	$.modal.msg(r.msg);
+            }
+        }
+    });
+}
+
+function validateRule() {
+    var icon = "<i class='fa fa-times-circle'></i> ";
+    $("#signupForm").validate({
+        rules: {
+            username: {
+                required: true
+            },
+            password: {
+                required: true
+            }
+        },
+        messages: {
+            username: {
+                required: icon + "请输入您的用户名",
+            },
+            password: {
+                required: icon + "请输入您的密码",
+            }
+        }
+    })
+}
+
+function validateKickout() {
+	if (getParam("kickout") == 1) {
+	    layer.alert("<font color='red'>您已在别处登录，请您修改密码或重新登录</font>", {
+	        icon: 0,
+	        title: "系统提示"
+	    },
+	    function(index) {
+	        //关闭弹窗
+	        layer.close(index);
+	        if (top != self) {
+	            top.location = self.location;
+	        } else {
+	            var url  =  location.search;
+	            if (url) {
+	                var oldUrl  = window.location.href;
+	                var newUrl  = oldUrl.substring(0,  oldUrl.indexOf('?'));
+	                self.location  = newUrl;
+	            }
+	        }
+	    });
+	}
+}
+
+function getParam(paramName) {
+    var reg = new RegExp("(^|&)" + paramName + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return decodeURI(r[2]);
+    return null;
+}

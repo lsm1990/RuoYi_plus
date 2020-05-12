@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.spider.mapper.SpiderFiledRuleMapper">
+    
+    <resultMap type="SpiderFiledRule" id="SpiderFiledRuleResult">
+        <result property="id"    column="id"    />
+        <result property="fieldId"    column="field_id"    />
+        <result property="processType"    column="process_type"    />
+        <result property="replacereg"    column="replaceReg"    />
+        <result property="replacement"    column="replacement"    />
+        <result property="substrTarget"    column="substr_target"    />
+        <result property="sort"    column="sort"    />
+    </resultMap>
+
+    <sql id="selectSpiderFiledRuleVo">
+        select id, field_id, process_type, replaceReg, replacement, substr_target, sort from spider_filed_rule
+    </sql>
+
+    <select id="selectSpiderFiledRuleList" parameterType="SpiderFiledRule" resultMap="SpiderFiledRuleResult">
+        <include refid="selectSpiderFiledRuleVo"/>
+        <where>
+            <if test="fieldId != null and fieldId != '' "> and field_id = #{fieldId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSpiderFiledRuleById" parameterType="Long" resultMap="SpiderFiledRuleResult">
+        <include refid="selectSpiderFiledRuleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSpiderFiledRule" parameterType="SpiderFiledRule" useGeneratedKeys="true" keyProperty="id">
+        insert into spider_filed_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fieldId != null  and fieldId != ''">field_id,</if>
+            <if test="processType != null  and processType != ''">process_type,</if>
+            <if test="replacereg != null  and replacereg != ''">replaceReg,</if>
+            <if test="replacement != null  and replacement != ''">replacement,</if>
+            <if test="substrTarget != null  and substrTarget != ''">substr_target,</if>
+            <if test="sort != null ">sort,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fieldId != null  and fieldId != ''">#{fieldId},</if>
+            <if test="processType != null  and processType != ''">#{processType},</if>
+            <if test="replacereg != null  and replacereg != ''">#{replacereg},</if>
+            <if test="replacement != null  and replacement != ''">#{replacement},</if>
+            <if test="substrTarget != null  and substrTarget != ''">#{substrTarget},</if>
+            <if test="sort != null ">#{sort},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSpiderFiledRule" parameterType="SpiderFiledRule">
+        update spider_filed_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fieldId != null  and fieldId != ''">field_id = #{fieldId},</if>
+            <if test="processType != null  and processType != ''">process_type = #{processType},</if>
+            <if test="replacereg != null  and replacereg != ''">replaceReg = #{replacereg},</if>
+            replacement = #{replacement},
+            <if test="substrTarget != null  and substrTarget != ''">substr_target = #{substrTarget},</if>
+            <if test="sort != null ">sort = #{sort},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSpiderFiledRuleById" parameterType="Long">
+        delete from spider_filed_rule where id = #{id}
+    </delete>
+
+    <delete id="deleteSpiderFiledRuleByIds" parameterType="String">
+        delete from spider_filed_rule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

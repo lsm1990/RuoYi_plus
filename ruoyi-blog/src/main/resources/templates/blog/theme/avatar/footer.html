@@ -1,0 +1,49 @@
+<!-- footer -->
+  <div class="commonFooterGrid layoutHide">
+      
+    <div class="baseGroup w1200">
+      <div class="footerGrid">
+            <div class="menuGroup">
+                <span class="item"><a  th:href="@{/}">首页</a></span>
+
+                <!--<span th:each="category:${@cms.selectNavCategories()}"  class="item">
+                    <a th:if="${category.parentId==null||category.parentId==0}"  th:href="@{${'/blog/category/' + category.categoryId}}" th:text="${category.categoryName}"></a>
+        		</span>-->
+                <span class="item">
+                    <a th:href="@{/blog/category}" th:class="${categoryId=='category'? 'current':''}" >文章分类</a>
+        		</span>
+                <span class="item">
+                    <a th:href="@{/blog/resource/list?pageSize=6}">资源</a>
+        		</span>
+                <span class="item">
+                    <a th:href="@{/blog/nav}" th:class="${categoryId=='nav'? 'current':''}" >导航</a>
+        		</span>
+                <span class="item">
+                    <a th:href="@{/blog/siteMsg}">留言</a>
+        		</span>
+            	<!--<span class="item">
+                    <a href="http://bbs.pt-cms.com/" target="_blank">社区</a>
+        		</span>-->
+            </div>
+            <!-- copyright -->
+            <div class="copyright">
+                <p>骄傲的使用了轻量级开源内容管理系统 <a th:href="${@config.getKey('site.url')}" target="_blank">pt-cms</a></p>
+            </div>
+      </div>
+      <div class="otherGrid">
+          <p><span style="padding-right:20px;">Copyright © [[${#dates.format(new java.util.Date().getTime(), 'yyyy')}]].[[${@config.getKey('site.name')}]] All Rights Reserved. Powered by <a th:href="${@config.getKey('site.url')}" style="color: #888;" target="_blank" title="pt-cms是一款精简的自适应CMS系统...">pt-cms</a>.</span>
+              <span>[[${@config.getKey('site.beian')}]]</span>
+          </p>
+
+      </div>
+    </div>
+    
+  </div>
+<!-- / footer -->
+
+<!-- fixedWidget -->
+<div class="fixedWidget layoutHide">
+    <a href="#" rel="nofollow" target="_blank" class="mail" title="联系我"></a>
+    <a href="#" rel="nofollow" class="top backTop" title="返回顶部"></a>
+</div>
+<script th:src="@{/blog/avatar/js/dgy.index.js}"></script>

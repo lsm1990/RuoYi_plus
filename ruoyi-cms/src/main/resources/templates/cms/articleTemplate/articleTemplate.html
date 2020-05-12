@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('文章模板列表')" />
+    <style>
+        .Huialert{ position:relative;padding:8px 35px 8px 14px;margin-bottom: 20px;text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);background-color: #fcf8e3;border: 1px solid #fbeed5;border-radius: 4px}
+        .Huialert, .Huialert h4{color: #c09853}
+        .Huialert h4{margin: 0}
+        .Huialert .Hui-iconfont{position:absolute;top:9px;right:10px;line-height: 20px;cursor:pointer; color:#000; opacity:0.2;_color:#666}
+        .Huialert .Hui-iconfont.hover{ color:#000;opacity:0.8}
+        .Huialert-success{color: #468847;background-color: #dff0d8;border-color: #d6e9c6}
+        .Huialert-success h4{color: #468847}
+        .Huialert-danger, .Huialert-error{color: #b94a48;background-color: #f2dede;border-color: #eed3d7}
+        .Huialert-danger h4, .Huialert-error h4{color: #b94a48}
+        .Huialert-info{color: #3a87ad;background-color: #d9edf7;border-color: #bce8f1}
+        .Huialert-info h4{color: #3a87ad}
+        .Huialert-block{padding-top: 14px;padding-bottom: 14px}
+        .Huialert-block > p, .Huialert-block > ul{margin-bottom: 0}
+        .Huialert-block p + p{margin-top: 5px}
+
+    </style>
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>模板名称：</p>
+                                <input type="text" name="name"/>
+                            </li>
+                            <li>
+                                <p>共享类型：</p>
+                                <select name="shareType" th:with="type=${@dict.getType('share_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <p>审核标志：</p>
+                                <select name="audit" th:with="type=${@dict.getType('audit_state')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="listNew()" >
+                    <i class="fa fa-plus"></i> 新版页面
+                </a>
+
+                <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="cms:articleTemplate:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="cms:articleTemplate:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="cms:articleTemplate:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning  multiple disabled" onclick="audit()" shiro:hasPermission="cms:articleTemplate:audit">
+                    <i class="fa fa-download"></i> 审核
+                </a>
+                <div th:if="${editorOK==false}" style="display: inline-block;margin-bottom: 0px;padding: 2px 35px 2px 14px;" class="Huialert Huialert-danger">请将系统的默认编辑器设定为ueditor</div>
+                <div th:if="${editorOK==true}" style="display: inline-block;margin-bottom: 0px;padding: 2px 35px 2px 14px;" class="Huialert Huialert-success">本功能编辑内容适用于系统设定的默认编辑器ueditor</div>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+
+        function audit(){
+            $.modal.alertWarning("该功能尚未研发![task001]");
+        }
+
+        var editFlag = [[${@permission.hasPermi('cms:articleTemplate:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('cms:articleTemplate:remove')}]];
+        var shareTypeDatas = [[${@dict.getType('share_type')}]];
+        var auditDatas = [[${@dict.getType('audit_state')}]];
+        var prefix = ctx + "cms/articleTemplate";
+
+        function listNew(){
+            var url = prefix + '/listNew';
+            $.modal.openTab("文章模板列表", url);
+        }
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "文章模板",
+                columns: [{
+                    checkbox: true
+                },
+                {field : 'id', title : 'ID', visible: false},
+                {field : 'name', title : '文章模板名称'},
+                {field : 'tagNames', title : '标签'},
+                {field : 'shareType', title : '共享类型',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(shareTypeDatas, value);
+                    }
+                },
+                {field : 'audit', title : '审核标志',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(auditDatas, value);
+                    }
+                },
+                {field : 'auditTime', title : '审核时间', visible:false},
+                {title: '操作', align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+	<meta name="description" th:content="${@config.getKey('blog.index.description')}">
+	<title th:text="${@config.getKey('blog.index.title')}"></title>
+	<meta name="baidu-site-verification" content="dAEtGwEyN9" />
+
+	<link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.base.min.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.head.min.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pnews/css/dgy.web.3.0.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pnews/plugin/iconfont/iconfont.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pnews/plugin/swiper4/swiper-4.1.0.min.css}"/>
+
+	<script th:src="@{/blog/pnews/js/jquery-2.1.4.min.js}"></script>
+	<script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+	<script th:src="@{/blog/pnews/js/jquery.lazyload.min.js}"></script>
+	<script th:src="@{/blog/pnews/js/baseMotheds.js}"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+	<script th:src="@{/ruoyi/js/ry-ui.js?v=4.1.0}"></script>
+	<script th:src="@{/blog/pnews/plugin/swiper4/swiper-4.1.0.min.js}"></script>
+</head>
+<body>
+<div class="headGroup white fixed" id="headGroup">
+	<div class="headWrap">
+		<div class="logoWrap"><a class="logo fullWhite" th:title="${@config.getKey('blog.index.title')}" th:href="${@config.getKey('site.url')}"></a></div>
+		<div class="menuWrap">
+			<ul>
+				<li>
+					<a  th:class="${categoryId=='index' ? 'current' : ''} " th:href="@{/}">
+						<span>首页</span>
+					</a>
+				</li>
+
+				<li th:each="category:${@cms.selectNavCategories()}" >
+					<a th:if="${category.parentId==null||category.parentId==0}" th:class="${category.categoryId +'' ==categoryId ? 'current':''}" th:href="@{${'/blog/category/' + category.categoryId}}"  >
+						<span th:text="${category.categoryName}"></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="userWrap">
+			<div class="searchWrap" style="color:#fff;width: 140px;">
+                <a  style="color:#fff;" th:href="@{/admin}" target="_blank">登陆后台</a>
+                <span style="display: inline-block;margin-right: 5px;margin-left: 5px;">|</span>
+                <a onclick="switchBlogTheme()" style="cursor: pointer;color:#fff;" target="_blank">切换模板</a>
+    		</div>
+			<div class="searchWrap" id="searchWrap">
+				<form method="get" th:action="@{/blog/search}" target="_blank">
+					<input type="text" class="searchInput" name="content"/>
+					<button id="searchbtn" type="submit" class="searchBtn doBtn"><i class="iconfont icon-search"></i></button>
+					<div class="searchBtn coverBtn"><i class="iconfont icon-search"></i></div>
+				</form>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	<!-- 置顶文章 -->
+	<div class="fullPitch" th:each="item,temp:${@cms.topList(1)}" >
+
+		<span th:text="${item.category.categoryName}"></span>
+		<h2>
+			<a th:href="${'/blog/article/'+item.id}" target="_blank" th:text="${item.title}" th:title="${item.title}"></a>
+		</h2>
+		<div class="otherInfo">
+			<span>by.</span><span th:text="${item.author}"></span>
+		</div>
+	</div>
+	<!-- 热门标签 -->
+	<div class="fullTabs" id="headFullTabs">
+		<div class="menuBox">
+			<span  th:each="item,temp:${@cms.selectFullTabs()}" ><a  th:href="@{${'/blog/tag/'+item.tagId}+'?pageSize=6'}" th:text="${item.tagName}" target="_blank"></a></span>
+		</div>
+	</div>
+</div>
+<!-- itemGrid for hot -->
+<div class="baseGroup mb20 mt20" id="indexGroup">
+
+	<div class="itemGroup">
+		<!-- leftGrid -->
+		<div class="leftGrid">
+			<!-- indexFocusGrid 轮播图 后台banner模块配置 -->
+			<div class="indexFocusGrid">
+				<div class="focusWrap swiper-container" id="indexFocusGrid">
+					<ul class="swiper-wrapper">
+						<li class="swiper-slide" th:each="item,temp:${@cms.selectIndexBannerImgs('blog_index')}">
+							<a th:href="@{${item.link}}" th:title="${item.materialName}" target="_blank">
+								<img class="img" th:src="@{${item.savePath}}">
+							</a>
+						</li>
+					</ul>
+					<div class="overlay index"></div>
+					<div class="focusNext swiper-button-next swiper-button-white"></div>
+					<div class="focusPrev swiper-button-prev swiper-button-white"></div>
+					<div class="indexPartyPagination commonSwiperPagination swiper-pagination" id="indexFocusPagination"></div>
+				</div>
+			</div>
+			<script>
+                $(function(){
+                    var indexFocus = new Swiper('#indexFocusGrid',{
+                        loop: true, effect: 'fade', autoplay:{delay:4000,disableOnInteraction:false}, navigation: {nextEl:'.focusNext',prevEl:'.focusPrev'}, pagination: {el:'#indexFocusPagination'}
+                    });
+                });
+			</script>
+			<!-- / indexFocusGrid 轮播图 后台banner模块配置  -->
+
+			<!-- fullImgGrid 焦点图 -->
+			<div class="midMenuGroup mb20">
+				<div class="fullImgGrid v3">
+					<ul>
+						<li th:each="item,temp:${@cms.focusList(4)}" >
+							<a th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}" target="_blank" class="fullImgLink">
+								<div class="articleGrid v2">
+									<div class="otherInfo  pt30">
+										<h2 th:text="${item.title}"></h2>
+									</div>
+								</div>
+
+								<i class="focusImg" th:attr="style='background:url('+@{${item.coverImage}}+') no-repeat center; background-size:cover;'"></i>
+							</a>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+			<!-- / fullImgGrid -->
+
+			<!-- itemBox 头条 -->
+			<div class="itemBox mb20" style="padding:0;">
+				<div class="headGrid" style="padding:10px 22px 0;">
+					<h3 style="border-bottom:0;"><b>头条</b></h3>
+				</div>
+				<!-- listMoreGroup -->
+				<div class="listMoreGroup">
+					<div class="itemGrid">
+						<ul>
+
+							<li  th:each="item,temp:${@cms.hotList(6)}" >
+								<div class="article_box">
+									<a th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"  target="_blank">
+										<div class="tophead hoverImg">
+											<i class="iconFlag" th:text="${item.category.categoryName}"></i>
+											<img class="img" th:src="@{${item.coverImage}}">
+										</div>
+										<article class="h135">
+											<h3 th:text="${item.title}"></h3>
+											<p class="h40 cf999 mt10" th:text="${item.description}"></p>
+											<p class="mt15"><span class="cf_green f12">阅读全文 ></span></p>
+										</article>
+									</a>
+								</div>
+							</li>
+
+							<div class="clearfix"></div>
+						</ul>
+						<div class="line"></div>
+					</div>
+				</div>
+				<!-- itemWrap -->
+			</div>
+			<!-- / itemBox 特别推荐 -->
+			<div class="itemBox mb20" style="padding:0;">
+				<div class="adGrid homeMid" style="margin:0;"><a th:href="${@config.getKey('site.url')}" target="_blank" title="©源自优秀的轻量级开源管理系统pt-cms"><img th:src="@{/blog/pnews/images/ad-pt-cms.jpg}"></a></div>
+			</div>
+			<!-- itemBox 特别推荐 - 精选 -->
+			<div class="itemBox mb20" style="padding:0;">
+				<div class="headGrid" style="padding:10px 22px 0;">
+					<h3 style="border-bottom:0;"><b>精选</b></h3>
+				</div>
+				<!-- listMoreGroup -->
+				<div class="listMoreGroup">
+					<div class="itemGrid">
+						<ul>
+
+							<li th:each="item,temp:${@cms.recommendedList(6)}"  >
+								<div class="article_box">
+									<a th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"   target="_blank">
+										<div class="tophead hoverImg">
+											<img class="img" th:src="@{${item.coverImage}}">
+										</div>
+										<article class="h135">
+											<h3>
+												<span class="iconStatus sm mr5" th:text="${item.category.categoryName}"></span>
+												[[${item.title}]]
+											</h3>
+											<p class="description cf999 mt15" th:text="${item.description}"></p>
+										</article>
+									</a>
+								</div>
+							</li>
+
+							<div class="clearfix"></div>
+						</ul>
+						<div class="line"></div>
+					</div>
+				</div>
+				<!-- / listMoreGroup -->
+			</div>
+			<!-- / itemBox 特别推荐 -->
+
+		</div>
+		<!-- rightGrid -->
+		<div class="rightGrid h415">
+			<!-- 最新发布 -->
+			<div class="itemBox mb20">
+				<div class="headGrid">
+					<h3><b>最新</b></h3>
+				</div>
+				<div class="ulGrid point">
+					<ul>
+
+						<li th:each="item,temp:${@cms.recentList(6)}" >
+							<a th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"  target="_blank"><i></i>[[${item.title}]]</a>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+			<!-- / 最新发布 -->
+			<!-- 相关推荐 -->
+			<div class="itemBox mb20">
+				<div class="headGrid">
+					<h3><b>热门</b></h3>
+				</div>
+				<div class="tabInfoBox detail">
+
+					<div class="aside"   th:each="item,temp:${@cms.hotList(6)}"  >
+						<a th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"  target="_blank">
+							<h3 th:text="${item.title}"></h3>
+							<div class="desc mb15" th:text="${item.description}"></div>
+						</a>
+					</div>
+
+				</div>
+				<div class="adGrid" id="hotGridParty"></div>
+			</div>
+			<!-- / 相关推荐 -->
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+<div th:replace="blog/theme/pnews/footer"></div>
+<script type="text/javascript">
+    /* 切换主题 */
+    function switchBlogTheme() {
+
+        $.modal.alertWarning("该功能移到了后台管理中!请到后台切换!");
+        return;
+        layer.open({
+            type : 2,
+            shadeClose : true,
+            title : "切换主题",
+            area : ["1428px", "470px"],
+            content : [ctx + "blog/blogTheme?pageSize=3", 'no']
+        })
+    }
+
+</script>
+</body>
+</html>

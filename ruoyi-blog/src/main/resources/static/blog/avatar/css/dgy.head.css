@@ -1,0 +1,83 @@
+/*
+** Name: dgy.head.css
+** Date: 2018/12/10.
+** Anthor: markbro@duoguyu.com.
+** Version: 2.0.1.
+** Last: 2019/04/17/ markbro.
+*/
+
+/* commonHeadGrid */
+.commonHeadGrid{ padding:0 20px; width:100%; background:#fff;}
+.commonHeadGrid.fixed, .fixedHeadSwitch .commonHeadGrid{ position:fixed; left:0; right:0; top:0; z-index:50;}
+.commonHeadGrid.background{ background-image: linear-gradient(90deg,#222325,#3b3c3f,#222325);}
+.commonHeadGrid .headGrid{ height:60px; line-height:30px; padding:15px 0; width:1100px; margin:0 auto; border-bottom:1px solid #eee;}
+.commonHeadGrid .w1200{ width:1200px;}
+.commonHeadGrid .logo{ height:45px; float:left; margin-right:10px; display:flex; line-height:45px;/* overflow:hidden;*/}
+.commonHeadGrid .logo img { display: inline-block; height: 55px; border: 0;}
+.commonHeadGrid .menuGroup{float:right; display:flex; color:#999; font-size:14px; height:30px; line-height:30px;}
+.commonHeadGrid .menuGroup .item{padding-left:40px;}
+.commonHeadGrid .menuGroup a{ color:#999;}
+.commonHeadGrid .menuGroup.strong .item{padding-left:20px; font-weight:bold;}
+.commonHeadGrid .menuGroup a.current,.commonHeadGrid .menuGroup a:hover{ color:#409eff; position:relative;}
+.commonHeadGrid .menuGroup a.current:after{content:""; display:block; position:absolute; left:0; bottom:-20px; width:100%; height:4px; background:#409eff;}
+/*
+.commonHeadGrid .menuGroup a.red, .commonHeadGrid .menuGroup a.red:hover{ color:#f60;}
+*/
+
+.commonHeadGrid .itemLogin{ padding-left:30px; padding-right:30px; min-width:120px; margin-left:20px; text-align:right; height:50px; position:relative;}
+.commonHeadGrid .itemLogin .more{ position:absolute; right:5px; top:0; text-align:center; font-size:16px; cursor:pointer; color:#999;}
+.commonHeadGrid .loginGroup{ width:120px; position:absolute; right:5px; top:45px; height: 0; z-index: -1; text-align:center; font-size:14px; color:#999; overflow:hidden; transition: all .2s ease;}
+.commonHeadGrid .loginGroup .box{ padding:15px; background:#fff; border:1px solid #eee; border-radius:4px;}
+.commonHeadGrid .loginGroup .itemLi{display:block; color:#454545; line-height:24px;}
+.commonHeadGrid .loginGroup .userName{display:block; color:#454545; height:24px; line-height:24px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
+.commonHeadGrid .loginGroup .avatar{display:block; width:50px; height:50px; border-radius:50%; margin:10px auto; overflow:hidden;}
+.commonHeadGrid .loginGroup .itemLi.exit{ border-top:1px solid #eee; color:#f30; padding-top:10px; margin-top:10px;}
+.commonHeadGrid .loginGroup .itemLi.exit a:hover{color:#f30;}
+.commonHeadGrid .itemLogin:hover .loginGroup{ z-index: 100; height: auto; transition: all .2s ease; }
+
+.commonHeadGrid .menuGroup .loginBtn{ line-height: 30px; display: inline-block; color:#999; font-size:14px; overflow:hidden;}
+.commonHeadGrid .menuGroup .loginBtn.radius{line-height: 30px; border-radius:4px; border:1px solid #eee; font-size:12px;}
+
+.commonHeadGrid .searchGroup{ float:left; width:240px; border:1px solid #eee; border-radius:4px; line-height:24px; overflow:hidden; padding:2px 40px 2px 15px; margin-left:10px; position:relative;}
+.commonHeadGrid .searchGroup .searchBtn{ position:absolute; right:5px; top:0; background:none; height:28px; width:28px; line-height:28px; text-align:center; font-size:16px; color:#ddd;}
+.commonHeadGrid .searchGroup .searchInput{ display:inline-block; width:100%; height:24px; line-height:24px; font-size:14px; color:#666; border:0; background:none;}
+
+.commonHeadGrid .avatarGroup{ float:right; height:30px; line-height:30px;}
+.commonHeadGrid .avatarGroup .btn{line-height: 30px; display: inline-block; padding:0 25px; color:#409eff; font-size:14px; overflow:hidden;}
+.commonHeadGrid .avatarGroup .btn.black{ color:#454545;}
+.commonHeadGrid .avatarGroup .btn.radius{line-height: 28px; border-radius:18px; border:1px solid #409eff; font-size:12px; margin-left:5px;}
+
+.commonHeadGrid .headGrid.nav{ height:40px; padding:5px 0;}
+.commonHeadGrid .headGrid.nav .menuGroup{float:left;}
+.commonHeadGrid .headGrid.nav .menuGroup .item{padding-left:0; padding-right:40px;}
+.commonHeadGrid .headGrid.nav .menuGroup a{ font-weight:bold;}
+.commonHeadGrid .headGrid.nav .menuGroup a.current:after{ display:none;}
+.commonHeadGrid .headGrid.nav .searchGroup{ float:right; border:0;}
+.commonHeadGrid .headGrid.nav .searchBtn{ color:#999;}
+
+/* commonFooterGrid */
+.commonFooterGrid{ padding:10px 0 40px; margin:50px auto 0; /*background:#fafafa;*/ border-top:1px solid #eee; overflow:hidden; position:relative; z-index:100;}
+.commonFooterGrid .topGroup{ padding: 20px 0; background: #343539; color: #999; font-size: 12px; overflow: hidden; line-height: 20px;}
+
+.commonFooterGrid .footerGrid{display:flex; border-bottom:1px solid #eee; margin-bottom:20px; padding-bottom:10px; color: #999; line-height:36px; overflow:hidden;}
+.commonFooterGrid .copyright{ flex:1; line-height: 36px; text-align:right;}
+.commonFooterGrid .copyright a{ color:#409eff;}
+.commonFooterGrid .menuGroup{ color:#454545; font-size:13px; line-height:36px;}
+.commonFooterGrid .menuGroup .item{ padding-right:15px; }
+.commonFooterGrid .menuGroup a{ color:#999;}
+
+.commonFooterGrid .iconGroup{ flex:1; line-height: 36px; text-align:right;}
+.commonFooterGrid .ico{ display: inline-block; margin-left:15px; color:#eaeaea; font-size:20px; overflow:hidden;}
+.commonFooterGrid .ico.weChat{background:#409eff;}
+
+.commonFooterGrid .otherGrid{ font-size:12px; color:#999; line-height:1.8; overflow:hidden;}
+.commonFooterGrid .otherGrid a{ color:#409eff;}
+
+/* fixedWidget */
+.fixedWidget{ width:42px; height:auto; position:fixed; right:20px; bottom:60px; z-index:999; padding: 20px 10px 30px; border-radius:21px; border: 1px solid #eee; background:#fff;}
+.fixedWidget a{ height:35px; display:block; position:relative; margin:0 auto; margin-bottom:10px; width:20px; display:block; cursor:pointer; padding:10px 0; background:url(../images/icon_rb_sprite.png) no-repeat; }
+.fixedWidget a.mail{background-position:center 5px;}
+.fixedWidget a.top{background-position:center -158px; margin-bottom: -30px; border-bottom: 0;}
+.fixedWidget a:hover{background:url(../images/icon_rb_sprite_color.png) no-repeat;}
+.fixedWidget a.mail:hover{background-position:center 5px;}
+.fixedWidget a.top:hover{background-position:center -158px; margin-bottom: -30px; border-bottom: 0;}

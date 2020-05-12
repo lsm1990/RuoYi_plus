@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('编辑资源')" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-resource-edit" th:object="${resource}">
+        <input name="id" th:field="*{id}" type="hidden">
+        <h4 class="form-header h4">基本信息</h4>
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">资源名称：</label>
+                    <div class="col-sm-10">
+                        <input name="title" id="materialName" th:field="*{title}"  class="form-control" type="text"  required style="width:calc(100% - 100px);float: left; margin-right: 3px;">
+                        <button id="uploadBtn"  type="button" class="btn btn-sm btn-primary" style="display: inline-block; width: 95px;position: relative;float: left;height: 33px;"><i class="fa fa-check"></i>上传资源</button>&nbsp;
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">封面图：</label>
+                    <div class="col-sm-10">
+                        <input name="coverImage" class="form-control" type="hidden">
+                        <input id="coverImageName" class="form-control" type="text" readonly required style="width:calc(100% - 100px);float: left; margin-right: 3px;">
+                        <button id="uploadBtn_img"  type="button" class="btn btn-sm btn-primary" style="display: inline-block; width: 95px;position: relative;float: left;height: 33px;"><i class="fa fa-check"></i>上传封面</button>&nbsp;
+                    </div>
+                </div>
+            </div>
+        </div>-->
+
+
+        <!--<div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">资源类型：</label>
+                    <div class="col-sm-10">
+                        <div class="radio-box" th:each="dict : ${@dict.getType('cms_resource_type')}">
+                            <input type="radio" th:id="${'type_' + dict.dictCode}" name="type" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                            <label th:for="${'type_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+
+
+        <div class="row">
+            <!--<div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">标签：</label>
+                    <div class="col-sm-8">
+                        <input name="tagIds" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>-->
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">资源类型：</label>
+                    <div class="col-sm-8">
+                        <div class="radio-box" th:each="dict : ${@dict.getType('cms_resource_type')}">
+                            <input type="radio" th:id="${'type_' + dict.dictCode}" name="type" th:value="${dict.dictValue}" th:checked="${dict.default}" th:field="*{type}">
+                            <label th:for="${'type_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">付费下载：</label>
+                    <div class="col-sm-8">
+                        <div class="radio-box" th:each="dict : ${@dict.getType('cms_free')}">
+
+                            <input type="radio" th:id="${'free_' + dict.dictCode}"  name="free" th:value="${dict.dictValue}" th:checked="${dict.default}" th:field="*{free}">
+                            <label th:for="${'free_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <div class="row" id="div_cost" style="display: none;">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">付费类型：</label>
+                    <div class="col-sm-8">
+                        <div class="radio-box" th:each="dict : ${@dict.getType('cms_pay_type')}">
+                            <input type="radio" th:id="${'payType_' + dict.dictCode}" name="payType" th:value="${dict.dictValue}" th:checked="${dict.default}"  th:field="*{payType}">
+                            <label th:for="${'payType_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">花费：</label>
+                    <div class="col-sm-8">
+                        <input name="cost" id="cost" class="form-control" type="text"  th:field="*{cost}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">审核状态：</label>
+                    <div class="col-sm-8">
+                        <div class="radio-box" th:each="dict : ${@dict.getType('audit_state')}">
+                            <input type="radio" th:id="${'auditState_' + dict.dictCode}" name="auditState" th:value="${dict.dictValue}" th:checked="${dict.default}"  th:field="*{auditState}">
+                            <label th:for="${'auditState_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">资源大小：</label>
+                    <div class="col-sm-8">
+                        <input name="savePath" id="savePath" th:field="*{savePath}" class="form-control" type="hidden">
+                        <input name="size" id="materialSize"  th:field="*{size}"  class="form-control"  type="hidden">
+                        <input name="materialSizeDisplay" id="materialSizeDisplay" class="form-control" readonly type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">评分：</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" required name="score"  th:field="*{score}" >
+                            <option value="">-请选择-</option>
+                            <option value="1">1分</option>
+                            <option value="2">2分</option>
+                            <option value="3">3分</option>
+                            <option value="4">4分</option>
+                            <option value="5">5分</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">下载类型：</label>
+                    <div class="col-sm-8">
+                        <div class="radio-box" th:each="dict : ${@dict.getType('cms_download_type')}">
+                            <input type="radio" th:id="${'downloadType_' + dict.dictCode}" name="downloadType" th:value="${dict.dictValue}" th:checked="${dict.default}"  th:field="*{downloadType}" >
+                            <label th:for="${'downloadType_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">资源描述：</label>
+                    <div class="col-sm-10">
+                        <textarea name="description" class="form-control">[[${resource.description}]]</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!--<div class="form-group">
+            <label class="col-sm-3 control-label">状态：</label>
+            <div class="col-sm-8">
+                <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
+                    <input type="radio" th:id="${'status_' + dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                    <label th:for="${'status_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+            </div>
+        </div>-->
+
+        <h4 class="form-header h4">资源详情</h4>
+        <textarea hidden="text" id="divdata">[[*{detail}]]</textarea>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">详情:</label>
+                    <div class="col-xs-10">
+                        <script id="editor" name="detail" type="text/plain" ></script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+
+<th:block th:include="include :: ueditor" />
+<script type="text/javascript">
+    var ue = UE.getEditor('editor');
+    function getContent() {
+        return UE.getEditor('editor').getContent();
+    }
+    function getContentTxt() {
+        return UE.getEditor('editor').getContentTxt();
+    }
+</script>
+
+<script type="text/javascript">
+
+    $(function(){
+        $("#editor").css("height","380px");
+        $('[name=free]').on('ifChecked', function(event){
+            showHideValue();
+        });
+        showHideValue();
+        var size=$("#materialSize").val();
+        $("#materialSizeDisplay").val(renderFileSize(size));
+
+        //给UEeditor赋值
+        var data=$("#divdata").text();
+        var ue = UE.getEditor('editor');
+        var proinfo=$("#divdata").text();
+        ue.ready(function() {//编辑器初始化完成再赋值
+            ue.setContent(data);  //赋值给UEditor
+        });
+    })
+    function showHideValue(){
+        var v=$("[name=free]:checked").val();
+        if(v=="0"){//免费
+            $("#div_cost").hide();
+            $("#cost").removeAttr("required");
+        }else{//收费
+            $("#div_cost").show();
+            $("#cost").attr("required","required");
+        }
+    }
+    var prefix = ctx + "cms/resource"
+    $("#form-resource-edit").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var c = getContentTxt();
+            if (c == '' || c.length == 0) {
+                Fast.msg_error("请输入详情！");
+                return;
+            }
+            $.operate.save(prefix + "/edit", $('#form-resource-edit').serialize());
+        }
+    }
+</script>
+</body>
+</html>

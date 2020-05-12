@@ -1,0 +1,31 @@
+<div class="commonFooter new">
+        <aside>
+            <ul>
+                <li><a href="{$site[site_url]}">首页</a></li>
+                <li th:each="category:${@cms.selectNavCategories()}" >
+                    <a th:if="${category.parentId==null||category.parentId==0}"  th:href="@{${'/blog/category/' + category.categoryId}}"   th:text="${category.categoryName}">
+                    </a>
+                </li>
+                <li class="copyright"><p>©源自优秀的轻量级开源管理系统<a target="_blank"   th:href="${@config.getKey('site.url')}" class="alink">pt-cms</a></p></li>
+            </ul>
+        </aside>
+        <article>
+            <section>
+                <p><span style="color:#666;">站点声明：本站转载作品版权归原作者及来源网站所有，原创内容作品版权归作者所有，任何内容转载、商业用途等均须联系原作者并注明来源。</span></p>
+
+                <p style="color:#888;"><span style="padding-right:20px;">Copyright © [[${#dates.format(new java.util.Date().getTime(), 'yyyy')}]].[[${@config.getKey('site.name')}]] All Rights Reserved. Powered by <a th:href="${@config.getKey('site.url')}" style="color: #888;" target="_blank" title="pt-cms是一款精简的自适应CMS系统...">pt-cms</a>.</span>
+                    <span style="color:#666;">[[${@config.getKey('site.beian')}]]</span>
+                </p>
+                <p>相关侵权、举报、投诉及建议等，请联系站长!</p>
+                <p>友情链接：
+                    <a th:each="item:${@cms.getFriendLinks()}" style="padding-right:20px; color:#555;" th:href="${item.link}" th:text="${item.name}"  target="_blank"></a>
+                </p>
+            </section>
+        </article>
+    </div>
+    <!--widget-->
+    <div id="RbWidget">
+        <a href="#" target="_blank" class="mail" title="联系我们"></a>
+        <a href="#" target="_blank" class="weibo" title="微博关注"></a>
+        <a href="#" class="top cd-top" title="返回顶部"></a>
+    </div>

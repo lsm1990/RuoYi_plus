@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('素材使用记录')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+				    <input type="hidden" id="materialId" name="materialId" th:value="${materialId}">
+					<div class="select-list">
+						<ul>
+							<li>
+								素材名称：<input type="text" name="materialName"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+	        
+	        <div class="btn-group-sm" id="toolbar" role="group">
+
+				<a class="btn btn-danger multiple disabled" onclick="deleteMaterialUseBatch()">
+		            <i class="fa fa-remove"></i> 批量删除
+		        </a>
+		        <a class="btn btn-warning" onclick="closeItem()">
+		            <i class="fa fa-reply-all"></i> 关闭
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+		var imageReg = /.+\.(gif|jpg|jpeg|png|webp|bmp)/i;
+		var auditStateDatas = [[${@dict.getType('audit_state')}]];
+		var useStateDatas = [[${@dict.getType('use_state')}]];
+		var materialTypeDatas = [[${@dict.getType('material_type')}]];
+
+		var prefix = ctx + "cms/material";
+
+		$(function() {
+			var options = {
+		        url: prefix + "/selectMaterialUseList",
+				pagination: false,
+		        queryParams: queryParams,
+		        sortName: "createTime",
+		        sortOrder: "desc",
+		        modalName: "图片",
+		        columns: [{
+		            checkbox: true
+		        },
+                    {field : 'id',title : 'ID',visible: false},
+
+					{field : 'materialName',title : '素材名称'},
+                    {field : 'materialId',title : 'ID'},
+                    {field : 'useTable',title : '使用表名'},
+                    {field : 'useId',title : '使用ID'},
+					/*{field : 'materialType',title : '素材类型',formatter: function(value, row, index) {
+							return $.table.selectDictLabel(materialTypeDatas, value);
+						}
+					},*/
+					/*{field : '图片',title : '图片',formatter: function(value, row, index) {
+							if(imageReg.test(row.materialName)){
+								var url="";
+								if(ctx=='/'){
+									url=row.savePath;
+								}else{
+									url=ctx+row.savePath;
+								}
+								return $.table.imageView(url);
+							}else{
+								return "-";
+							}
+						}
+					},*/
+
+
+
+                    {field : 'createBy',title : '使用人'},
+					{field : 'createTime',title : '使用日期'},
+					{title: '操作', align: 'center', formatter: function(value, row, index) {
+							var actions = [];
+							actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="deleteMaterialUse(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+							return actions.join('');
+						}
+					}
+				]
+		    };
+		    $.table.init(options);
+		});
+		
+		function queryParams(params) {
+			var search = $.table.queryParams(params);
+			search.materialId = $("#materialId").val();
+			return search;
+		}
+
+
+		
+		/* 分配用户-批量取消 */
+		function deleteMaterialUseBatch() {
+		    var rows = $.table.selectFirstColumns();
+       		if (rows.length == 0) {
+       			$.modal.alertWarning("请至少选择一条记录");
+       			return;
+       		}
+       		$.modal.confirm("确认要删除选中的" + rows.length + "条数据吗?", function() {
+    			var data = {  "materialId":$("#materialId").val(), "ids": rows.join() };
+    			$.operate.submit(prefix + "/deleteMaterialUseBatch", "post", "json", data);
+    		});
+		}
+		
+
+		function deleteMaterialUse(id) {
+			$.modal.confirm("确认要取消使用该素材吗？", function() {
+				$.operate.post(prefix + "/deleteMaterialUseBatch", { "materialId":$("#materialId").val(), "ids": id });
+		    })
+		}
+	</script>
+</body>
+</html>

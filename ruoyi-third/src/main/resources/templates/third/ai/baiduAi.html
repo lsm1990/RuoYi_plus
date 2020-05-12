@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('百度AI')" />
+</head>
+<body class="gray-bg" style="font: 14px Helvetica Neue, Helvetica, PingFang SC, 微软雅黑, Tahoma, Arial, sans-serif !important;">
+    <section class="section-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content" style="border-style:none;">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#tab-face" data-toggle="tab" aria-expanded="true">人脸检测</a></li>
+                            <li><a href="#tab-plant" data-toggle="tab" aria-expanded="false">植物识别</a></li>
+							<li><a href="#tab-bankCard" data-toggle="tab" aria-expanded="false">银行卡识别</a></li>
+							<li><a href="#tab-idCard" data-toggle="tab" aria-expanded="false">身份证识别</a></li>
+							<li><a href="#tab-plate" data-toggle="tab" aria-expanded="false">车牌号识别</a></li>
+							<li><a href="#tab-driver" data-toggle="tab" aria-expanded="false">驾驶证识别</a></li>
+							<li><a href="#tab-animal" data-toggle="tab" aria-expanded="false">动物识别</a></li>
+							<li><a href="#tab-car" data-toggle="tab" aria-expanded="false">车型识别</a></li>
+							<li><a href="#tab-dish" data-toggle="tab" aria-expanded="false">菜品识别</a></li>
+							<li><a href="#tab-general_basic" data-toggle="tab" aria-expanded="false">通用文字识别</a></li>
+                            <li class="pull-right header">
+								<i class="fa fa-code"></i> 百度AI API调用
+							</li>
+                        </ul>
+
+							<div class="tab-content">
+								<!-- 人脸检测 -->
+								<div class="tab-pane active" id="tab-face">
+									<form id="form-face" class="form-horizontal" >
+									<div class="row mt20">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<label class="col-xs-2 control-label">图片文件：</label>
+												<div class="col-xs-10">
+													<input id="file_faceDetect" name="file" class="form-control" type="file">
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<label class="col-xs-2 control-label">识别结果：</label>
+												<div class="col-xs-10">
+													<textarea id="content_faceDetect" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="box-footer">
+										<div class="col-sm-offset-5 col-sm-6">
+											<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('faceDetect')"><i class="fa fa-check"></i>人脸检测</button>&nbsp;
+										</div>
+									</div>
+									</form>
+								</div>
+
+								<!-- 植物识别 -->
+								<div class="tab-pane" id="tab-plant">
+                                    <form id="form-plant" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_plant" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_plant" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('plant')"><i class="fa fa-check"></i>植物识别</button>&nbsp;
+											</div>
+										</div>
+                                    </form>
+								</div>
+								<!-- 银行卡识别 -->
+								<div class="tab-pane" id="tab-bankCard">
+									<form id="form-bankCard" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_bankCard" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+											
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_bankCard" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('bankCard')"><i class="fa fa-check"></i>银行卡识别</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+
+								<!-- 身份证识别 -->
+								<div class="tab-pane" id="tab-idCard">
+									<form id="form-idCard" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_idCard" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_idCard" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('idCard')"><i class="fa fa-check"></i>身份证识别</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+
+								<!-- 车牌号识别 -->
+								<div class="tab-pane" id="tab-plate">
+									<form id="form-plate" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_plate" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_plate" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('plate')"><i class="fa fa-check"></i>车牌号识别</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+								<!-- 驾驶证识别 -->
+								<div class="tab-pane" id="tab-driver">
+									<form id="form-driver" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_driver" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_driver" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('driver')"><i class="fa fa-check"></i>驾驶证识别</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+
+								<!-- 动物识别 -->
+								<div class="tab-pane" id="tab-animal">
+									<form id="form-animal" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_animal" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_animal" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('animal')"><i class="fa fa-check"></i>动物识别</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+
+								<!-- 车型识别 -->
+								<div class="tab-pane" id="tab-car">
+									<form id="form-car" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_car" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_car" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('car')"><i class="fa fa-check"></i>车型识别</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+
+								<!-- 菜品识别 -->
+								<div class="tab-pane" id="tab-dish">
+									<form id="form-dish" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_dish" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_dish" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('dish')"><i class="fa fa-check"></i>菜品识别</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+
+
+								<!-- 通用文字识别 -->
+								<div class="tab-pane" id="tab-general_basic">
+									<form id="form-general_basic" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">图片文件：</label>
+													<div class="col-xs-10">
+														<input id="file_general_basic" name="file" class="form-control" type="file">
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">识别结果：</label>
+													<div class="col-xs-10">
+														<textarea id="content_general_basic" name="content" maxlength="500" class="form-control" rows="6"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="queryAi('general_basic')"><i class="fa fa-check"></i>文字识别</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+
+
+							</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+	</section>
+    <th:block th:include="include :: footer" />
+
+    <script type="text/javascript">
+		var prefix=ctx+"third/ai"
+	    function queryAi(type){
+			if ($.validate.form()) {
+				uploadFile(type);
+			}
+		}
+		function uploadFile(type) {
+			var formData = new FormData();
+			if ($('#file_'+type)[0].files[0] == null) {
+				$.modal.alertWarning("请先选择文件路径");
+				return false;
+			}
+			formData.append('type', type);
+			formData.append('file', $('#file_'+type)[0].files[0]);
+			$.ajax({
+				url: prefix + "/queryAi",
+				type: 'post',
+				cache: false,
+				data: formData,
+				processData: false,
+				contentType: false,
+				dataType: "json",
+				success: function(result) {
+					$("#content_"+type).val(JSON.stringify(result.data));
+				}
+			});
+		}
+		$(function() {
+
+		});
+    </script>
+</body>
+</html>
+

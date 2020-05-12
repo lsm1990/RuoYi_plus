@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('第三方系统API')" />
+</head>
+<body class="gray-bg" style="font: 14px Helvetica Neue, Helvetica, PingFang SC, 微软雅黑, Tahoma, Arial, sans-serif !important;">
+    <section class="section-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content" style="border-style:none;">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#tab-sms" data-toggle="tab" aria-expanded="true">乐云短信</a></li>
+                            <li><a href="#tab-ip" data-toggle="tab" aria-expanded="false">IP位置查询</a></li>
+							<li><a href="#baidu-push" data-toggle="tab" aria-expanded="false">百度推送</a></li>
+                            <!--<li><a href="#tab-gen" data-toggle="tab" aria-expanded="false">生成信息</a></li>-->
+                            <li class="pull-right header">
+								<i class="fa fa-code"></i> API调用
+							</li>
+                        </ul>
+
+
+							<div class="tab-content">
+								<!-- 乐云短信 -->
+								<div class="tab-pane active" id="tab-sms">
+									<form id="form-sms" class="form-horizontal" >
+									<div class="row mt20">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="col-sm-4 control-label"><span style="color: red; ">*</span>手机号：</label>
+												<div class="col-sm-8">
+													<input name="phone" class="form-control" type="text" placeholder="请输入手机号" maxlength="200"  required>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="col-sm-4 control-label"><span style="color: red; ">*</span>前缀：</label>
+												<div class="col-sm-8">
+													<input name="prefix" class="form-control" type="text" placeholder="请输入前缀" maxlength="200"  required>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<label class="col-xs-2 control-label">消息：</label>
+												<div class="col-xs-10">
+													<textarea name="content" maxlength="500" class="form-control" rows="3" required></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="box-footer">
+										<div class="col-sm-offset-5 col-sm-6">
+											<button type="button" class="btn btn-sm btn-primary" onclick="sendSms()"><i class="fa fa-check"></i>发送</button>&nbsp;
+										</div>
+									</div>
+									</form>
+								</div>
+
+								<!-- IP查询服务 -->
+								<div class="tab-pane" id="tab-ip">
+                                    <form id="form-ip" class="form-horizontal" >
+									<div class="row mt20">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<label class="col-sm-2 control-label" title="IP"><span style="color: red; ">*</span>IP：<i class="fa fa-question-circle-o"></i></label>
+												<div class="col-sm-10">
+													<input name="ip" class="form-control" type="text" placeholder="请输入IP" value="112.232.19.111" maxlength="50"  required>
+													<span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 注意:调用查询IP地址接口使用到的key（https://lbs.qq.com/console/mykey.html），注意它绑定了调用接口使用的IP地址!</span>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<label class="col-xs-2 control-label">返回消息：</label>
+												<div class="col-xs-10">
+													<textarea id="ip_return_content" maxlength="500" class="form-control" rows="3"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="box-footer">
+										<div class="col-sm-offset-5 col-sm-6">
+											<button type="button" class="btn btn-sm btn-primary" onclick="queryIp()"><i class="fa fa-check"></i>查询</button>&nbsp;
+										</div>
+									</div>
+                                    </form>
+								</div>
+
+
+								<!-- 百度推送服务 -->
+								<div class="tab-pane" id="baidu-push">
+									<form id="form-baidu-push" class="form-horizontal" >
+										<div class="row mt20">
+											<div class="col-sm-12">
+
+												<div class="form-group">
+													<label class="col-sm-2 control-label" title="URL"><span style="color: red; ">*</span>URL：<i class="fa fa-question-circle-o"></i></label>
+													<div class="col-sm-10">
+														<div class="radio-box" th:each="dict : ${@dict.getType('baidu_push_type')}">
+															<input type="radio" th:id="${'pushType_' + dict.dictCode}" name="pushType" th:value="${dict.dictValue}" th:checked="${dict.default}">
+															<label th:for="${'pushType_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+														</div>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-sm-2 control-label" title="URL"><span style="color: red; ">*</span>URL：<i class="fa fa-question-circle-o"></i></label>
+													<div class="col-sm-10">
+														<input name="url" class="form-control" type="text" placeholder="请输入URL" value="" maxlength="50"  required>
+														<span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 注意:调用该接口确保已经配置登录百度站长平台返回的cookie!</span>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">返回消息：</label>
+													<div class="col-xs-10">
+														<textarea id="baidu_push_return_content" maxlength="500" class="form-control" rows="3"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="box-footer">
+											<div class="col-sm-offset-5 col-sm-6">
+												<button type="button" class="btn btn-sm btn-primary" onclick="baiduPush()"><i class="fa fa-upload"></i>推送</button>&nbsp;
+											</div>
+										</div>
+									</form>
+								</div>
+
+
+							</div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+	</section>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+		var prefix=ctx+"third/api"
+	    function sendSms() {
+	        if ($.validate.form("form-sms")) {
+	        	$.operate.saveModal(prefix + "/sendSms", $("#form-sms").serializeArray(),function(){
+                });
+	        }
+	    }
+	    function queryIp(){
+            if ($.validate.form("form-ip")) {
+                $.operate.saveModal(prefix + "/queryIp", $("#form-ip").serializeArray(),function(res){
+                    $("#ip_return_content").val(res.data);
+                });
+            }
+		}
+		function baiduPush(){
+		    var v=$("[name='pushType']:checked").val();
+            if ($.validate.form("form-baidu-push")) {
+                $.operate.saveModal(prefix + "/baiduPush/"+v, $("#form-baidu-push").serializeArray(),function(res){
+                    $("#baidu_push_return_content").val(JSON.stringify(res.data));
+                });
+            }
+		}
+		$(function() {
+
+		});
+    </script>
+</body>
+</html>
+

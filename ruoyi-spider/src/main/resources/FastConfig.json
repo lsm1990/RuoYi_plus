@@ -1,0 +1,109 @@
+{
+  "imooc": {
+    "domain": "www.imooc.com",
+    "targetRegex": "/article/[0-9]{1,10}",
+    "header": [
+      "Host=www.imooc.com",
+      "Referer=https://www.imooc.com"
+    ],
+    "cookie": "",
+    "fields": [
+      "标题#title#//span[@class=js-title]/html()",
+      "作者#author#//div[@class=name_con]/p[@class=name]/a[@class=nick]/html()",
+      "发布日期#releaseDate#//div[@class='dc-profile']/div[@class='l']/span[@class='spacer']/text()",
+      "标签#tag#//div[@class=cat-box]/div[@class=cat-wrap]/a[@class=cat]/html()",
+      "描述#description#//meta[@name=Description]/@content"
+    ],
+    "entryUrls": [
+      "https://www.imooc.com/u/{userId}/articles?page=1"
+    ]
+  },
+  "csdn": {
+    "domain": "blog.csdn.net",
+    "targetRegex": "https://blog.csdn.net/{userId}/article/details/[0-9a-zA-Z]{1,15}",
+    "header": [
+      "Host=blog.csdn.net",
+      "Referer=https://blog.csdn.net/{userId}/article/list/1"
+    ],
+    "cookie": "acw_tc=2760824d15773407727936493e6dbf96556c39d0bc14fd273f1bbfac05ab55; acw_sc__v2=5e044f64d5f771ca019d643520b630398559aa3c; acw_sc__v3=5e044f65dcbc8606a7737d484439f64e41113979; uuid_tt_dd=10_20279685140-1577340773522-890059; dc_session_id=10_1577340773522.445421; TY_SESSION_ID=0962b8e2-e807-4391-a59d-0e4e4eb605ee; Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac=1577099696,1577099866,1577099876,1577340774; Hm_ct_6bcd52f51e9b3dce32bec4a3997715ac=1788*1*PC_VC!6525*1*10_20279685140-1577340773522-890059!5744*1*wujiyue; firstDie=1; announcement=%257B%2522isLogin%2522%253Afalse%252C%2522announcementUrl%2522%253A%2522https%253A%252F%252Fblog.csdn.net%252Fblogdevteam%252Farticle%252Fdetails%252F103603408%2522%252C%2522announcementCount%2522%253A0%252C%2522announcementExpire%2522%253A3600000%257D; __yadk_uid=Py4RHAFDEY6GTCtDEeEnavWNFkPSAX2T; c-login-auto=3; dc_tos=q33wna; Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac=1577341703",
+    "fields": [
+      "标题#title#//h1[@class=title-article]/html()",
+      "作者#author#//a[@class=follow-nickName]/html()",
+      "发布日期#releaseDate#//div[@class=article-bar-top]/span[@class=time]/html()",
+      "标签#tag#//span[@class=artic-tag-box]/a[@class=tag-link]/html()"
+    ],
+    "entryUrls": [
+      "https://blog.csdn.net/{userId}/article/list/1"
+    ]
+  },
+  "cnblogs": {
+    "domain": "www.cnblogs.com",
+    "targetRegex": ".*www\\.cnblogs\\.com/{userId}/p/[\\w\\d]+\\.html",
+    "header": [
+      "Host=www.cnblogs.com",
+      "Referer=https://www.cnblogs.com/"
+    ],
+    "cookie": "_ga=GA1.2.1770544751.1571474272; __gads=ID=3e0426597c39c1fd:T=1571474272:S=ALNI_MZHAIoPcIAW7Q99rn5nwEWfr5Vo6g; _gid=GA1.2.1161656304.1573540573",
+    "fields": [
+      "标题#title#//a[@id=cb_post_title_url]/html()",
+      "发布日期#releaseDate#//span[@id=post-date]/html()",
+      "描述#description#//meta[@property=\"og:description\"]/@content"
+    ],
+    "entryUrls": [
+      "https://www.cnblogs.com/{userId}/default.html?page=1",
+      "https://www.cnblogs.com/{userId}/default.html?page=2"
+    ]
+  },
+  "juejin": {
+    "domain": "juejin.im",
+    "targetRegex": ".*juejin\\.im/post/[\\w\\d]+",
+    "header": [
+      "Host=juejin.im",
+      "Referer=https://juejin.im"
+    ],
+    "cookie": "ab={}; _ga=GA1.2.1287196678.1573715560; _gid=GA1.2.383786283.1573715560; Hm_lvt_93bbd335a208870aa1f296bcd6842e5e=1573715560; gr_user_id=bd795571-7639-481f-89aa-7f91b4062bb9; gr_session_id_89669d96c88aefbc=df609f60-5eba-4e97-834f-15d6971a23a5; gr_session_id_89669d96c88aefbc_df609f60-5eba-4e97-834f-15d6971a23a5=true; Hm_lpvt_93bbd335a208870aa1f296bcd6842e5e=1573715567; QINGCLOUDELB=7c5122b6c6517c59163563fe189d391bab7e48fb3972913efd95d72fe838c4fb|Xcz+u|Xcz+u",
+    "fields": [
+      "标题#title#//h1[@class=article-title]/html()",
+      "作者#author#//div[@itemprop=author]/meta[@itemprop=\"name\"]/@content",
+      "发布日期#releaseDate#//meta[@itemprop=\"datePublished\"]/@content",
+      "标签#tag#//div[@class=tag-title]/html()"
+    ],
+    "entryUrls": [
+      "https://juejin.im/user/{userId}/posts"
+    ]
+  },
+  "v2ex": {
+    "domain": "v2ex.com",
+    "targetRegex": ".*www\\.v2ex\\.com/t/[\\w\\d]+",
+    "header": [
+      "Host=www.v2ex.com",
+      "Referer=https://www.v2ex.com"
+    ],
+    "cookie": "",
+    "fields": [
+      "标题#title#//*[@id=Main]/div[@class=box]/div[@class=header]/h1/html()",
+      "作者#author#//*[@id=Main]/div[@class=box]/div[@class=header]/small/a/html()",
+      "发布日期#releaseDate#//meta[@property=\"article:published_time\"]/@content"
+    ],
+    "entryUrls": [
+      "https://www.v2ex.com/member/{userId}"
+    ]
+  },
+  "oschina": {
+    "domain": "oschina.net",
+    "targetRegex": "https://my.oschina.net/.*/blog/[0-9]{1,10}",
+    "header": [
+      "Host=my.oschina.net",
+      "Referer=https://my.oschina.net"
+    ],
+    "cookie": "",
+    "fields": [
+      "标题#title#//h2[@class=header]/text()",
+      "作者#author#//a[@class=__user]/span/html()"
+    ],
+    "entryUrls": [
+      "https://my.oschina.net/{userId}",
+      "https://my.oschina.net/u/{userId}"
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi</artifactId>
+        <groupId>com.ruoyi</groupId>
+        <version>4.1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ruoyi-cms</artifactId>
+    <description>内容管理模块</description>
+    <properties>
+        <javax-mail.version>1.5.3</javax-mail.version>
+        <commons-mail.version>1.4</commons-mail.version>
+    </properties>
+    <dependencies>
+        <!-- 核心模块-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-redis</artifactId>
+            <scope>provided</scope>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-ehcache</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5</version>
+            <!-- <exclusions>
+                 <exclusion>
+                     <artifactId>httpcore</artifactId>
+                     <groupId>org.apache.httpcomponents</groupId>
+                 </exclusion>
+             </exclusions>-->
+        </dependency>
+        <!-- <dependency>
+             <groupId>org.apache.httpcomponents</groupId>
+             <artifactId>httpcore</artifactId>
+             <version>4.4.1</version>
+         </dependency>-->
+
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${javax-mail.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>${commons-mail.version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

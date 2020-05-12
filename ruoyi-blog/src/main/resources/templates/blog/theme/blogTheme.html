@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>主题选择</title>
+    <meta name="baidu-site-verification" content="" />
+
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.base.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.head.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.group.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.layout.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/plugin/iconfont/iconfont.css}"/>
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+
+    <script th:src="@{/blog/avatar/js/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+    <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+    <script th:src="@{/ruoyi/js/ry-ui.js?v=4.1.0}"></script>
+    <script th:src="@{/blog/avatar/js/baseMotheds.js}"></script>
+    <script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+    <style>
+        .itemLi.current{
+            border:1px solid #409eff;
+        }
+    </style>
+</head>
+<body class="">
+
+<!-- article -->
+<div class="baseGroup mt20 layoutAuto" style="width: 1400px;" id="channelGroup">
+
+    <div th:if="${not #lists.isEmpty(themeList)}" class="articleModeGrid on w3">
+
+        <div th:each="item,temp:${themeList}"   class="itemLi layoutAuto" th:classappend="${currentTheme==item.code}?'current'">
+            <a th:data-code="${item.code}" onclick="selectTheme(this)" target="_blank" class="content">
+                <div class="imgBox full">
+                    <img class="img" th:src="@{${item.coverImg}}" th:alt="${item.name}">
+                </div>
+                <div class="articleGroup" style="padding-bottom: 0px;">
+                    <h2 th:text="${#strings.abbreviate(item.name,120)}"></h2>
+                </div>
+            </a>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div id="pageGroup" th:if="${totalPages>=1}">
+        <span class="pageinfo">共<strong>[[${totalPages}]]</strong>页<strong>[[${total}]]</strong>条记录</span>
+        <a th:href="@{'/blog/blogTheme?pageSize=3'}" class="homepage">首页</a>
+        <a th:if="${not hasPrevious}" href="javascript:;" class="prepage nopage">上页</a>
+        <a th:if="${hasPrevious}" th:href="@{'/blog/blogTheme?pageNum='+${prePage}+'&pageSize=3'}"  class="prepage">上页</a>
+        <a  th:each="item:${navNums}" th:href="@{'/blog/blogTheme?pageNum='+${item}+'&pageSize=3'}" class="listpage" th:text="${item}" th:classappend="${item+'' ==currentPage+'' ? 'curpage':''}"></a>
+        <a th:if="${hasNext}" th:href="@{'/blog/blogTheme?pageNum='+${nextPage}+'&pageSize=3'}"  class="nextpage">下页</a>
+        <a th:if="${not hasNext}"href="javascript:;" class="nextpage nopage">下页</a>
+        <a th:href="@{'/blog/blogTheme?pageNum='+${totalPages}+'&pageSize=3'}"  class="endpage">尾页</a>
+    </div>
+
+</div>
+<script type="text/javascript">
+    function selectTheme(obj){
+        $(obj).parent().addClass("current");
+        $(obj).parent().siblings().removeClass("current")
+        var code= $(obj).data("code");
+        $.modal.confirm("确认选择该主题模板吗?", function() {
+            var url=ctx+"cms/blogTheme/updateBlogThemeConfig"
+            $.operate.saveModal(url,{code:code});
+            setTimeout(function(){
+            window.top.location.reload();
+            },2000);
+        });
+    }
+</script>
+</body>
+</html>

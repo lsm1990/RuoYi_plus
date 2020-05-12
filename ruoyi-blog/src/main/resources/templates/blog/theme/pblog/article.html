@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" th:content="${article.keywords}">
+	<meta name="description" th:content="${article.description}">
+	<title th:text="${article.title}"></title>
+	<link rel="stylesheet" th:href="@{/ajax/libs/bootstrap/bootstrap.min.css}"/>
+	<link rel="stylesheet" th:href="@{/ajax/libs/font-icon/icon.css}"/>
+	<link rel="stylesheet" th:href="@{/ajax/libs/markdown/simplemde.min.css}">
+	<link rel="stylesheet" th:href="@{/ajax/libs/markdown/github-markdown.min.css}">
+	<link rel="stylesheet" th:href="@{/ajax/libs/markdown/highlight.min.css}">
+	<link rel="stylesheet" th:href="@{/blog/pblog/css/web-common.css}" />
+	<link rel="stylesheet" th:href="@{/blog/pblog/css/web-blog.css}" />
+    <link th:href="@{/ajax/libs/toastr/toastr.min.css}" rel="stylesheet"/>
+	<script th:src="@{/ajax/libs/jquery.min.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap/bootstrap.min.js}"></script>
+	<script th:src="@{/ajax/libs/markdown/highlight.min.js}"></script>
+	<script th:src="@{/ajax/libs/markdown/simplemde.min.js}"></script>
+	<script th:src="@{/ajax/libs/layer/layer.js}"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+	<script th:src="@{/ajax/libs/toastr/toastr.min.js}"></script>
+	<script th:src="@{/ruoyi/js/fast.js}"></script>
+	<script th:src="@{/ajax/libs/hc-sticky.js}"></script>
+	<script th:src="@{/blog/pblog/js/pb-blog.js}"></script>
+</head>
+<style>
+	/*阅读全文按钮*/
+	.readall_box {  position: relative;  z-index: 9999;  padding: 0 0 0px;  margin-top: -268px;  text-align: center;  }
+	.readall_box .read_more_mask {  height: 268px;  background: -moz-linear-gradient(bottom,rgba(255,255,255,.1),rgba(255,255,255,0));  background: -webkit-gradient(linear,0 top,0 bottom,from(rgba(255,255,255,0)),to(#fff));  background: -o-linear-gradient(bottom,rgba(255,255,255,.1),rgba(255,255,255,0));  }
+	.readall_box a.button{cursor: pointer;}
+</style>
+<body>
+<header id="header">
+	<div th:replace="blog/theme/pblog/fragments/navbar :: navbar"></div>
+</header>
+<div class="pb-container pb-content">
+	<div class="pb-main">
+		<div class="article-main">
+			<h3 th:text="${article.title}" class="article-title"></h3>
+			<span th:text="${article.copyFlag==0 ? '原创' : '转载'}" class="article-original"></span>
+			<div class="article-meta">发布于 <span th:text="${#dates.format(article.createTime,'yyyy-MM-dd')}"></span> &nbsp;|&nbsp; <span th:text="${article.category.categoryName}"></span> &nbsp;|&nbsp; 浏览（<span th:text="${article.hit}? ${article.hit} : 0"></span>） &nbsp;|&nbsp; 评论（<span th:text="${article.replyNum}? ${article.replyNum} : 0"></span>）</div>
+			<hr class="hr0" />
+			<div th:utext="${article.content}" class="article-body markdown-body editor-preview-active-side">
+			</div>
+
+			<div class="readall_box " style="display: none;">
+				<div class="read_more_mask"></div>
+				<a class="button" style="top:-25px;position:relative;">阅读全文</a>
+				<script type="text/javascript">
+					$(function () {
+						if ($(".article-main .article-body").height() >= 1200) {
+							$(".article-main .article-body").attr("style", "height:1200px;overflow-y:hidden;");
+							$(".readall_box").show();
+						}
+						$(".readall_box a.button").click(function () {
+							$(this).parents().find(".article-main .article-body").attr("style", "");
+							$(this).parents(".readall_box").hide();
+						});
+					})
+				</script>
+			</div>
+
+			<div class="thumbs-content">
+				<span class="thumbs-button fa fa-thumbs-up"> 点赞 <span id="loveCount" th:text="${article.upVote}"></span></span>
+				<span class="reward-button fa fa-money"> 打赏
+						<p class="reward-content">
+							<span class="reward-img"><img src="/blog/pblog/img/weixin.png"><br>微信赞赏</span>
+							<span class="reward-img"><img src="/blog/pblog/img/zhifubao.png"><br>支付宝赞赏</span></p>
+						<span class="reward-bottom"></span>
+						<span class="reward-bottom-top"></span>
+						</span>
+			</div>
+
+		</div>
+
+
+		<div th:if="${article.commentFlag==1}" id="comment" class="comment comment-main">
+			<div class="comment-title">发表评论</div>
+			<form id="comment-form" class="form-horizontal mt-10">
+				<input id="articleId" name="tid" type="hidden" th:value="${article.id}">
+				<div id="user-name-content" class="user-name-content">欢迎您：<b id="user-name"></b></div>
+				<div class="form-group" id="user-info" style="display: none">
+					<div class="col-sm-4">
+						<input id="nickname" type="text" class="form-control"  name="userName" placeholder="昵称(必填)">
+					</div>
+					<div class="col-sm-4">
+						<input id="qq" type="text" class="form-control"  name="qq" placeholder="QQ（可获取头像和昵称）">
+					</div>
+					<div class="col-sm-4">
+						<input id="email" type="text" class="form-control"  name="email" placeholder="邮箱">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-12">
+						<textarea name="content" id="comment-textarea"></textarea>
+					</div>
+				</div>
+				<div><button id="submitCommentBtn" type="button" class="btn btn-pri">发表评论</button></div>
+			</form>
+			<hr class="hr0 mt-15"/>
+			<ul id="comment-ul" class="comment">
+			</ul>
+		</div>
+	</div>
+	<div th:replace="blog/theme/pblog/fragments/sidebar :: sidebar"></div>
+</div>
+<div th:replace="blog/theme/pblog/fragments/footer :: copyrightLight"></div>
+<div class="return_top"><a class=" fa fa-arrow-up"></a></div>
+
+<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+
+<script>
+	var tid='[[${article.id}]]';
+	var comment_type="article";
+	$.ajax({
+		url: ctx+"blog/article/view",
+		type: "post",
+		dataType: "json",
+		data: {"articleId":tid},
+		success: function(json) {
+			if(json.code!=0&&json.code!='0'){
+				console.log(json.msg);
+			}
+		}
+	});
+
+	$(function () {
+		$(".thumbs-button").click(function () {
+			$.ajax({
+				url: ctx+"blog/article/upVote",
+				type: "post",
+				dataType: "json",
+				data: {"articleId":tid},
+				success: function(json) {
+					if(json.code!=0&&json.code!='0'){
+						console.log(json.msg);
+					}else{
+						$("#loveCount").text(parseInt($("#loveCount").text())+1);
+					}
+				}
+			});
+		})
+	})
+</script>
+<script  th:if="${article.commentFlag==1 || article.commentFlag=='1'}" th:src="@{/blog/pblog/js/comment.js}"></script>
+</body>
+
+</html>

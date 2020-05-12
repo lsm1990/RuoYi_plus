@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.AdMapper">
+    
+    <resultMap type="Ad" id="AdResult">
+        <result property="adId"    column="ad_id"    />
+        <result property="adCode"    column="ad_code"    />
+        <result property="adName"    column="ad_name"    />
+        <result property="width"    column="width"    />
+        <result property="height"    column="height"    />
+        <result property="status"    column="status"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="description"    column="description"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectAdVo">
+        select ad_id, ad_code, ad_name, width, height, status, user_id, dept_id, description, create_by, create_time from cms_ad
+    </sql>
+
+    <select id="selectAdList" parameterType="Ad" resultMap="AdResult">
+        <include refid="selectAdVo"/>
+        <where>  
+            <if test="adCode != null  and adCode != ''"> and ad_code like concat('%', #{adCode}, '%')</if>
+            <if test="adName != null  and adName != ''"> and ad_name like concat('%', #{adName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectAdById" parameterType="Long" resultMap="AdResult">
+        <include refid="selectAdVo"/>
+        where ad_id = #{adId}
+    </select>
+        
+    <insert id="insertAd" parameterType="Ad" useGeneratedKeys="true" keyProperty="adId">
+        insert into cms_ad
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adCode != null  and adCode != ''">ad_code,</if>
+            <if test="adName != null  and adName != ''">ad_name,</if>
+            <if test="width != null ">width,</if>
+            <if test="height != null ">height,</if>
+            <if test="status != null ">status,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="deptId != null  and deptId != ''">dept_id,</if>
+            <if test="description != null  and description != ''">description,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="adCode != null  and adCode != ''">#{adCode},</if>
+            <if test="adName != null  and adName != ''">#{adName},</if>
+            <if test="width != null ">#{width},</if>
+            <if test="height != null ">#{height},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="deptId != null  and deptId != ''">#{deptId},</if>
+            <if test="description != null  and description != ''">#{description},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAd" parameterType="Ad">
+        update cms_ad
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="adCode != null  and adCode != ''">ad_code = #{adCode},</if>
+            <if test="adName != null  and adName != ''">ad_name = #{adName},</if>
+            <if test="width != null ">width = #{width},</if>
+            <if test="height != null ">height = #{height},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="deptId != null  and deptId != ''">dept_id = #{deptId},</if>
+            <if test="description != null  and description != ''">description = #{description},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where ad_id = #{adId}
+    </update>
+
+    <delete id="deleteAdById" parameterType="Long">
+        delete from cms_ad where ad_id = #{adId}
+    </delete>
+
+    <delete id="deleteAdByIds" parameterType="String">
+        delete from cms_ad where ad_id in 
+        <foreach item="adId" collection="array" open="(" separator="," close=")">
+            #{adId}
+        </foreach>
+    </delete>
+    <!--/*****************************************分割线****************************************************/-->
+    <resultMap type="AdMaterial" id="AdMaterialResult">
+        <result property="id" column="id"    />
+        <result property="adId" column="ad_id"    />
+        <result property="link" column="link"    />
+        <result property="sort" column="sort"    />
+        <result property="hit" column="hit"    />
+        <result property="startTime" column="start_time"    />
+        <result property="endTime" column="end_time"    />
+        <result property="status" column="status"    />
+        <result property="useHisId" column="use_his_id"    />
+
+        <result property="materialId"    column="material_id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialType"    column="material_type"    />
+        <result property="description"    column="description"    />
+        <result property="materialSize"    column="material_size"    />
+        <result property="savePath"    column="save_path"    />
+        <result property="thumbnail"    column="thumbnail"    />
+        <result property="auditState"    column="audit_state"    />
+        <result property="auditReason"    column="audit_reason"    />
+        <result property="useState"    column="use_state"    />
+        <result property="width"    column="width"    />
+        <result property="height"    column="height"    />
+        <result property="uploaderId"    column="uploader_id"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+    <sql id="selectAdMaterialVo">
+        select id,ad_id,material_id,link,sort,hit,start_time,end_time,status,use_his_id from cms_ad_material
+    </sql>
+
+    <select id="selectAdMaterialById" parameterType="Long" resultMap="AdMaterialResult">
+        select a.id,a.ad_id,a.material_id,b.material_name,a.link,a.sort,a.hit,a.start_time,a.end_time,a.status,a.use_his_id from cms_ad_material a,cms_material b
+        where a.id = #{id} and a.material_id=b.material_id
+    </select>
+
+    <select id="selectAdMaterialList" parameterType="AdMaterial" resultMap="AdMaterialResult">
+        select b.id,b.ad_id,b.link,b.sort,b.hit,b.start_time,b.end_time,b.status,b.use_his_id,a.material_id, a.group_id, a.material_name, a.material_type, a.description, a.material_size, a.save_path, a.thumbnail, a.audit_state, a.audit_reason, a.use_state, a.width, a.height, a.uploader_id, a.upload_time, a.remark
+        from cms_material a , cms_ad_material b
+        where a.material_id=b.material_id
+        and b.ad_id=#{adId} and
+        a.material_id  in
+        (select material_id from cms_ad_material where ad_id=#{adId})
+        <if test="materialName != null and materialName != ''">
+            AND a.material_name like concat('%', #{materialName}, '%')
+        </if>
+        and a.audit_state=1
+        order by b.sort asc
+    </select>
+
+
+    <insert id="insertAdMaterial" parameterType="AdMaterial" useGeneratedKeys="true" keyProperty="adId">
+        insert into cms_ad_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adId != null  and adId != ''">ad_id,</if>
+            <if test="materialId != null  and materialId != ''">material_id,</if>
+            <if test="link != null  and link != ''">link,</if>
+            <if test="sort != null  and sort != ''">sort,</if>
+            <if test="hit != null  and hit != ''">hit,</if>
+            <if test="startTime != null ">start_time,</if>
+            <if test="endTime != null ">end_time,</if>
+            <if test="status != null ">status,</if>
+            <if test="useHisId != null ">use_his_id,</if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="adId != null  and adId != ''">#{adId},</if>
+            <if test="materialId != null  and materialId != ''">#{materialId},</if>
+            <if test="link != null  and link != ''">#{link},</if>
+            <if test="sort != null  and sort != ''">#{sort},</if>
+            <if test="hit != null  and hit != ''">#{hit},</if>
+            <if test="startTime != null ">#{startTime},</if>
+            <if test="endTime != null ">#{endTime},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="useHisId != null ">#{useHisId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAdMaterial" parameterType="Ad">
+        update cms_ad_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="adId != null  and adId != ''">ad_id = #{adId},</if>
+            <if test="materialId != null  and materialId != ''">material_id = #{materialId},</if>
+            <if test="link != null  and link != ''">link = #{link},</if>
+            <if test="sort != null  and sort != ''">sort = #{sort},</if>
+            <if test="hit != null  and hit != ''">hit = #{hit},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null ">end_time = #{endTime},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="useHisId != null ">use_his_id = #{useHisId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAdMaterialByIds" parameterType="String">
+        delete from cms_ad_material where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <sql id="selectMaterialVo">
+        select a.material_id, a.group_id, a.material_name, a.material_type, a.description, a.material_size, a.save_path, a.thumbnail, a.audit_state, a.audit_reason, a.use_state, a.width, a.height, a.uploader_id, a.upload_time, a.remark
+        from cms_material a
+        inner join cms_material_group b on a.group_id=b.group_id
+    </sql>
+
+
+    <select id="selectAdUnMaterialList" parameterType="AdMaterial" resultMap="AdMaterialResult">
+        <include refid="selectMaterialVo"/>
+        where a.material_id not in
+        (select material_id from cms_ad_material where ad_id=#{adId})
+        <if test="materialName != null and materialName != ''">
+            AND a.material_name like concat('%', #{materialName}, '%')
+        </if>
+        and a.audit_state=1
+    </select>
+
+
+    <select id="selectAdMaterialByIds" parameterType="String" resultMap="AdMaterialResult">
+        select * from cms_ad_material where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改爬虫配置')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-spiderConfig-edit" th:object="${spiderConfig}">
+            <input name="id" th:field="*{id}" type="hidden">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">爬虫编码&nbsp;<font color="red">*</font>：</label>
+                <div class="col-sm-8">
+                    <input name="spiderCode" class="form-control" th:field="*{spiderCode}"  type="text" required>
+                </div>
+            </div>
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">爬虫名称&nbsp;<font color="red">*</font>：</label>
+                <div class="col-sm-8">
+                    <input name="spiderName" th:field="*{spiderName}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">入口地址：</label>
+                <div class="col-sm-8">
+                    <textarea name="entryUrls" class="form-control">[[*{entryUrls}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">目标URL正则&nbsp;<font color="red">*</font>：</label>
+                <div class="col-sm-8">
+                    <input name="targetRegex" th:field="*{targetRegex}" class="form-control" type="text" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">级联发现URL：</label>
+                <div class="col-sm-8">
+                    <input id="cascade" name="cascade" class="form-control" th:field="*{cascade}" type="hidden">
+                    <label class="toggle-switch switch-solid">
+                        <input type="checkbox" id="checkbox_cascade" th:checked="${spiderConfig.cascade == 1}">
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+
+           <!-- <div class="form-group">
+                <label class="col-sm-3 control-label">存储的表名：</label>
+                <div class="col-sm-8">
+                    <input name="tableName" th:field="*{tableName}" class="form-control" type="text">
+                </div>
+            </div>-->
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">网站根域名&nbsp;<font color="red">*</font>：</label>
+                <div class="col-sm-8">
+                    <input name="domain" th:field="*{domain}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">字符集：</label>
+                <div class="col-sm-8">
+                    <input name="charset" th:field="*{charset}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">睡眠时间(ms)：</label>
+                <div class="col-sm-8">
+                    <input name="sleepTime" th:field="*{sleepTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">重试次数：</label>
+                <div class="col-sm-8">
+                    <input name="retryTimes" th:field="*{retryTimes}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">线程数量：</label>
+                <div class="col-sm-8">
+                    <input name="threadCount" th:field="*{threadCount}" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">使用代理：</label>
+                <div class="col-sm-8">
+                    <input id="useProxy" name="useProxy" th:field="*{useProxy}"  class="form-control" type="hidden">
+                    <label class="toggle-switch switch-solid">
+                        <input type="checkbox" id="checkbox_useProxy" name="checkbox_useProxy"  th:checked="${spiderConfig.useProxy == 1}">
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">打印日志：</label>
+                <div class="col-sm-8">
+                    <input id="showLog" name="showLog" th:field="*{showLog}"  class="form-control" type="hidden">
+                    <label class="toggle-switch switch-solid">
+                        <input type="checkbox" id="checkbox_showLog" name="checkbox_showLog" th:checked="${spiderConfig.showLog == 1}">
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "spider/spiderConfig";
+        $("#form-spiderConfig-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-spiderConfig-edit').serialize());
+            }
+        }
+
+        $(function(){
+            $("#checkbox_useProxy").on("change",function(){
+                var v=$(this).prop("checked");
+                if(v){
+                    $("#useProxy").val("1");
+                }else{
+                    $("#useProxy").val("0");
+                }
+            });
+            $("#checkbox_cascade").on("change",function(){
+                var v=$(this).prop("checked");
+                if(v){
+                    $("#cascade").val("1");
+                }else{
+                    $("#cascade").val("0");
+                }
+            });
+            $("#checkbox_showLog").on("change",function(){
+                var v=$(this).prop("checked");
+                if(v){
+                    $("#showLog").val("1");
+                }else{
+                    $("#showLog").val("0");
+                }
+            });
+
+        })
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增爬虫字段')" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-spiderField-add">
+        <div class="form-group" style="display: none;">
+            <label class="col-sm-3 control-label">爬虫配置ID：</label>
+            <div class="col-sm-8">
+                <input name="configId" th:value="${configId}" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">字段：</label>
+            <div class="col-sm-8">
+                <input name="field" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">字段名称：</label>
+            <div class="col-sm-8">
+                <input name="fieldName" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">提取类型：</label>
+            <div class="col-sm-8">
+                <div class="radio-box" th:each="dict : ${@dict.getType('spider_extract_type')}">
+                    <input type="radio" th:id="${'extractType_' + dict.dictCode}"  name="extractType" th:value="${dict.dictValue}" th:checked="${dict.default}" required>
+                    <label th:for="${'extractType_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group extractBy">
+            <label class="col-sm-3 control-label">提取规则(xpath,css值)：</label>
+            <div class="col-sm-8">
+                <input name="extractBy" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group  constant" style="display: none;">
+            <label class="col-sm-3 control-label">常量值：</label>
+            <div class="col-sm-8">
+                <input name="constantValue" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group css"  style="display: none;">
+            <label class="col-sm-3 control-label">元素的索引：</label>
+            <div class="col-sm-8">
+                <input name="extractIndex" class="form-control" value="0" type="text">
+            </div>
+        </div>
+
+        <div class="form-group css"  style="display: none;">
+            <label class="col-sm-3 control-label">根据属性取值：</label>
+            <div class="col-sm-8">
+                <input id="extractAttrFlag" name="extractAttrFlag" class="form-control" type="hidden">
+                <label class="toggle-switch switch-solid">
+                    <input type="checkbox" id="extractAttrCheckbox"   >
+                    <span></span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group extractAttr_extend"  style="display: none;">
+            <label class="col-sm-3 control-label">属性名：</label>
+            <div class="col-sm-8">
+                <input id="extractAttr" name="extractAttr" class="form-control" type="text">
+            </div>
+        </div>
+        <!-- <div class="form-group">
+            <label class="col-sm-3 control-label">处理规则：</label>
+            <div class="col-sm-8">
+                <input name="processRuleId" class="form-control" type="text">
+            </div>
+        </div>-->
+
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script type="text/javascript">
+    var prefix = ctx + "spider/spiderField"
+    $("#form-spiderField-add").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-spiderField-add').serialize());
+        }
+    }
+
+    function showHideDiv(){
+        var v=$("[name=extractType]:checked").val();
+        if(v=="css"){
+            $(".css").show();
+            $(".constant").hide();
+            $(".extractBy").show();
+        }else if(v=="xpath"){
+            $(".css").hide();
+            $(".constant").hide();
+            $(".extractBy").show();
+            $("#extractAttrFlag").val("0");
+        }else{
+            //常量
+            $(".constant").show();
+            $(".css").hide();
+            $(".extractBy").hide();
+            $("#extractAttrFlag").val("0");
+
+        }
+    }
+
+    $(function(){
+        $('[name=extractType]').on('ifChecked', function(event){
+            showHideDiv();
+        });
+
+        $("#extractAttrCheckbox").on("change",function(){
+            var v=$(this).prop("checked");
+            if(v){
+                $("#extractAttrFlag").val("1");
+                $(".extractAttr_extend").show();
+                $("#extractAttr").attr("required","required");
+            }else{
+                $("#extractAttrFlag").val("0");
+                $(".extractAttr_extend").hide();
+                $("#extractAttr").removeAttr("required");
+            }
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance: 
+    preferIpAddress: true
+server:
+  port: 1213
+spring:
+  application:
+    name: service-api-consumer
+feign:
+  hystrix:
+    enabled: true
+    client:
+      default:
+        connect-timeout:10000
+        read-timeout:20000
+#\u662f\u5426\u5f00\u542fapi\u79d8\u94a5\u9a8c\u7b7e
+api:
+  security:
+    enabled: true
+#\u6d4b\u8bd5\u670d\u52a1\u540d\u79f0
+demo:
+  server:
+     name: ZEBRA-YRITSZ-API-PROVIDER
+    

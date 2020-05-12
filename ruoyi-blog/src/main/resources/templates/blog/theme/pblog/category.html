@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+	<meta name="description" th:content="${@config.getKey('blog.index.description')}">
+	<title th:text="${@config.getKey('blog.index.title')}"></title>
+	<link rel="stylesheet" th:href="@{/ajax/libs/bootstrap/bootstrap.min.css}"/>
+	<!--<link rel="stylesheet" th:href="@{/ajax/libs/swiper/css/swiper.min.css}"/>-->
+	<link rel="stylesheet" th:href="@{/ajax/libs/zplayer/css/zplayer.min.css}"/>
+	<link rel="stylesheet" th:href="@{/ajax/libs/font-icon/icon.css}"/>
+	<link rel="stylesheet" th:href="@{/blog/pblog/css/web-common.css}" />
+	<link rel="stylesheet" th:href="@{/blog/pblog/css/web-blog.css}" />
+    <link th:href="@{/ajax/libs/toastr/toastr.min.css}" rel="stylesheet"/>
+	<script th:src="@{/ajax/libs/jquery.min.js}"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+	<script th:src="@{/ajax/libs/layer/layer.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap/bootstrap.min.js}"></script>
+	<script th:src="@{/ajax/libs/laypage/laypage.js}"></script>
+	<script th:src="@{/ajax/libs/toastr/toastr.min.js}"></script>
+	<script th:src="@{/ruoyi/js/fast.js}"></script>
+	<!--<script th:src="@{/ajax/libs/swiper/js/swiper.min.js}"></script>-->
+	<script th:src="@{/ajax/libs/hc-sticky.js}" ></script>
+	<script th:src="@{/ajax/libs/zplayer/js/zplayer.min.js}"></script>
+	<script th:src="@{/blog/pblog/js/pb-blog.js}"></script>
+</head>
+<body>
+<header id="header">
+	<div th:replace="blog/theme/pblog/fragments/navbar :: navbar"></div>
+</header>
+<div class="pb-container pb-content">
+	<div class="pb-main">
+		<!--banner轮播图-->
+		<div class="swiper-container mb-20" id="swiperContainer"></div>
+
+		<div class="no-article-content" th:if="${#lists.isEmpty(articleList)}">
+			Sorry, 暂未发现任何文章~
+		</div>
+		<div th:each="item,temp : ${articleList}" class="blogs">
+			<span th:if="${item.topFlag==1}" class="fa fa-superscript-top superscript superscript-top"></span>
+			<span class="blogpic"><a><img th:src="${item.coverImage}"></a><span class="blog-type"><a th:href="@{${'/blog/category/'+item.categoryId}}" th:text="${item.category.categoryName}"></a></span></span>
+			<h3 class="blogtitle"><a th:href="@{${'/blog/article/'+item.id}}" th:text="${item.title}" ></a></h3>
+			<p  th:text="${item.description}" class="blogtext"></p>
+			<div class="bloginfo">
+				<ul>
+					<li><span class="fa fa-clock-o"></span><span th:text="${#dates.format(item.createTime,'yyyy-MM-dd')}"></span></li>
+					<li><span class="fa fa-eye"></span><span th:text="${item.hit}? ${item.hit} : 0"></span></li>
+					<li><a class="comment-link-a" th:href="@{${'/blog/article/'+item.id+'#comment'}}"><span class="fa fa-comments-o"></span><span th:text="${item.replyNum}? ${item.replyMun} : 0"></span></a></li>
+				</ul>
+				<a class="read-more" th:href="@{${'/blog/article/'+item.id}}">阅读全文</a>
+			</div>
+		</div>
+		<!--<div th:replace="blog/theme/pblog/fragmentspagebar :: pageBar"></div>-->
+		<div style="position:relative;bottom:0px;text-align: center;" id="pagebar" class="pagebar"></div>
+		<script type="text/javascript" th:inline="javascript">
+			var pageNum=[[${pageNo}]];
+			var pageSize=10;
+			var totalPages =[[${totalPages}]];
+			if(Number(totalPages)>1){
+				initPager();
+			}
+			function initPager() {
+				var $pagebar = $("#pagebar");
+				laypage({
+					cont: $pagebar, //容器。值支持id名、原生dom对象，jquery对象,
+					pages: totalPages, //总页数
+					curr: pageNum,
+					jump:jumpPage,
+					skin: '#1E9FFF',
+					first: '首页', //若不显示，设置false即可
+					last: '尾页', //若不显示，设置false即可
+					prev: '上一页', //若不显示，设置false即可
+					next: '下一页' //若不显示，设置false即可
+				});
+			}
+
+			function jumpPage(obj,first){
+				pageNo=obj.curr;
+				if(!first){
+					var uri=getUri();
+					window.location.href=uri+"?pageNum="+pageNo+"&pageSize="+pageSize;
+				}
+			}
+
+			function getUri(){
+				var url=  window.location.href;
+				var host=window.location.host;
+				var protocol=window.location.protocol;
+				var uri=url.replace(protocol+"//"+host,"");
+				if(uri.indexOf("?")>0){
+					uri=uri.substring(0,uri.indexOf("?"));
+				}
+				return uri;
+			}
+		</script>
+
+	</div>
+	<div th:replace="blog/theme/pblog/fragments/sidebar :: sidebar"></div>
+</div>
+<div th:replace="blog/theme/pblog/fragments/footer :: copyrightLight"></div>
+<div th:replace="blog/theme/pblog/fragments/musicPlayer :: musicPlayer"></div>
+<div class="return_top"><a class=" fa fa-arrow-up"></a></div>
+
+<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+<script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+<script th:src="@{/ruoyi/js/ry-ui.js}"></script>
+<th:block th:include="include :: cms-album" />
+
+<script type="text/javascript">
+	$(function(){
+		var url=ctx+"blog/getIndexBanner";
+		$.album.initAlbum("swiperContainer","blog_index",url);
+	})
+</script>
+</body>
+
+</html>

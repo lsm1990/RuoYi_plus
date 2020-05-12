@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.EmailMapper">
+    
+    <resultMap type="Email" id="EmailResult">
+        <result property="id"    column="id"    />
+        <result property="emailType"    column="email_type"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="fromEmail"    column="from_email"    />
+        <result property="fromEmailPwd"    column="from_email_pwd"    />
+        <result property="toEmail"    column="to_email"    />
+        <result property="subject"    column="subject"    />
+        <result property="content"    column="content"    />
+        <result property="sendFlag"    column="send_flag"    />
+        <result property="sendTime"    column="send_time"    />
+        <result property="sendType"    column="send_type"    />
+        <result property="planTime"    column="plan_time"    />
+        <result property="copyTo"    column="copy_to"    />
+        <result property="attachfiles"    column="attachfiles"    />
+    </resultMap>
+
+    <sql id="selectEmailVo">
+        select id, email_type, user_id, create_by, create_time, from_email, from_email_pwd, to_email, subject, content, send_flag, send_time, send_type, plan_time, copy_to, attachfiles from cms_email
+    </sql>
+
+    <select id="selectEmailList" parameterType="Email" resultMap="EmailResult">
+        <include refid="selectEmailVo"/>
+        <where>  
+            <if test="emailType != null "> and email_type = #{emailType}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="fromEmail != null  and fromEmail != ''"> and from_email = #{fromEmail}</if>
+            <if test="fromEmailPwd != null  and fromEmailPwd != ''"> and from_email_pwd = #{fromEmailPwd}</if>
+            <if test="toEmail != null  and toEmail != ''"> and to_email = #{toEmail}</if>
+            <if test="subject != null  and subject != ''"> and subject = #{subject}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="sendFlag != null "> and send_flag = #{sendFlag}</if>
+            <if test="sendTime != null "> and send_time = #{sendTime}</if>
+            <if test="sendType != null "> and send_type = #{sendType}</if>
+            <if test="planTime != null  and planTime != ''"> and plan_time = #{planTime}</if>
+            <if test="copyTo != null  and copyTo != ''"> and copy_to = #{copyTo}</if>
+            <if test="attachfiles != null  and attachfiles != ''"> and attachfiles = #{attachfiles}</if>
+        </where>
+    </select>
+    
+    <select id="selectEmailById" parameterType="String" resultMap="EmailResult">
+        <include refid="selectEmailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEmail" parameterType="Email" useGeneratedKeys="true" keyProperty="id">
+        insert into cms_email
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="emailType != null ">email_type,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="fromEmail != null  and fromEmail != ''">from_email,</if>
+            <if test="fromEmailPwd != null  and fromEmailPwd != ''">from_email_pwd,</if>
+            <if test="toEmail != null  and toEmail != ''">to_email,</if>
+            <if test="subject != null  and subject != ''">subject,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="sendFlag != null ">send_flag,</if>
+            <if test="sendTime != null ">send_time,</if>
+            <if test="sendType != null ">send_type,</if>
+            <if test="planTime != null ">plan_time,</if>
+            <if test="copyTo != null  and copyTo != ''">copy_to,</if>
+            <if test="attachfiles != null  and attachfiles != ''">attachfiles,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            <if test="emailType != null ">#{emailType},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="fromEmail != null  and fromEmail != ''">#{fromEmail},</if>
+            <if test="fromEmailPwd != null  and fromEmailPwd != ''">#{fromEmailPwd},</if>
+            <if test="toEmail != null  and toEmail != ''">#{toEmail},</if>
+            <if test="subject != null  and subject != ''">#{subject},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="sendFlag != null ">#{sendFlag},</if>
+            <if test="sendTime != null ">#{sendTime},</if>
+            <if test="sendType != null ">#{sendType},</if>
+            <if test="planTime != null ">#{planTime},</if>
+            <if test="copyTo != null  and copyTo != ''">#{copyTo},</if>
+            <if test="attachfiles != null  and attachfiles != ''">#{attachfiles},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEmail" parameterType="Email">
+        update cms_email
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="emailType != null ">email_type = #{emailType},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="fromEmail != null  and fromEmail != ''">from_email = #{fromEmail},</if>
+            <if test="fromEmailPwd != null  and fromEmailPwd != ''">from_email_pwd = #{fromEmailPwd},</if>
+            <if test="toEmail != null  and toEmail != ''">to_email = #{toEmail},</if>
+            <if test="subject != null  and subject != ''">subject = #{subject},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="sendFlag != null ">send_flag = #{sendFlag},</if>
+            <if test="sendTime != null ">send_time = #{sendTime},</if>
+            <if test="sendType != null ">send_type = #{sendType},</if>
+            <if test="planTime != null  ">plan_time = #{planTime},</if>
+            <if test="copyTo != null  and copyTo != ''">copy_to = #{copyTo},</if>
+            <if test="attachfiles != null  and attachfiles != ''">attachfiles = #{attachfiles},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEmailById" parameterType="String">
+        delete from cms_email where id = #{id}
+    </delete>
+
+    <delete id="deleteEmailByIds" parameterType="String">
+        delete from cms_email where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

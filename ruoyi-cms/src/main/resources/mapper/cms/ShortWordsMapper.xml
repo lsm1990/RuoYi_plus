@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.ShortWordsMapper">
+    
+    <resultMap type="ShortWords" id="ShortWordsResult">
+        <result property="id"    column="id"    />
+        <result property="shortWords"    column="short_words"    />
+        <result property="tagids"    column="tagIds"    />
+        <result property="userId"    column="user_id"    />
+        <result property="wordsCount"    column="words_count"    />
+        <result property="weight"    column="weight"    />
+        <result property="auditState"    column="audit_state"    />
+    </resultMap>
+
+    <sql id="selectShortWordsVo">
+        select id, short_words, tagIds, user_id, words_count, weight, audit_state from cms_short_words
+    </sql>
+
+    <select id="selectShortWordsList" parameterType="ShortWords" resultMap="ShortWordsResult">
+        <include refid="selectShortWordsVo"/>
+        <where>  
+            <if test="shortWords != null  and shortWords != ''"> and short_words = #{shortWords}</if>
+            <if test="tagids != null  and tagids != ''"> and tagIds = #{tagids}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="wordsCount != null "> and words_count = #{wordsCount}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="auditState != null "> and audit_state = #{auditState}</if>
+        </where>
+    </select>
+    
+    <select id="selectShortWordsById" parameterType="Long" resultMap="ShortWordsResult">
+        <include refid="selectShortWordsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertShortWords" parameterType="ShortWords" useGeneratedKeys="true" keyProperty="id">
+        insert into cms_short_words
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shortWords != null  and shortWords != ''">short_words,</if>
+            <if test="tagids != null  and tagids != ''">tagIds,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="wordsCount != null ">words_count,</if>
+            <if test="weight != null ">weight,</if>
+            <if test="auditState != null ">audit_state,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shortWords != null  and shortWords != ''">#{shortWords},</if>
+            <if test="tagids != null  and tagids != ''">#{tagids},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="wordsCount != null ">#{wordsCount},</if>
+            <if test="weight != null ">#{weight},</if>
+            <if test="auditState != null ">#{auditState},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShortWords" parameterType="ShortWords">
+        update cms_short_words
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shortWords != null  and shortWords != ''">short_words = #{shortWords},</if>
+            <if test="tagids != null  and tagids != ''">tagIds = #{tagids},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="wordsCount != null ">words_count = #{wordsCount},</if>
+            <if test="weight != null ">weight = #{weight},</if>
+            <if test="auditState != null ">audit_state = #{auditState},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShortWordsById" parameterType="Long">
+        delete from cms_short_words where id = #{id}
+    </delete>
+
+    <delete id="deleteShortWordsByIds" parameterType="String">
+        delete from cms_short_words where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

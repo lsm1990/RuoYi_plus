@@ -1,0 +1,83 @@
+<div th:fragment="sidebar" class="pb-sidebar">
+    <div class="about panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">关于本站</h3>
+        </div>
+        <div class="panel-body">
+            <ul>
+
+                <div class="avatar"> <img th:src="${@config.getKey('site.person.pic')}" alt=""></div>
+                <p th:text="${@config.getKey('site.person.name')}" class="abname"></p>
+                <p th:text="${@config.getKey('site.person.desc')}" class="abtext"></p>
+            </ul>
+        </div>
+    </div>
+    <div class="tag panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">标签云</h3>
+        </div>
+        <div class="panel-body">
+            <ul>
+                <li th:each="item:${@cms.getTagsCloud()}" class="tag-li"><a class="btn btn-default btn-xs" th:classappend="${pageUrl == 'blog/tag/'+item.tagId}?'active'" th:href="@{${'/blog/tag/'+item.tagId}}" th:text="${item.tagName}"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="pb-sidebar-tabs">
+        <ul id="myTab" class="nav nav-tabs">
+            <li class="active"><a href="#latest" data-toggle="tab">最新文章</a></li>
+            <li><a href="#recommend" data-toggle="tab">站长推荐</a></li>
+            <li><a href="#hot" data-toggle="tab">点击排行</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="latest">
+                <ol class="article-list">
+                    <li th:each="item,temp:${@cms.recentList(6)}"  class="slide">
+                        <span th:class="${'li-icon li-icon-'+(temp.index+1)}" th:text="${temp.index+1}"></span>
+                        <a th:text="${item.title}" th:href="${'/blog/article/'+item.id}"></a>
+                    </li>
+                </ol>
+            </div>
+            <div class="tab-pane" id="recommend">
+                <ol class="article-list">
+                    <li th:each="item,temp:${@cms.recommendedList(6)}"  class="slide">
+                        <span th:class="${'li-icon li-icon-'+(temp.index+1)}" th:text="${temp.index+1}"></span>
+                        <a th:text="${item.title}" th:href="${'/blog/article/'+item.id}"></a>
+                    </li>
+                </ol>
+            </div>
+            <div class="tab-pane" id="hot">
+                <ol class="article-list">
+                    <li th:each="item,temp:${@cms.hotList(6)}"  class="slide">
+                        <span th:class="${'li-icon li-icon-'+(temp.index+1)}" th:text="${temp.index+1}"></span>
+                        <a th:text="${item.title}" th:href="${'/blog/article/'+item.id}"></a>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="link panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">友情链接</h3>
+        </div>
+        <div class="panel-body">
+            <ul>
+                <li th:each="item:${@cms.getFriendLinks()}"> <a th:href="${item.link}" th:text="${item.name}" target="_blank"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="webinfo panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">网站信息</h3>
+        </div>
+        <div class="panel-body">
+            <ul>
+                <li> <i class="fa fa-file fa-fw"></i> 文章总数：<span th:text="${@cms.getSiteInfo().articleCount}"></span> 篇</li>
+                <li> <i class="fa fa-tags fa-fw"></i> 标签总数：<span th:text="${@cms.getSiteInfo().tagCount}"></span> 个</li>
+                <li> <i class="fa fa-folder-open fa-fw"></i> 分类总数：<span th:text="${@cms.getSiteInfo().categoryCount}"></span> 个</li>
+                <li> <i class="fa fa-comments fa-fw"></i> 留言数量：<span th:text="${@cms.getSiteInfo().msgCount}"></span> 条</li>
+                <li> <i class="fa fa-users fa-fw"></i> 在线人数：<span class="onlineNum">11</span>人</li>
+            </ul>
+        </div>
+    </div>
+
+</div>

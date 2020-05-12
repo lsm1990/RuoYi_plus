@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" th:content="${@config.getKey('blog.index.keywords')}">
+    <meta name="description" th:content="${@config.getKey('blog.index.description')}">
+    <title th:text="${@config.getKey('blog.index.title')}"></title>
+    <meta name="baidu-site-verification" content="" />
+
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.base.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.head.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.group.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/css/dgy.layout.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/plugin/iconfont/iconfont.css}"/>
+    <link rel="stylesheet" th:href="@{/blog/avatar/plugin/swiper4/swiper-4.1.0.min.css}"/>
+    <link href="//at.alicdn.com/t/font_958938_n3j31its8x.css" rel="stylesheet" type="text/css">
+    <script th:src="@{/blog/avatar/js/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/layer/layer.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/jquery.lazyload.min.js}"></script>
+    <script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+    <script th:src="@{/blog/avatar/js/baseMotheds.js}"></script>
+    <script th:src="@{/blog/avatar/plugin/swiper4/swiper-4.1.0.min.js}"></script>
+</head>
+<body class="">
+<!-- header -->
+<div class="fixedHeadSwitch">
+    <div th:replace="blog/theme/avatar/header"></div>
+</div>
+<article>
+    <div class="launchTopGird">
+        <div class="baseGroup w1200 layoutAuto" style="width: 1200px;">
+            <div class="leftWrap layoutAuto">
+                <div class="swiper-container" id="indexTopFocus">
+                    <div class="swiper-wrapper">
+                        <!-- 此处为 演示使用，可移除 start -->
+                        <!--<a href="https://www.duoguyu.com?v=avatar" target="_blank" class="swiper-slide">
+                            <div class="imgGroup layoutAuto">
+                                <img class="img layoutAuto" src="http://intro.duoguyu.com/uploads/dgy/banner.jpg" alt="多骨鱼">
+                            </div>
+                            <div class="clearfix"></div>
+                        </a>-->
+                        <!-- 此处为 演示使用，可移除 end -->
+
+                        <a  th:each="item,temp:${@cms.selectIndexBannerImgs('blog_index')}" th:href="@{${item.link}}" target="_blank" class="swiper-slide">
+                            <div class="imgGroup layoutAuto">
+                                <img class="img layoutAuto" th:src="@{${item.savePath}}"  th:alt="${item.materialName}"  >
+                            </div>
+                            <div class="clearfix"></div>
+                        </a>
+
+                    </div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+            <div class="rightWrap layoutHide">
+
+                <!-- 此处可自助修改所需要展示的栏目或频道 -->
+                <!--{m:lists field="title,inputtime,url,description,catid,id,thumb,nickname" modelid="1" thumb="1" limit="1"}
+                {loop $data $v}
+                 <a href="{$v[url]}" target="_blank" class="specialWrap day" style="background:url('{$v[thumb]}') no-repeat center; background-size:cover;">
+                     <div class="textWp">
+                         <div class="title"># {get_catname($v['catid'])}</div>
+                         <div class="detail">{str_cut($v['title'], 140)}</div>
+                         <div class="author">by. {$v[nickname]}</div>
+                     </div>
+                     <i class="overlay"></i>
+                 </a>
+                 {/loop}-->
+
+                <div class="extendBox">
+                    <a href="https://www.duoguyu.com?v=avatar" target="_blank" title="模板主题，免费下载"><img src="http://intro.duoguyu.com/uploads/dgy/320x100.jpg"></a>
+                </div>
+
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+    </div>
+
+    <div class="baseGroup w1200 layoutAuto">
+        <div class="leftWrap  layoutAuto">
+            <div class="commonHeadLabel small">
+                <h2 class="title">最近更新</h2>
+            </div>
+            <div class="indexListGrid">
+
+                <a  th:each="item,temp:${@cms.recentList(3)}" th:href="@{${'/blog/article/'+item.id}}"  target="_blank" class="item">
+                    <div th:if="${not #strings.isEmpty(item.coverImage)}" class="content img">
+                        <div class="catWrap"><div class="catBox"><span class="i">#</span>[[${item.category.categoryName}]]</div></div>
+                        <h2 th:text="${item.title}" ></h2>
+                        <p class="detail layoutHide" th:text="${#strings.abbreviate(item.description,95)}"></p>
+                        <p class="otherInfo">
+                            <span class="mr5" th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                            <span class="mr5">浏览 [[${item.hit}]]</span>
+                        </p>
+                        <div class="imgBox">
+                            <img class="img" th:src="@{${item.coverImage}}" th:alt="${item.title}">
+                        </div>
+                    </div>
+
+                    <div th:if="${#strings.isEmpty(item.coverImage)}" class="content">
+                        <div class="catWrap"><div class="catBox"><span class="i">#</span>[[${item.category.categoryName}]]</div></div>
+                        <h2 th:text="${item.title}" ></h2>
+                        <p class="detail layoutHide"  th:text="${#strings.abbreviate(item.description,95)}"></p>
+                        <p class="otherInfo">
+                            <span class="mr5" th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                            <span class="mr5">浏览 [[${item.hit}]]</span>
+                        </p>
+                    </div>
+
+                </a>
+
+            </div>
+
+            <div class="commonHeadLabel small">
+                <h2 class="title fl">推荐资源</h2>
+                <div class="rtWrap">
+                    <!-- <span class="nav pr10">
+                         <a href="https://www.duoguyu.com?v=avatar" target="_blank">查看更多</a>
+                     </span>-->
+                </div>
+            </div>
+            <div class="articleModeGrid w3 index on swiper-container" id="resourceGrid">
+                <div class="swiper-wrapper">
+
+                    <div th:each="item,temp:${@cms.recommendedResourceList(3)}"  class="itemLi swiper-slide">
+                        <a  th:href="@{${'/blog/resource/'+item.id}}" target="_blank" class="content">
+                            <div class="imgBox full layoutAuto">
+                                <img class="img" th:src="@{${item.coverImage}}" th:alt="${item.title}">
+                            </div>
+                            <div class="articleGroup">
+                                <h2 th:text="${item.title}"></h2>
+                                <div class="detail" th:text="${#strings.abbreviate(item.description,65)}"></div>
+                                <div class="btmInfo">
+                                    <span class="">浏览 [[${item.hit}]]</span>
+                                    <span class="text" th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+
+
+            <div class="indexListGrid mt20">
+
+                <a  th:each="item,temp:${@cms.avatarIndexList(10)}" th:with="type=${item.extraName}" th:href="@{${'/blog/'+type+'/'+item.id}}"  target="_blank" class="item">
+
+                    <div class="content " th:classappend="${not #strings.isEmpty(item.coverImage)}?'img'">
+                        <div class="catWrap"><div class="catBox"><span class="i">#</span>测试</div></div>
+                        <h2   th:text="${item.title}"></h2>
+
+                        <p class="detail layoutHide" th:text="${#strings.abbreviate(item.description,95)}"></p>
+                        <p class="otherInfo">
+                            <span class="mr5"  th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                            <span class="mr5">浏览 [[${item.hit}]]</span>
+                        </p>
+                        <div th:if="${not #strings.isEmpty(item.coverImage)}" class="imgBox">
+                            <img class="img"  th:src="@{${item.coverImage}}"  th:alt="${item.title}">
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="rightWrap pl10 layoutAuto">
+            <div class="commonHeadLabel small">
+                <h2 class="title">特别推荐</h2>
+            </div>
+            <div class="indexAsideGrid">
+
+                <a  th:each="item,temp:${@cms.recommendedList(6)}"  th:href="@{${'/blog/article/'+item.id}}" th:title="${item.title}"   target="_blank" class="item">
+                    <h2 th:text="${item.title}"></h2>
+                    <p>
+                        <span class="mr5" th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                        <span class="mr5">浏览 [[${item.hit}]]</span>
+                    </p>
+                </a>
+
+                <div class="clearfix"></div>
+            </div>
+
+            <!-- 热门标签 -->
+            <div class="commonHeadLabel small mt40">
+                <h2 class="title">热门标签</h2>
+            </div>
+            <div class="indexTagGrid">
+
+                <a th:each="item:${@cms.getTagsCloud()}"  th:href="@{${'/blog/tag/'+item.tagId}}" th:text="${item.tagName}" class="item" target="_blank"></a>
+
+                <div class="clearfix"></div>
+            </div>
+
+            <!-- 广告业务 -->
+            <div class="brandGrid" id="brandGrid"><a href="https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=psmzr0yi" target="_blank"><img class="img" src="https://www.duoguyu.com/dist/images/brand/brand-aliyun.jpg"></a></div>
+
+            <!-- 留言列表 -->
+            <div class="commonHeadLabel small mt40">
+                <h2 class="title">最新留言</h2>
+            </div>
+            <div class="commentGrid">
+                <ul class="itemUl">
+                    <li th:each="item:${@cms.newComments(4)}" class="item">
+                        <div class="username">[[${item.userName}]] <span th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></span></div>
+                        <div class="commentGroup">
+                            <p class="detailText" th:utext="${item.content}"></p>
+                            <!--<p class="adminText"><strong style="color:#409eff">管理员</strong>：{$v[bookmsg]}</p>-->
+                        </div>
+                    </li>
+                    <li>
+                        <a th:href="@{/blog/siteMsg}" target="_blank" class="moreBtn">我要留言</a>
+                    </li>
+                    <li th:if="${#lists.isEmpty(@cms.newComments(4))}"  class="tips">暂无留言</li>
+                </ul>
+            </div>
+
+            <!-- 友链 -->
+            <div class="commonHeadLabel small mt40">
+                <h2 class="title">友链推荐</h2>
+            </div>
+            <div class="indexSiteGird">
+
+                <a th:each="item:${@cms.getFriendLinks()}" th:href="${item.link}"   class="item" target="_blank">
+                    <img class="img" th:src="@{${item.logo}}"  th:alt="${item.name}">
+                    <p class="title" th:text="${item.name}"></p>
+                    <p th:text="${#strings.abbreviate(item.description,65)}"></p>
+                    <div class="moreBox"><i class="iconfont icon-iconset0424 icon"></i></div>
+                </a>
+
+            </div>
+
+            <!-- 特别鸣谢 -->
+            <div class="commonHeadLabel small mt40">
+                <h2 class="title">特别鸣谢</h2>
+            </div>
+            <div class="thankGroup" style="margin-top:-5px; padding:0;">
+                <p><a href="http://www.pt-cms.com" target="_blank" title="pt-cms官网">pt-cms</a> Java版轻量级开源管理系统，提供后台系统支持。</p>
+                <p><a href="#" target="_blank" title="若依后台管理">若依后台管理</a> 若依后台管理系统提供技术支持。</p>
+            </div>
+
+
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+</article>
+<!-- / article -->
+
+<footer class="bgf mt40">
+    <div th:replace="blog/theme/avatar/footer"></div>
+</footer>
+</body>
+</html>

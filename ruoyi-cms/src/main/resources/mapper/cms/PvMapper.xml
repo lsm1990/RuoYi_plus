@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.PvMapper">
+    
+    <resultMap type="Pv" id="PvResult">
+        <result property="id"    column="id"    />
+        <result property="uid"    column="uid"    />
+        <result property="module"    column="module"    />
+        <result property="browser"    column="browser"    />
+        <result property="referer"    column="referer"    />
+        <result property="os"    column="os"    />
+        <result property="pageId"    column="page_id"    />
+        <result property="url"    column="url"    />
+        <result property="deviceType"    column="device_type"    />
+        <result property="timeZone"    column="time_zone"    />
+        <result property="ip"    column="ip"    />
+        <result property="location"    column="location"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectPvVo">
+        select id, uid, module, browser, referer, os, page_id, url, device_type, time_zone, ip, location, create_time from cms_pv
+    </sql>
+
+    <select id="selectPvList" parameterType="Pv" resultMap="PvResult">
+        <include refid="selectPvVo"/>
+        <where>  
+            <if test="uid != null  and uid != ''"> and uid = #{uid}</if>
+            <if test="module != null  and module != ''"> and module = #{module}</if>
+            <if test="deviceType != null  and deviceType != ''"> and device_type = #{deviceType}</if>
+            <if test="ip != null  and ip != ''"> and ip = #{ip}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectPvById" parameterType="Long" resultMap="PvResult">
+        <include refid="selectPvVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPv" parameterType="Pv" useGeneratedKeys="true" keyProperty="id">
+        insert into cms_pv
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null  and uid != ''">uid,</if>
+            <if test="module != null  and module != ''">module,</if>
+            <if test="browser != null  and browser != ''">browser,</if>
+            <if test="referer != null  and referer != ''">referer,</if>
+            <if test="os != null  and os != ''">os,</if>
+            <if test="pageId != null  and pageId != ''">page_id,</if>
+            <if test="url != null  and url != ''">url,</if>
+            <if test="deviceType != null  and deviceType != ''">device_type,</if>
+            <if test="timeZone != null  and timeZone != ''">time_zone,</if>
+            <if test="ip != null  and ip != ''">ip,</if>
+            <if test="location != null  and location != ''">location,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null  and uid != ''">#{uid},</if>
+            <if test="module != null  and module != ''">#{module},</if>
+            <if test="browser != null  and browser != ''">#{browser},</if>
+            <if test="referer != null  and referer != ''">#{referer},</if>
+            <if test="os != null  and os != ''">#{os},</if>
+            <if test="pageId != null  and pageId != ''">#{pageId},</if>
+            <if test="url != null  and url != ''">#{url},</if>
+            <if test="deviceType != null  and deviceType != ''">#{deviceType},</if>
+            <if test="timeZone != null  and timeZone != ''">#{timeZone},</if>
+            <if test="ip != null  and ip != ''">#{ip},</if>
+            <if test="location != null  and location != ''">#{location},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertPvBatch">
+        insert into cms_pv (id, uid, module, browser, referer, os, page_id, url, device_type, time_zone, ip, location, create_time)
+        values
+        <foreach collection="list" item="item" separator="," >
+            (null,#{item.uid},#{item.module},#{item.browser},#{item.referer},#{item.os},#{item.pageId},#{item.url},#{item.deviceType},#{item.timeZone},#{item.ip},#{item.location},now())
+        </foreach>
+    </insert>
+
+    <update id="updatePv" parameterType="Pv">
+        update cms_pv
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uid != null  and uid != ''">uid = #{uid},</if>
+            <if test="module != null  and module != ''">module = #{module},</if>
+            <if test="browser != null  and browser != ''">browser = #{browser},</if>
+            <if test="referer != null  and referer != ''">referer = #{referer},</if>
+            <if test="os != null  and os != ''">os = #{os},</if>
+            <if test="pageId != null  and pageId != ''">page_id = #{pageId},</if>
+            <if test="url != null  and url != ''">url = #{url},</if>
+            <if test="deviceType != null  and deviceType != ''">device_type = #{deviceType},</if>
+            <if test="timeZone != null  and timeZone != ''">time_zone = #{timeZone},</if>
+            <if test="ip != null  and ip != ''">ip = #{ip},</if>
+            <if test="location != null  and location != ''">location = #{location},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePvById" parameterType="Long">
+        delete from cms_pv where id = #{id}
+    </delete>
+
+    <delete id="deletePvByIds" parameterType="String">
+        delete from cms_pv where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

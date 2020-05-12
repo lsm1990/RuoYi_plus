@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.AttachmentMapper">
+    
+    <resultMap type="Attachment" id="AttachmentResult">
+        <result property="attachId"    column="attach_id"    />
+        <result property="zid"    column="zid"    />
+        <result property="userId"    column="user_id"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="size"    column="size"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="sort"    column="sort"    />
+    </resultMap>
+
+    <sql id="selectAttachmentVo">
+        select attach_id, zid, user_id, file_type, file_name, file_path,file_url, size, create_by, create_time, sort from cms_attachment
+    </sql>
+
+    <select id="selectAttachmentList" parameterType="Attachment" resultMap="AttachmentResult">
+        select a.attach_id, a.zid, a.user_id,a.file_type, a.file_name, a.file_path,a.file_url, a.size, a.create_by, a.create_time, a.sort  from cms_attachment a
+
+        <where>
+            <if test="zid != null  and zid != ''"> and a.zid = #{zid}</if>
+            <if test="userId != null  and userId != ''"> and a.user_id = #{userId}</if>
+            <if test="fileType != null  and fileType != ''"> and a.file_type = #{fileType}</if>
+            <if test="fileName != null  and fileName != ''"> and a.file_name like concat('%', #{fileName}, '%')</if>
+            <if test="filePath != null  and filePath != ''"> and a.file_path = #{filePath}</if>
+            <if test="size != null "> and a.size = #{size}</if>
+            <if test="sort != null "> and a.sort = #{sort}</if>
+        </where>
+        order by a.sort asc
+    </select>
+    
+    <select id="selectAttachmentById" parameterType="String" resultMap="AttachmentResult">
+        <include refid="selectAttachmentVo"/>
+        where attach_id = #{attachId}
+    </select>
+        
+    <insert id="insertAttachment" parameterType="Attachment"   useGeneratedKeys="true" keyProperty="attachId">
+        insert into cms_attachment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="attachId != null  and attachId != ''">attach_id,</if>
+            <if test="zid != null  and zid != ''">zid,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="fileType != null  and fileType != ''">file_type,</if>
+            <if test="fileName != null  and fileName != ''">file_name,</if>
+            <if test="filePath != null  and filePath != ''">file_path,</if>
+            <if test="fileUrl != null  and fileUrl != ''">file_url,</if>
+            <if test="size != null ">size,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="sort != null ">sort,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="attachId != null  and attachId != ''">#{attachId},</if>
+            <if test="zid != null  and zid != ''">#{zid},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="fileType != null  and fileType != ''">#{fileType},</if>
+            <if test="fileName != null  and fileName != ''">#{fileName},</if>
+            <if test="filePath != null  and filePath != ''">#{filePath},</if>
+            <if test="fileUrl != null  and fileUrl != ''">#{fileUrl},</if>
+            <if test="size != null ">#{size},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="sort != null ">#{sort},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAttachment" parameterType="Attachment">
+        update cms_attachment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="zid != null  and zid != ''">zid = #{zid},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="fileType != null  and fileType != ''">file_type = #{fileType},</if>
+            <if test="fileName != null  and fileName != ''">file_name = #{fileName},</if>
+            <if test="filePath != null  and filePath != ''">file_path = #{filePath},</if>
+            <if test="fileUrl != null  and fileUrl != ''">file_url = #{fileUrl},</if>
+            <if test="size != null ">size = #{size},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="sort != null ">sort = #{sort},</if>
+        </trim>
+        where attach_id = #{attachId}
+    </update>
+
+    <delete id="deleteAttachmentById" parameterType="String">
+        delete from cms_attachment where attach_id = #{attachId}
+    </delete>
+
+    <delete id="deleteAttachmentByIds" parameterType="String">
+        delete from cms_attachment where attach_id in 
+        <foreach item="attachId" collection="array" open="(" separator="," close=")">
+            #{attachId}
+        </foreach>
+    </delete>
+    
+</mapper>

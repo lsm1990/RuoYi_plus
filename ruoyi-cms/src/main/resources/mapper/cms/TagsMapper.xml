@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.TagsMapper">
+    
+    <resultMap type="Tags" id="TagsResult">
+        <result property="tagId"    column="tag_id"    />
+        <result property="tagType"    column="tag_type"    />
+        <result property="userId"    column="user_id"    />
+        <result property="tagName"    column="tag_name"    />
+        <result property="sort"    column="sort"    />
+        <result property="status"    column="status"    />
+        <result property="url"    column="url"    />
+    </resultMap>
+
+    <sql id="selectTagsVo">
+        select tag_id, tag_type, user_id, tag_name, sort, status, url from cms_tags
+    </sql>
+
+
+    <select id="getTagByName" parameterType="Tags" resultMap="TagsResult">
+        <include refid="selectTagsVo"/>
+        where tag_type=#{type} and tag_name=#{name} limit 1
+    </select>
+
+    <select id="selectTagsList" parameterType="Tags" resultMap="TagsResult">
+        <include refid="selectTagsVo"/>
+        <where>  
+            <if test="tagType != null  and tagType != ''"> and tag_type = #{tagType}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="tagName != null  and tagName != ''"> and tag_name like concat('%', #{tagName}, '%')</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+        </where>
+        order by sort asc
+    </select>
+    <select id="selectTagsAll"  resultMap="TagsResult">
+        <include refid="selectTagsVo"/>
+         where  status=0
+         and tag_type != 'p'
+         order by sort asc
+    </select>
+
+    <select id="selectBlogTabs"  resultMap="TagsResult">
+        <include refid="selectTagsVo"/>
+         where tag_type='blogTab' and status=0
+        order by sort asc
+    </select>
+
+    <select id="selectTagsById" parameterType="Long" resultMap="TagsResult">
+        <include refid="selectTagsVo"/>
+        where tag_id = #{tagId}
+    </select>
+        
+    <insert id="insertTags" parameterType="Tags" useGeneratedKeys="true" keyProperty="tagId">
+        insert into cms_tags
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tagType != null  and tagType != ''">tag_type,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="tagName != null  and tagName != ''">tag_name,</if>
+            <if test="sort != null ">sort,</if>
+            <if test="status != null ">status,</if>
+            <if test="url != null  and url != ''">url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tagType != null  and tagType != ''">#{tagType},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="tagName != null  and tagName != ''">#{tagName},</if>
+            <if test="sort != null ">#{sort},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="url != null  and url != ''">#{url},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTags" parameterType="Tags">
+        update cms_tags
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tagType != null  and tagType != ''">tag_type = #{tagType},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="tagName != null  and tagName != ''">tag_name = #{tagName},</if>
+            <if test="sort != null ">sort = #{sort},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="url != null  and url != ''">url = #{url},</if>
+        </trim>
+        where tag_id = #{tagId}
+    </update>
+
+    <delete id="deleteTagsById" parameterType="Long">
+        delete from cms_tags where tag_id = #{tagId}
+    </delete>
+
+    <delete id="deleteTagsByIds" parameterType="String">
+        delete from cms_tags where tag_id in 
+        <foreach item="tagId" collection="array" open="(" separator="," close=")">
+            #{tagId}
+        </foreach>
+    </delete>
+    
+</mapper>

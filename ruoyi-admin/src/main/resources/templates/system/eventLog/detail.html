@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('事件日志详细')" />
+	<th:block th:include="include :: jsonview-css" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m-t" id="signupForm">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">用户ID：</label>
+			<div class="form-control-static" th:text="${eventLog.userId}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">用户名称：</label>
+			<div class="form-control-static" th:text="${eventLog.userName}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">事件：</label>
+			<div class="form-control-static" th:text="${eventLog.eventCode}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">事件名称：</label>
+			<div class="form-control-static" th:text="${eventLog.eventName}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">来源：</label>
+			<div class="form-control-static" th:text="${eventLog.source}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">参数：</label>
+			<div class="form-control-static"><pre id="jsonResult"></pre></div>
+		</div>
+	</form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: jsonview-js" />
+    <script th:inline="javascript">
+	    $(function() {
+	    	var datas = [[${eventLog.datas}]];
+	    	if ($.common.isNotEmpty(datas) && datas.length < 2000) {
+	    		$("#jsonResult").JSONView(datas);
+	    	} else {
+	    		$("#jsonResult").text(datas);
+	    	}
+	    });
+    </script>
+</body>
+</html>
