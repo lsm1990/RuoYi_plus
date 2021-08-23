@@ -14,7 +14,7 @@
 
     <properties>
         <webmagic.version>0.7.3</webmagic.version>
-        <jsoup.version>1.10.2</jsoup.version>
+        <jsoup.version>1.14.2</jsoup.version>
     </properties>
 
     <dependencies>
