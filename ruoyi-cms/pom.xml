@@ -13,7 +13,7 @@
     <description>内容管理模块</description>
     <properties>
         <javax-mail.version>1.5.3</javax-mail.version>
-        <commons-mail.version>1.4</commons-mail.version>
+        <commons-mail.version>1.5</commons-mail.version>
     </properties>
     <dependencies>
         <!-- 核心模块-->
